@@ -1,0 +1,12 @@
+administracion 1
+
+description
+	Herramientas de administración
+end
+
+requires
+	admin_application
+	ds_transfer_dialog
+	case_swaf_application
+end 
+

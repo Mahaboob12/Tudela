@@ -1,0 +1,96 @@
+#% text_encoding = iso8859_1
+_package user
+
+_block 
+# setvars() #
+# dsc <<  v.world.coordinate_system.source_collection.at(:spain_ed50_utm30_mm_4MM)
+# v.switch(:write)
+# v.world.coordinate_system << dsc 
+# v.commit()
+_endblock
+$
+_pragma(classify_level=basic)
+## Define la geomertía de GIS que corresponde a la clave dada
+## en el fichero de coordenadas de topografia
+cargador_topo_engine.define_shared_constant(:topo_definicion,
+		     property_list.new_with(
+			     #ABASTECIIMIENTO
+			   :aacab, {:acometida, :llave},
+			   :aarq, {:arqueta, :punto, _unset, _unset, :cota_tapa},
+			   :abr, {:boca_riego, :posicion},
+			   :afu, {:fuente,:posicion},
+			   :arie, {:riego, :valvula},
+			   # El trampillon se carga con la valvula, puesto que l posicion
+			   # es obligatoria tambien se crea, en la misma coordenada que el
+			   # trampillon. La cota no se carga del trampillon porque se
+			   # calcula a partir de la cota de la tapa de la arqueta y la
+			   # profundidad de la valvula.
+			   :atram, {:valvula, :trampillon},
+			   :ahid, {:hidrante, :posicion, :ubicacion, "Acera"},
+			   #TAPA
+			   :tdesco, {:tapa, :punto, :tipo,"desconocida"},
+			   :talum, {:tapa, :punto,:tipo, "alumbrado"},
+			   :telect, {:tapa, :punto,:tipo, "electricidad"},
+			   :tret, {:tapa, :punto,:tipo, "retena"},
+			   :ttfno, {:tapa, :punto, :tipo,"telefónica"}, 
+			   :tgas, {:tapa, :punto,:tipo, "gas"},
+			   :akogas, {:tapa, :punto,:tipo, "gas"},
+			   :tretvono, {:tapa, :punto,:tipo, "telecomunicaciones"},
+			    
+			   # MOBILIARIO URBANO
+			   :vviv, {:mobiliario_urbano, :punto,:tipo, "esquina vivienda"}, #
+			   :varb, {:mobiliario_urbano, :punto, :tipo,"arbol"},
+			   :vbanc, {:mobiliario_urbano, :punto,:tipo, "banco"},
+			   :vbtop, {:mobiliario_urbano, :punto,:tipo, "base topográfica"},
+			   :vcart, {:mobiliario_urbano, :punto,:tipo, "cartel informativo"},
+			   :venci, {:mobiliario_urbano, :punto, :tipo,"encierro"},
+			   :vfar, {:mobiliario_urbano, :punto,:tipo, "farola"},
+			   :vfarpap, {:mobiliario_urbano, :punto,:tipo, "farola-papelera"}, #farol con papelera
+			   :|1000|, {:mobiliario_urbano, :punto,:tipo, "hito"}, #clavo topografico
+			   :vhito, {:mobiliario_urbano, :punto,:tipo, "hito"},
+			   :vjard, {:mobiliario_urbano, :punto,:tipo, "jardinera"},
+			   :vmonu, {:mobiliario_urbano, :punto,:tipo, "monumento"},
+			   :vpap, {:mobiliario_urbano, :punto, :tipo,"papelera"},
+			   :vsemaf, {:mobiliario_urbano, :punto,:tipo, "semáforo"},
+			   :vsegnal, {:mobiliario_urbano, :punto, :tipo,"señal tráfico"},
+			   :vvbus, {:mobiliario_urbano, :punto, :tipo, "marquesina autobús"},
+			   :armario, {:mobiliario_urbano, :punto, :tipo,"otros"},
+			   :vpark, {:mobiliario_urbano, :punto, :tipo,"parkimetro"},
+			   #SANEAMIENTO
+			   :saliv, {:aliviadero, :posicion,_unset, _unset,:cota_tapa},
+			   :spfec, {:pozo_saneamiento, :posicion, :clase, "FECALES",:cota_tapa},
+			   :sppluv, {:pozo_saneamiento, :posicion, :clase, "PLUVIALES",:cota_tapa},
+			   :spunit, {:pozo_saneamiento, :posicion, :clase, "UNITARIO",:cota_tapa},
+			   :spdren, {:pozo_saneamiento, :posicion, :clase, "DRENAJE",:cota_tapa},
+			   :spcam, {:pozo_saneamiento, :posicion, :clase, "Cámara de descarga",:cota_tapa},
+			   :spdesc, {:pozo_saneamiento, :posicion, :clase, "Desconocido",:cota_tapa},
+			   :ssumi, {:sumidero, :posicion},
+			   :saco, {:arqueta_saneamiento, :posicion}, # Acometida saneamiento
+			   :sasifon, {:sifon, :punto},
+			   :vvcan, {:canal, :texto_cota_final, _unset, _unset, :cota_final}
+				   ),
+		     :public)
+$
+_pragma(classify_level=basic)
+## Se define el nombre del campo donde se va a guardar el
+## idenificador del registro cargado con nombre_topo_#punto,
+## por ejemplo, "azu-14_5_33"
+_block
+	arqueta.define_shared_constant(:nombre_field, :nombre, :public)
+	pozo_saneamiento.define_shared_constant(:nombre_field, :nombre, :public)
+	
+	acometida.define_shared_constant(:nombre_field, _unset, :public)
+	boca_riego.define_shared_constant(:nombre_field, _unset, :public)
+	fuente.define_shared_constant(:nombre_field, _unset, :public)
+	aliviadero.define_shared_constant(:nombre_field, _unset, :public)
+	sumidero.define_shared_constant(:nombre_field, _unset, :public)
+	arqueta_saneamiento.define_shared_constant(:nombre_field, _unset, :public)
+	mobiliario_urbano.define_shared_constant(:nombre_field, _unset, :public)
+	tapa.define_shared_constant(:nombre_field, _unset, :public)
+	valvula.define_shared_constant(:nombre_field, _unset, :public)
+	hidrante.define_shared_constant(:nombre_field, _unset, :public)
+	riego.define_shared_constant(:nombre_field, _unset, :public)
+	canal.define_shared_constant(:nombre_field, _unset, :public)
+	sifon.define_shared_constant(:nombre_field, _unset, :public)
+_endblock
+$

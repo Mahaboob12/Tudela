@@ -1,0 +1,24 @@
+tudela_image_open 1
+
+description
+	Modulo para generar imagen abierta de Aguas de Tudela
+end
+
+requires
+	# Aplicaciones
+	administracion
+	captura
+	# Modelo de Datos
+	modelo_datos_saneamiento
+	modelo_datos_abastecimiento
+	modelo_datos_varios
+	# Basic Change y Additions
+	basic_additions
+	basic_changes
+
+	#utils
+	traductor	
+	cargador_topo
+	editores
+	documentos_relacionados
+end

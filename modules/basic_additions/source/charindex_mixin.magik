@@ -1,0 +1,11 @@
+#% text_encoding = iso8859_1
+_package user
+$
+_pragma(classify_level=restricted)
+_method charindex_mixin.ib_last_to_end(ndec)
+	##
+	## Toma los ultimos NDEC caracteres
+
+	>> _self.slice_to_end(_self.size - min(ndec,_self.size) + 1 )
+_endmethod
+$

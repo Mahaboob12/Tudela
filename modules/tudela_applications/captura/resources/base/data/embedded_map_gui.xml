@@ -1,0 +1,38 @@
+<?xml version="1.0" standalone="yes"?>
+
+<!-- embedded map gui for the swaf professional application -->
+
+<gui base="swaf_professional_application.embedded_map_gui">
+   
+    <menu name="default_popup" role="rwo_specials">
+        <action name="trail_clear"                mnemonic_id="clear_trail_m"/>
+	<action name="map_set_trail_to_selection" mnemonic_id="set_trail_to_selection_m"/>
+	
+	<separator/>
+	<action source="application" name="editor_manager.edit_object" caption_id="edit_object" mnemonic_id="edit_object_m"/>
+	<action name="view_object"                      mnemonic_id="view_object_m"/>
+	<action name="map_clear_selection"              mnemonic_id="clear_selection_m"/>
+	<action name="view_zoom_to_selection"           mnemonic_id="zoom_to_selection_m"/>
+	<action name="map_copy_to_clipboard"            mnemonic_id="map_copy_to_clipboard_m"/>
+	<action name="map_set_selection_invisible"      mnemonic_id="map_set_selection_invisible_m"/>
+	<separator/>
+	<action name="map_next_selection_candidate"     mnemonic_id="next_selection_m"/>
+	<action name="map_previous_selection_candidate" mnemonic_id="previous_selection_m"/>
+	<action name="multiple_selection_dialog"        mnemonic_id="multiple_selection_dialog_m"/>
+	<separator/>	
+	<action name="home_view"/>
+	<action name="previous_view" caption_id="previous_view" mnemonic_id="previous_view_m"/>
+	<action name="next_view"     caption_id="next_view"     mnemonic_id="next_view_m"/>
+	<action name="view_snapshot"/>
+	<action name="view_refresh"                             mnemonic_id="refresh_m"/>
+	<action name="view_interrupt_refresh"                   mnemonic_id="interrupt_refresh_m"/>
+	<action name="rotate_view"				mnemonic_id="rotate_view_m"/>
+	<action name="bookmark_dialog"/>
+	<separator/>
+	<action name="properties" mnemonic_id="properties_m"/>
+
+	<!-- rwo special actions will be added here -->
+    </menu>
+
+
+</gui>

@@ -1,0 +1,1868 @@
+<?xml version="1.0" encoding="windows-1252" standalone="yes"?>
+<serial_xml_thing format="1">
+	<slotted class="sw:layout_document" size="6">
+		<name>
+			<string>Layout 1</string>
+		</name>
+		<description>
+			<atomic>sw:unset</atomic>
+		</description>
+		<current_page_nr>
+			<number>1</number>
+		</current_page_nr>
+		<pages>
+			<indexed class="sw:rope" size="1">
+				<slotted class="sw:layout_page" size="5">
+					<name>
+						<atomic>sw:unset</atomic>
+					</name>
+					<role>
+						<atomic>sw:unset</atomic>
+					</role>
+					<paper_bounds>
+						<slotted class="sw:bounding_box" size="4">
+							<xmin>
+								<number>0.00</number>
+							</xmin>
+							<ymin>
+								<number>0.00</number>
+							</ymin>
+							<xmax>
+								<number>8410.00</number>
+							</xmax>
+							<ymax>
+								<number>5940.00</number>
+							</ymax>
+						</slotted>
+					</paper_bounds>
+					<locked>
+						<atomic>sw:false</atomic>
+					</locked>
+					<elements>
+						<indexed class="sw:rope" size="11">
+							<slotted class="sw:viewport_layout" size="22">
+								<unique_id>
+									<number>1</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>122.51</number>
+										</xmin>
+										<ymin>
+											<number>389.66</number>
+										</ymin>
+										<xmax>
+											<number>8319.10</number>
+										</xmax>
+										<ymax>
+											<number>5823.78</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<name>
+									<string>Viewport 1</string>
+								</name>
+								<coordinate_system>
+									<slotted class="sw:coordinate_system" size="14">
+										<name>
+											<string>utm_30_y_4m_mm</string>
+										</name>
+										<external_cs_name>
+											<string>Utm 30 Y 4m (mm)</string>
+										</external_cs_name>
+										<abbrev>
+											<string></string>
+										</abbrev>
+										<description>
+											<string></string>
+										</description>
+										<root_name>
+											<string>wgs84</string>
+										</root_name>
+										<coord_ndec>
+											<number>0</number>
+										</coord_ndec>
+										<group>
+											<string></string>
+										</group>
+										<in_cs_menus>
+											<atomic>sw:true</atomic>
+										</in_cs_menus>
+										<datum_name>
+											<symbol>europe_ed50_portugal_spain_molod</symbol>
+										</datum_name>
+										<false_origin_x>
+											<string>(0.0)</string>
+										</false_origin_x>
+										<false_origin_y>
+											<string>(-15625*2.0**8)</string>
+										</false_origin_y>
+										<proj_type>
+											<symbol>accurate_utm</symbol>
+										</proj_type>
+										<proj_params>
+											<keyed class="sw:hash_table" size="4">
+												<entry key="a">
+													<string>6378388</string>
+												</entry>
+												<entry key="south">
+													<string>f</string>
+												</entry>
+												<entry key="rf">
+													<string>297</string>
+												</entry>
+												<entry key="zone">
+													<string>30</string>
+												</entry>
+											</keyed>
+										</proj_params>
+										<unit_name>
+											<symbol>mm</symbol>
+										</unit_name>
+									</slotted>
+								</coordinate_system>
+								<centre_x>
+									<number>547914606.59</number>
+								</centre_x>
+								<centre_y>
+									<number>259892654.67</number>
+								</centre_y>
+								<view_scale>
+									<number>1011.47</number>
+								</view_scale>
+								<view_angle>
+									<number>0.00</number>
+								</view_angle>
+								<projection>
+									<slotted class="sw:coordinate_system" size="14">
+										<name>
+											<string>utm_30_y_4m_mm</string>
+										</name>
+										<external_cs_name>
+											<string>Utm 30 Y 4m (mm)</string>
+										</external_cs_name>
+										<abbrev>
+											<string></string>
+										</abbrev>
+										<description>
+											<string></string>
+										</description>
+										<root_name>
+											<string>wgs84</string>
+										</root_name>
+										<coord_ndec>
+											<number>0</number>
+										</coord_ndec>
+										<group>
+											<string></string>
+										</group>
+										<in_cs_menus>
+											<atomic>sw:true</atomic>
+										</in_cs_menus>
+										<datum_name>
+											<symbol>europe_ed50_portugal_spain_molod</symbol>
+										</datum_name>
+										<false_origin_x>
+											<string>(0.0)</string>
+										</false_origin_x>
+										<false_origin_y>
+											<string>(-15625*2.0**8)</string>
+										</false_origin_y>
+										<proj_type>
+											<symbol>accurate_utm</symbol>
+										</proj_type>
+										<proj_params>
+											<keyed class="sw:hash_table" size="4">
+												<entry key="a">
+													<string>6378388</string>
+												</entry>
+												<entry key="south">
+													<string>f</string>
+												</entry>
+												<entry key="rf">
+													<string>297</string>
+												</entry>
+												<entry key="zone">
+													<string>30</string>
+												</entry>
+											</keyed>
+										</proj_params>
+										<unit_name>
+											<symbol>mm</symbol>
+										</unit_name>
+									</slotted>
+								</projection>
+								<soc_name>
+									<symbol>captura</symbol>
+								</soc_name>
+								<ace_name>
+									<string>Default</string>
+								</ace_name>
+								<display_style>
+									<symbol>Auto</symbol>
+								</display_style>
+								<draw_scale>
+									<number>1.00</number>
+								</draw_scale>
+								<style_system_category>
+									<symbol>Default</symbol>
+								</style_system_category>
+								<universe_id>
+									<number>-1</number>
+								</universe_id>
+								<world_id>
+									<number>-1</number>
+								</world_id>
+								<trail>
+									<atomic>sw:true</atomic>
+								</trail>
+								<selection>
+									<atomic>sw:true</atomic>
+								</selection>
+								<post_render>
+									<atomic>sw:true</atomic>
+								</post_render>
+							</slotted>
+							<slotted class="sw:legend_layout" size="21">
+								<unique_id>
+									<number>3</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>7021.27</number>
+										</xmin>
+										<ymin>
+											<number>528.35</number>
+										</ymin>
+										<xmax>
+											<number>8188.58</number>
+										</xmax>
+										<ymax>
+											<number>2505.33</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<title>
+									<string>Leyenda</string>
+								</title>
+								<viewport_id>
+									<number>1</number>
+								</viewport_id>
+								<dynamic>
+									<atomic>sw:true</atomic>
+								</dynamic>
+								<columns>
+									<number>0</number>
+								</columns>
+								<sample_string>
+									<string>Abc Def</string>
+								</sample_string>
+								<diagonal>
+									<atomic>sw:false</atomic>
+								</diagonal>
+								<display_full_bounds>
+									<atomic>sw:true</atomic>
+								</display_full_bounds>
+								<viewport_contents_only>
+									<atomic>sw:true</atomic>
+								</viewport_contents_only>
+								<ace_group>
+									<string>gis</string>
+								</ace_group>
+								<include_drafting>
+									<atomic>sw:false</atomic>
+								</include_drafting>
+								<include_raster>
+									<atomic>sw:false</atomic>
+								</include_raster>
+								<include_tin>
+									<atomic>sw:false</atomic>
+								</include_tin>
+								<include_area>
+									<atomic>sw:true</atomic>
+								</include_area>
+								<include_linear>
+									<atomic>sw:true</atomic>
+								</include_linear>
+								<include_point>
+									<atomic>sw:true</atomic>
+								</include_point>
+								<include_text>
+									<atomic>sw:false</atomic>
+								</include_text>
+							</slotted>
+							<slotted class="sw:autotext_layout" size="17">
+								<unique_id>
+									<number>7</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>2490.64</number>
+										</xmin>
+										<ymin>
+											<number>84.51</number>
+										</ymin>
+										<xmax>
+											<number>3031.48</number>
+										</xmax>
+										<ymax>
+											<number>388.53</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<text>
+									<string>Fecha:</string>
+								</text>
+								<font_name>
+									<string>plain</string>
+								</font_name>
+								<font_size>
+									<number>3</number>
+								</font_size>
+								<colour>
+									<slotted class="sw:colour" size="3">
+										<red>
+											<number>0.00</number>
+										</red>
+										<green>
+											<number>0.00</number>
+										</green>
+										<blue>
+											<number>0.00</number>
+										</blue>
+									</slotted>
+								</colour>
+								<wrap>
+									<atomic>sw:true</atomic>
+								</wrap>
+								<clip>
+									<atomic>sw:true</atomic>
+								</clip>
+								<align_horizontal>
+									<symbol>left</symbol>
+								</align_horizontal>
+								<align_vertical>
+									<symbol>top</symbol>
+								</align_vertical>
+								<orientation>
+									<symbol>left_right</symbol>
+								</orientation>
+								<angle>
+									<number>0.00</number>
+								</angle>
+								<type>
+									<symbol>date</symbol>
+								</type>
+								<param>
+									<string></string>
+								</param>
+							</slotted>
+							<slotted class="sw:bitmap_layout" size="8">
+								<unique_id>
+									<number>2</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>1429.38</number>
+										</xmin>
+										<ymin>
+											<number>84.51</number>
+										</ymin>
+										<xmax>
+											<number>1982.17</number>
+										</xmax>
+										<ymax>
+											<number>389.24</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<filename>
+									<string>\\Servidorgis\c\SWG\Aguas_Tudela43\source\templates\AGUASTUDELA.bmp</string>
+								</filename>
+								<mirror_image>
+									<atomic>sw:false</atomic>
+								</mirror_image>
+								<fit_image>
+									<atomic>sw:true</atomic>
+								</fit_image>
+							</slotted>
+							<slotted class="sw:textbox_layout" size="17">
+								<unique_id>
+									<number>15</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>123.54</number>
+										</xmin>
+										<ymin>
+											<number>84.51</number>
+										</ymin>
+										<xmax>
+											<number>1429.38</number>
+										</xmax>
+										<ymax>
+											<number>389.24</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<text>
+									<string>JUNTA MUNICIPAL DE AGUAS DE TUDELA</string>
+								</text>
+								<font_name>
+									<string>plain</string>
+								</font_name>
+								<font_size>
+									<number>3</number>
+								</font_size>
+								<colour>
+									<slotted class="sw:colour" size="3">
+										<red>
+											<number>0.00</number>
+										</red>
+										<green>
+											<number>0.00</number>
+										</green>
+										<blue>
+											<number>0.00</number>
+										</blue>
+									</slotted>
+								</colour>
+								<wrap>
+									<atomic>sw:true</atomic>
+								</wrap>
+								<clip>
+									<atomic>sw:true</atomic>
+								</clip>
+								<align_horizontal>
+									<symbol>centre</symbol>
+								</align_horizontal>
+								<align_vertical>
+									<symbol>centre</symbol>
+								</align_vertical>
+								<orientation>
+									<symbol>left_right</symbol>
+								</orientation>
+								<angle>
+									<number>0.00</number>
+								</angle>
+								<text_width>
+									<number>1.00</number>
+								</text_width>
+								<text_aspect>
+									<number>1.00</number>
+								</text_aspect>
+							</slotted>
+							<slotted class="sw:attribute_layout" size="19">
+								<unique_id>
+									<number>18</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>1983.46</number>
+										</xmin>
+										<ymin>
+											<number>84.51</number>
+										</ymin>
+										<xmax>
+											<number>2490.68</number>
+										</xmax>
+										<ymax>
+											<number>388.53</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<attribute_name>
+									<symbol>Ref</symbol>
+								</attribute_name>
+								<show_label>
+									<atomic>sw:true</atomic>
+								</show_label>
+								<render_empty>
+									<atomic>sw:true</atomic>
+								</render_empty>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<font_name>
+									<string>plain</string>
+								</font_name>
+								<font_size>
+									<number>3</number>
+								</font_size>
+								<colour>
+									<slotted class="sw:colour" size="3">
+										<red>
+											<number>0.00</number>
+										</red>
+										<green>
+											<number>0.00</number>
+										</green>
+										<blue>
+											<number>0.00</number>
+										</blue>
+									</slotted>
+								</colour>
+								<wrap>
+									<atomic>sw:true</atomic>
+								</wrap>
+								<clip>
+									<atomic>sw:true</atomic>
+								</clip>
+								<align_horizontal>
+									<string>left</string>
+								</align_horizontal>
+								<align_vertical>
+									<string>top</string>
+								</align_vertical>
+								<orientation>
+									<symbol>left_right</symbol>
+								</orientation>
+								<angle>
+									<number>0.00</number>
+								</angle>
+								<text_width>
+									<number>1.00</number>
+								</text_width>
+								<text_aspect>
+									<number>1.00</number>
+								</text_aspect>
+							</slotted>
+							<slotted class="sw:attribute_layout" size="17">
+								<unique_id>
+									<number>9</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>4106.74</number>
+										</xmin>
+										<ymin>
+											<number>84.90</number>
+										</ymin>
+										<xmax>
+											<number>6014.94</number>
+										</xmax>
+										<ymax>
+											<number>388.53</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<attribute_name>
+									<symbol>Título</symbol>
+								</attribute_name>
+								<show_label>
+									<atomic>sw:true</atomic>
+								</show_label>
+								<render_empty>
+									<atomic>sw:true</atomic>
+								</render_empty>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<font_name>
+									<string>plain</string>
+								</font_name>
+								<font_size>
+									<number>3</number>
+								</font_size>
+								<colour>
+									<slotted class="sw:colour" size="3">
+										<red>
+											<number>0.00</number>
+										</red>
+										<green>
+											<number>0.00</number>
+										</green>
+										<blue>
+											<number>0.00</number>
+										</blue>
+									</slotted>
+								</colour>
+								<wrap>
+									<atomic>sw:true</atomic>
+								</wrap>
+								<clip>
+									<atomic>sw:true</atomic>
+								</clip>
+								<align_horizontal>
+									<symbol>left</symbol>
+								</align_horizontal>
+								<align_vertical>
+									<symbol>top</symbol>
+								</align_vertical>
+								<orientation>
+									<symbol>left_right</symbol>
+								</orientation>
+								<angle>
+									<number>0.00</number>
+								</angle>
+							</slotted>
+							<slotted class="sw:viewporttext_layout" size="19">
+								<unique_id>
+									<number>12</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>3031.18</number>
+										</xmin>
+										<ymin>
+											<number>84.69</number>
+										</ymin>
+										<xmax>
+											<number>3414.33</number>
+										</xmax>
+										<ymax>
+											<number>388.53</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<text>
+									<string>Escala:</string>
+								</text>
+								<font_name>
+									<string>plain</string>
+								</font_name>
+								<font_size>
+									<number>3</number>
+								</font_size>
+								<colour>
+									<slotted class="sw:colour" size="3">
+										<red>
+											<number>0.00</number>
+										</red>
+										<green>
+											<number>0.00</number>
+										</green>
+										<blue>
+											<number>0.00</number>
+										</blue>
+									</slotted>
+								</colour>
+								<wrap>
+									<atomic>sw:true</atomic>
+								</wrap>
+								<clip>
+									<atomic>sw:true</atomic>
+								</clip>
+								<align_horizontal>
+									<symbol>left</symbol>
+								</align_horizontal>
+								<align_vertical>
+									<symbol>top</symbol>
+								</align_vertical>
+								<orientation>
+									<symbol>left_right</symbol>
+								</orientation>
+								<angle>
+									<number>0.00</number>
+								</angle>
+								<viewport_id>
+									<number>1</number>
+								</viewport_id>
+								<type>
+									<symbol>scale</symbol>
+								</type>
+								<param>
+									<string></string>
+								</param>
+								<decimals>
+									<number>0</number>
+								</decimals>
+							</slotted>
+							<slotted class="sw:attribute_layout" size="19">
+								<unique_id>
+									<number>19</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>3413.88</number>
+										</xmin>
+										<ymin>
+											<number>84.88</number>
+										</ymin>
+										<xmax>
+											<number>4106.78</number>
+										</xmax>
+										<ymax>
+											<number>388.53</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<attribute_name>
+									<symbol>Autor</symbol>
+								</attribute_name>
+								<show_label>
+									<atomic>sw:true</atomic>
+								</show_label>
+								<render_empty>
+									<atomic>sw:true</atomic>
+								</render_empty>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<font_name>
+									<string>plain</string>
+								</font_name>
+								<font_size>
+									<number>3</number>
+								</font_size>
+								<colour>
+									<slotted class="sw:colour" size="3">
+										<red>
+											<number>0.00</number>
+										</red>
+										<green>
+											<number>0.00</number>
+										</green>
+										<blue>
+											<number>0.00</number>
+										</blue>
+									</slotted>
+								</colour>
+								<wrap>
+									<atomic>sw:true</atomic>
+								</wrap>
+								<clip>
+									<atomic>sw:true</atomic>
+								</clip>
+								<align_horizontal>
+									<string>left</string>
+								</align_horizontal>
+								<align_vertical>
+									<symbol>top</symbol>
+								</align_vertical>
+								<orientation>
+									<symbol>left_right</symbol>
+								</orientation>
+								<angle>
+									<number>0.00</number>
+								</angle>
+								<text_width>
+									<number>1.00</number>
+								</text_width>
+								<text_aspect>
+									<number>1.00</number>
+								</text_aspect>
+							</slotted>
+							<slotted class="sw:attribute_layout" size="17">
+								<unique_id>
+									<number>10</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>6014.98</number>
+										</xmin>
+										<ymin>
+											<number>84.92</number>
+										</ymin>
+										<xmax>
+											<number>7742.70</number>
+										</xmax>
+										<ymax>
+											<number>388.53</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<attribute_name>
+									<symbol>PLANO DE</symbol>
+								</attribute_name>
+								<show_label>
+									<atomic>sw:true</atomic>
+								</show_label>
+								<render_empty>
+									<atomic>sw:true</atomic>
+								</render_empty>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<font_name>
+									<string>plain</string>
+								</font_name>
+								<font_size>
+									<number>3</number>
+								</font_size>
+								<colour>
+									<slotted class="sw:colour" size="3">
+										<red>
+											<number>0.00</number>
+										</red>
+										<green>
+											<number>0.00</number>
+										</green>
+										<blue>
+											<number>0.00</number>
+										</blue>
+									</slotted>
+								</colour>
+								<wrap>
+									<atomic>sw:true</atomic>
+								</wrap>
+								<clip>
+									<atomic>sw:true</atomic>
+								</clip>
+								<align_horizontal>
+									<symbol>left</symbol>
+								</align_horizontal>
+								<align_vertical>
+									<symbol>top</symbol>
+								</align_vertical>
+								<orientation>
+									<symbol>left_right</symbol>
+								</orientation>
+								<angle>
+									<number>0.00</number>
+								</angle>
+							</slotted>
+							<slotted class="sw:attribute_layout" size="19">
+								<unique_id>
+									<number>20</number>
+								</unique_id>
+								<bounds>
+									<slotted class="sw:bounding_box" size="4">
+										<xmin>
+											<number>7742.69</number>
+										</xmin>
+										<ymin>
+											<number>84.92</number>
+										</ymin>
+										<xmax>
+											<number>8319.20</number>
+										</xmax>
+										<ymax>
+											<number>388.53</number>
+										</ymax>
+									</slotted>
+								</bounds>
+								<attribute_name>
+									<symbol>Plano Nº</symbol>
+								</attribute_name>
+								<show_label>
+									<atomic>sw:true</atomic>
+								</show_label>
+								<render_empty>
+									<atomic>sw:true</atomic>
+								</render_empty>
+								<outline_style>
+									<slotted class="sw:composite_line_style" size="2">
+										<fg_style>
+											<slotted class="sw:line_style" size="5">
+												<colour>
+													<slotted class="sw:colour" size="3">
+														<red>
+															<number>0.00</number>
+														</red>
+														<green>
+															<number>0.00</number>
+														</green>
+														<blue>
+															<number>0.00</number>
+														</blue>
+													</slotted>
+												</colour>
+												<width>
+													<number>0</number>
+												</width>
+												<dash_style>
+													<slotted class="sw:dash_pattern" size="1">
+														<dashes>
+															<indexed class="sw:integer_vector" size="0"/>
+														</dashes>
+													</slotted>
+												</dash_style>
+												<cap_style>
+													<symbol>butt</symbol>
+												</cap_style>
+												<join_style>
+													<symbol>miter</symbol>
+												</join_style>
+											</slotted>
+										</fg_style>
+										<bg_style>
+											<atomic>sw:unset</atomic>
+										</bg_style>
+									</slotted>
+								</outline_style>
+								<fill_style>
+									<slotted class="sw:fill_style" size="4">
+										<colour>
+											<slotted class="sw:colour" size="3">
+												<red>
+													<number>1.00</number>
+												</red>
+												<green>
+													<number>1.00</number>
+												</green>
+												<blue>
+													<number>1.00</number>
+												</blue>
+											</slotted>
+										</colour>
+										<percent>
+											<atomic>sw:unset</atomic>
+										</percent>
+										<pattern>
+											<atomic>sw:unset</atomic>
+										</pattern>
+										<origin>
+											<slotted class="sw:pixel_coordinate" size="2">
+												<x>
+													<number>0</number>
+												</x>
+												<y>
+													<number>0</number>
+												</y>
+											</slotted>
+										</origin>
+									</slotted>
+								</fill_style>
+								<locked>
+									<atomic>sw:false</atomic>
+								</locked>
+								<font_name>
+									<string>plain</string>
+								</font_name>
+								<font_size>
+									<number>3</number>
+								</font_size>
+								<colour>
+									<slotted class="sw:colour" size="3">
+										<red>
+											<number>0.00</number>
+										</red>
+										<green>
+											<number>0.00</number>
+										</green>
+										<blue>
+											<number>0.00</number>
+										</blue>
+									</slotted>
+								</colour>
+								<wrap>
+									<atomic>sw:true</atomic>
+								</wrap>
+								<clip>
+									<atomic>sw:true</atomic>
+								</clip>
+								<align_horizontal>
+									<string>left</string>
+								</align_horizontal>
+								<align_vertical>
+									<string>top</string>
+								</align_vertical>
+								<orientation>
+									<symbol>left_right</symbol>
+								</orientation>
+								<angle>
+									<number>0.00</number>
+								</angle>
+								<text_width>
+									<number>1.00</number>
+								</text_width>
+								<text_aspect>
+									<number>1.00</number>
+								</text_aspect>
+							</slotted>
+						</indexed>
+					</elements>
+				</slotted>
+			</indexed>
+		</pages>
+		<properties>
+			<keyed class="sw:property_list" size="3">
+				<entry key="created">
+					<slotted class="sw:date_time" size="2">
+						<day_number>
+							<number>12696</number>
+						</day_number>
+						<milliseconds>
+							<number>34130000</number>
+						</milliseconds>
+					</slotted>
+				</entry>
+				<entry key="modified">
+					<slotted class="sw:date_time" size="2">
+						<day_number>
+							<number>16386</number>
+						</day_number>
+						<milliseconds>
+							<number>43682000</number>
+						</milliseconds>
+					</slotted>
+				</entry>
+				<entry key="printed">
+					<slotted class="sw:date_time" size="2">
+						<day_number>
+							<number>12724</number>
+						</day_number>
+						<milliseconds>
+							<number>41560000</number>
+						</milliseconds>
+					</slotted>
+				</entry>
+			</keyed>
+		</properties>
+		<attributes>
+			<keyed class="sw:property_list" size="32">
+				<entry key="Autor">
+					<string></string>
+				</entry>
+				<entry key="Cliente">
+					<string></string>
+				</entry>
+				<entry key="Departamento">
+					<string></string>
+				</entry>
+				<entry key="Propietario">
+					<string></string>
+				</entry>
+				<entry key="Proyecto">
+					<string></string>
+				</entry>
+				<entry key="Estado">
+					<string></string>
+				</entry>
+				<entry key="Verificado por">
+					<string></string>
+				</entry>
+				<entry key="Fecha completa">
+					<string></string>
+				</entry>
+				<entry key="Destino">
+					<string></string>
+				</entry>
+				<entry key="Oficina">
+					<string></string>
+				</entry>
+				<entry key="Editor">
+					<string></string>
+				</entry>
+				<entry key="Propósito">
+					<string></string>
+				</entry>
+				<entry key="Referencia">
+					<string></string>
+				</entry>
+				<entry key="Título">
+					<string>&lt;Título&gt;</string>
+				</entry>
+				<entry key="Subtítulo">
+					<string>&lt;Subtítulo&gt;</string>
+				</entry>
+				<entry key="Author">
+					<string></string>
+				</entry>
+				<entry key="Client">
+					<string></string>
+				</entry>
+				<entry key="Department">
+					<string></string>
+				</entry>
+				<entry key="Owner">
+					<string></string>
+				</entry>
+				<entry key="Project">
+					<string></string>
+				</entry>
+				<entry key="Status">
+					<string></string>
+				</entry>
+				<entry key="Checked by">
+					<string></string>
+				</entry>
+				<entry key="Date complete">
+					<string></string>
+				</entry>
+				<entry key="Destination">
+					<string></string>
+				</entry>
+				<entry key="Office">
+					<string></string>
+				</entry>
+				<entry key="Publisher">
+					<string></string>
+				</entry>
+				<entry key="Purpose">
+					<string></string>
+				</entry>
+				<entry key="Reference">
+					<string></string>
+				</entry>
+				<entry key="Title">
+					<string></string>
+				</entry>
+				<entry key="Ref">
+					<string>&lt;Referencia&gt;</string>
+				</entry>
+				<entry key="PLANO DE">
+					<string>&lt;Plano_de&gt;</string>
+				</entry>
+				<entry key="Plano Nº">
+					<string>&lt;plano numero&gt;</string>
+				</entry>
+				<entry key="Aviso">
+					<string>El trazado de las conducciones indicado en los planos adjuntos es orientativo, la JMAT no se hace responsable de la exactitud de los mismos</string>
+				</entry>
+				<entry key="Aviso oculto">
+					<string></string>
+				</entry>
+			</keyed>
+		</attributes>
+	</slotted>
+</serial_xml_thing>

@@ -1,0 +1,768 @@
+#% text_encoding = iso8859_1
+# Copyright (C) GE-Smallworld 2001, all rights reserved.
+_package sw
+_pragma(classify_level=restricted, topic={mit})
+## Contains       :
+##
+##
+
+
+_global g << _unset
+_global gg << _unset
+_global gv << _unset
+$
+
+#
+#        _global  cleanup << _proc()
+#                           _for l_key,l_appl _over gis_program_manager.applications.fast_keys_and_elements()
+#                           _loop
+#                                   _if l_appl.top_frame _is _unset _orif
+#                                       ~l_appl.top_frame.active?
+#                                   _then
+#                                           gis_program_manager.applications.remove_key(l_key)
+#                                   _else
+#                                           write("Resetting ",l_appl.ace.name,"...")
+#                                           l_appl.hard_reset()
+#                                   _endif
+#                           _endloop
+#                           _for l_i _over 1.upto(4)
+#                           _loop
+#                                   system.gc(_true)
+#                           _endloop
+#                   _endproc
+
+#
+#        _global ace_clear_unknown << _proc()
+#                                     l_ace << gis_program_manager.applications[:gis].ace
+#                                     l_ace.clear_unknown()
+#                             _endproc
+#
+        _global appl << _proc @returns_application(name)
+                        >> gis_program_manager.applications[name]
+                _endproc
+#
+#        _global grs << _proc @returns_application(name)
+#                       >> gis_program_manager.applications[name]
+#               _endproc
+
+        _global sf << _proc @gets_source_file_for_object_method(p_object_or_name,p_method_name)
+
+                      _if (l_object << _if symbol.is_kind_of?(p_object_or_name)
+                                       _then
+                                               >> !exemplar_package![p_object_or_name]
+                                       _else
+                                               >> p_object_or_name
+                                       _endif) _is _unset
+                      _then
+                              write("Unknown object: ",p_object_or_name)
+                              _return
+                      _endif
+
+                      _for l_super _over l_object.roos!super_classes().fast_elements()
+                      _loop
+
+                              _if (l_method << !exemplar_package![l_super].method(p_method_name)) _isnt _unset
+                              _then
+                                      write(l_super,"  ",l_method.source_file)
+                              _endif
+                      _endloop
+
+                      _if (l_method << l_object.method(p_method_name)) _is _unset
+                      _then
+                              write("Unknown method: ",p_method_name)
+                              _return
+                      _endif
+
+                      >> p_object_or_name,"  ",l_method.source_file
+              _endproc
+
+        _global m << _proc @gets_method(p_object_or_name,p_method_name)
+
+                     _if (l_object << _if symbol.is_kind_of?(p_object_or_name)
+                                      _then
+                                              >> !exemplar_package![p_object_or_name]
+                                      _else
+                                              >> p_object_or_name
+                                      _endif) _is _unset
+                     _then
+                             write("Unknown object: ",p_object_or_name)
+                             _return
+                     _endif
+
+                     _if ~ symbol.is_kind_of?(l_method << p_method_name)
+                     _then
+                             l_method << p_method_name.as_symbol()
+                     _endif
+
+                     >> l_object.method(l_method)
+             _endproc
+
+        _global view << _proc @returns_view(name)
+                        >> gis_program_manager.cached_dataset(name)
+                _endproc
+$
+        _global col << _proc @returns_ds_collection(name, _optional a_view)
+                       a_view << a_view.default( view(:gis) )#gis_program_manager.cached_dataset(:gis))
+                       >> a_view.collections[name]
+               _endproc
+
+        _global colat << _proc @returns_ds_collection_at(name, keys, _optional a_view)
+                         a_view << a_view.default( view(:gis) ) # gis_program_manager.cached_dataset(:gis))
+                         >> a_view.collections[name].at(keys)
+                 _endproc
+
+#        _global cur << _proc @returns_current_geometry(appl_name)
+#                       >> appl(appl_name).current_geometry
+#               _endproc
+#$
+
+        #----------
+        # cg is used for case_graphics_system already!
+        # changed the next constant to cug (GR, 10/96)
+        #----------
+#
+#        _global         cug << _proc @returns_current_geometry_from_gis(_optional appl_name)
+#                       appl_name << appl_name.default(:gis)
+#                       >> cur(appl_name)
+#               _endproc
+#
+#        _global         cr << _proc @returns_current_rwo_from_gis(_optional appl_name)
+#                      appl_name << appl_name.default(:gis)
+#                      >> cur(appl_name).rwo
+#              _endproc
+
+        _global         field << _proc @returns_field_descriptor_for_object_fieldname(object_name,field_name, _optional a_view)
+                         a_view << a_view.default( view(:gis)) #gis_program_manager.cached_dataset(:gis))
+                         >> a_view.collections[object_name].field(field_name)
+                 _endproc
+
+        _global         cols << _proc @returns_ds_collection_table(name)
+                        >> gis_program_manager.cached_dataset(name).collections
+                _endproc
+
+        _global         descr << _proc @returns_descriptor(name,_optional a_view)
+			>> col(name,a_view).descriptor
+                 _endproc
+$
+        _global         an_el << _proc @returns_an_element_from_col(name,_optional a_view)
+                        a_view << a_view.default( view(:gis) )# gis_program_manager.cached_dataset(:gis))
+                         >> a_view.collections[name].an_element()
+                 _endproc
+
+        _global         hr << _proc @does_a_hard_reset(name)
+                      appl(name).hard_reset()
+              _endproc
+
+        _global         gc << _proc @does_a_garbage_collect(_optional flag)
+                      flag << flag.default(_true)
+                      system.gc(flag)
+              _endproc
+
+        _global         setex << _proc @sets_record_exemplar(name,_optional a_view)
+                         >> descr(name,a_view).record_exemplar << !exemplar_package![name]
+                 _endproc
+
+        _global         ex << _proc @gets_record_exemplar(name,_optional a_view)
+                      >> descr(name,a_view).record_exemplar
+              _endproc
+
+        _global         colex << _proc @gets_collection_record_exemplar(name,_optional a_view)
+                         >> col(name,a_view).record_exemplar
+                 _endproc
+
+$
+
+        _global         colap << _proc @returns_writes_ds_collections_matching_string(string, _optional a_view)
+                         a_view << a_view.default( view(:gis) )# gis_program_manager.cached_dataset(:gis))
+                         c_rope << rope.new()
+                         string << string.write_string
+                         _for c _over a_view.collections.fast_elements()
+                         _loop
+                                 _if c.name.write_string.index_of_seq(string) _isnt _unset
+                                 _then
+                                         write(":",c.name)
+                                         c_rope.add_last(c)
+                                 _endif
+                         _endloop
+                         >> c_rope
+                 _endproc
+
+        _global         pms << print_memory_statistics
+
+        _global         p << print
+
+        _global         w << write
+
+        _global         dp << debug_print
+
+        _global         pa << print_ancestry
+
+        _global         ph << print_hierarchy
+
+        _global         ap << apropos
+
+$
+        _global         wrel << _proc @loops_over_elements_and_writes_them(a_col, _optional a_method)
+                        _for l _over a_col.elements()
+                        _loop
+                                _if a_method _isnt _unset _andif
+                                    l.responds_to?(a_method)
+                                _then
+                                        write(l," || ",l.perform(a_method))
+                                _else
+                                        write(l)
+                                _endif
+                        _endloop
+                _endproc
+
+        _global         prel << _proc @loops_over_elements_and_prints_them(a_col)
+                        _for l _over a_col.elements()
+                        _loop
+                                write("----")
+                                print(l)
+                        _endloop
+                _endproc
+
+        _global         writer << _proc @performs_iter_and_writes_elements(a_col, _optional an_iter, a_method, _gather args)
+                          l_iter << an_iter.default(:|elements()|)
+                          _for l _over a_col.perform_iter(l_iter, _scatter args)
+                          _loop
+                                  _if a_method _isnt _unset _andif
+                                      l.responds_to?(a_method)
+                                  _then
+                                          write(l," || ",l.perform(a_method))
+                                  _else
+                                          write(l)
+                                  _endif
+                          _endloop
+                  _endproc
+
+        _global         priter << _proc @iters_and_prints_elements(a_col)
+                          _for l _over a_col.fast_elements()
+                          _loop
+                                  print(l)
+                          _endloop
+                  _endproc
+$
+_global         lf << _proc @load_file_plus(a_file)
+                      _dynamic !global_auto_declare?! << _true
+                      _protect
+                              load_file(a_file)
+                      _protection
+                              !global_auto_declare?! << _maybe
+                      _endprotect
+              _endproc
+
+        _global         lmf << _proc @load_message_file(a_file,_optional in_database?)
+                       in_database? << in_database?.default(_false)
+                       load_message_file(a_file,in_database?)
+               _endproc
+
+        _global         lfl << _proc @load_file_list_plus(a_path, _optional start, list_file)
+                       _dynamic !global_auto_declare?! << _true
+                       _protect
+                               load_file_list(a_path,start,list_file)
+                       _protection
+                               !global_auto_declare?! << _maybe
+                       _endprotect
+               _endproc
+$
+        _global         remapp << _proc @removes_application_and_quits_it(p_app_name)
+                          g.applications.remove_key(p_app_name).quit(_true)
+                          write("Removed ",p_app_name,", applications left:")
+                          print(g.applications)
+                  _endproc
+
+        _global         killeds << _proc @kills_all_editors_of_applications(p_app_name)
+                           _for l_key,l_ed _over appl(p_app_name).roos_cached_editors.keys_and_elements()
+                           _loop
+                                   appl(p_app_name).roos_cached_editors.remove_key(l_key).quit()
+                           _endloop
+                   _endproc
+#
+#        _global         delcurs << _proc @deletes_selected_geometries_of_application(_optional p_app_name)
+#                           _local l_app << p_app_name.default(:gis)
+#                           _for l_geom _over appl(l_app).current_set.fast_elements()
+#                           _loop
+#                                   l_geom.delete()
+#                           _endloop
+#                   _endproc
+
+$
+        _global         setdyn << _proc @set_dynamics(_optional p_grs)
+
+                          _global !current_grs!
+                          _global !current_dsview!
+                          _global !current_world!
+
+                          _local l_g
+                          _local l_v
+                          _local l_w
+                          _if p_grs _isnt _unset
+                          _then
+                                  l_g << p_grs
+                                  l_v << p_grs.current_dsview
+                                  l_w << p_grs.world
+                          _endif
+
+                          !current_grs!    << l_g
+                          !current_dsview! << l_v
+                          !current_world!  << l_w
+
+                  _endproc
+#$
+#        _global         draw_mark <<
+#                _proc @draw_mark_on_for_coordinates(p_coord,_optional  p_line_style,p_canvas)
+#                        _dynamic !current_grs!
+#                        _if !current_grs! _is _unset _then !current_grs! << gis_program_manager.applications[:gis] _endif
+#
+#                        ## draws a mark
+#                        l_line_style << p_line_style.default(line_style)
+#                        l_canvas     << p_canvas.default(!current_grs!.main_view.window)
+#
+#                        p_coord.draw_mark_on(l_canvas,l_line_style)
+#
+#                _endproc
+#
+#        _global         draw_line <<
+#                _proc @draw_line_on_for_sector_ropes(p_sectors,_optional  p_line_style,p_canvas)
+#                        _dynamic !current_grs!
+#                        _if !current_grs! _is _unset _then !current_grs! << gis_program_manager.applications[:gis] _endif
+#                        ## draws a mark
+#                        l_line_style << p_line_style.default(line_style)
+#                        l_canvas     << p_canvas.default(!current_grs!.main_view.window)
+#
+#                        p_sectors.draw_on(l_canvas,l_line_style)
+#
+#                _endproc
+#$
+	_global         red        << colour.new_rgb(1,0,1)
+
+        _global         green      << colour.new_rgb(0,1,0)
+
+        _global         blue       << colour.new_rgb(0,0,1)
+$
+        _global         red_line   << line_style.new(red,3)
+
+        _global         green_line << line_style.new(green,3)
+
+        _global         blue_line  << line_style.new(blue,3)
+
+        _global         roos_find_conflicts <<
+                _proc @zoek_de_conflicten(p_version,_optional p_verbose?, p_filename)
+
+                        ## looks for conflicts and reports in a file, if given a name,
+                        ## otherwise on the screen
+                        ## if p_verbose? then all conflict records are being printed
+                        ##
+                        _local l_str
+                        _local l_verbose? << p_verbose?.default(_false)
+                        _if p_filename _isnt _unset
+                        _then
+                                l_str << external_text_output_stream.new(p_filename)
+                        _else
+                                l_str << !terminal!
+                        _endif
+
+                        rv << gv.replicate()
+                        rv.down(p_version)
+                        bv << rv.replicate(:base)
+
+                        l_str.newline()
+                        l_str.newline()
+                        l_str.write("Searching for conflict records between ",gv.alternative_path_name().write_string," and ",rv.alternative_path_name().write_string)
+                        l_str.newline()
+                        l_str.newline()
+
+                        _protect
+                                _for l_tab _over gv.collections.fast_elements()
+                                _loop
+                                        l_count  << 0
+                                        l_first? << _true
+
+                                        btab << bv.collections[l_tab.name]
+                                        rtab << rv.collections[l_tab.name]
+
+                                        l_ok? << _false
+                                        _catch @db_prim_error
+                                                _handling db_prim_error _with _proc (cond)
+                                                                                      _import l_tab
+                                                                                      _import l_str
+                                                                                      l_str.write("    ------- Error for table ",l_tab.name,", skipping!");l_str.newline()
+                                                                                      _throw @db_prim_error
+                                                _endproc
+
+                                                dif << ds_difference_stream.new_on(l_tab,btab,rtab,:conflict_only)
+                                                l_ok? << _true
+                                        _endcatch
+                                        _if _not l_ok?
+                                        _then
+                                                _continue
+                                        _endif
+                                        _loop
+                                                (change,cur,base,conflict?,new_change,new) << dif.get()
+                                                _if change _is _unset
+                                                _then
+                                                        _leave
+                                                _endif
+
+                                                _if l_verbose?
+                                                _then
+                                                        _if l_first?
+                                                        _then
+                                                                l_first? << _false
+                                                                l_str.newline()
+                                                                l_str.write(" Conflicts for table: ",l_tab.name)
+                                                                l_str.newline()
+                                                        _endif
+                                                        l_str.write(" ---- change ",change);l_str.newline()
+                                                        l_str.write(" -------- cur  ",cur);l_str.newline()
+                                                        l_str.print(cur);l_str.newline()
+                                                        l_str.write(" -------- base ",base);l_str.newline()
+                                                        l_str.print(base);l_str.newline()
+                                                        l_str.write(" -------- conflict? ",conflict?);l_str.newline()
+                                                        l_str.write(" ------------ new change ",new_change);l_str.newline()
+                                                        l_str.write(" ------------ new rec ");l_str.newline()
+                                                        l_str.print(new);l_str.newline()
+                                                _else
+                                                        l_count +<< 1
+                                                _endif
+                                        _endloop
+
+                                        _if l_count > 0
+                                        _then
+                                                l_str.write(l_count.write_string.space_pad(10,_true)," conflicts for table: ",l_tab.name,"  ",l_tab.external_name)
+                                                l_str.newline()
+                                        _endif
+
+                                        dif.close()
+                                _endloop
+                                l_str.newline()
+                                l_str.newline()
+                                l_str.newline()
+                        _protection
+                                l_str.write(" END OF LISTING ")
+                                l_str.newline()
+                                l_str.newline()
+                                l_str.newline()
+                                _if l_str ~= !terminal!
+                                _then
+                                        l_str.close()
+                                _endif
+                                rv.discard()
+                                bv.discard()
+                        _endprotect
+                _endproc
+
+        _global         scw << _proc @show_current_writers()
+                       l_message << write_string("Current Writers",newline_char)
+                       _for l_view _over ds_environment.views.fast_elements()
+                       _loop
+                               _if (l_name << l_view.view_name) _is _unset
+                               _then
+                                       _continue
+                               _endif
+                               l_message << write_string(l_message,newline_char,
+                                                         (l_name.write_string + ":").space_pad(20),
+                                                         l_view.current_writer.default("---"))
+                       _endloop
+                       gis_program_manager.show_alert(l_message)
+               _endproc
+
+
+$
+
+_method colour.with_rgb(r,g,b)
+	## 
+	## return the name of one of the cached colours with the rgb
+	## values given: if there is no mathc, then return the name of
+	## the next best thing. This is in order that developers may
+	## use one of the 150 cached colours in preference to 
+	diff << 4
+	_for a_col _over _self.colour_names.fast_elements() 
+	_loop
+		# ignore :application_workspace and :button_highlight 
+		_if a_col.index_of(%_) _isnt _unset _then _continue _endif
+		
+		rr << _self.called(a_col).red
+		gg << _self.called(a_col).green
+		bb << _self.called(a_col).blue
+
+		_if rr = r _andif
+		    gg = g _andif
+		    bb = b
+		_then
+			_return a_col
+		_else
+			new_diff << (rr - r).abs + (gg - g).abs + (bb - b).abs
+			_if new_diff < diff
+			_then
+				best_col << a_col
+				diff << new_diff
+			_endif
+		_endif
+	_endloop
+	_return("Nearest colour is " + best_col, colour.called(best_col))
+_endmethod
+$
+
+_method colour.like(col_name)
+	## 
+	## find all of the cached colours whose name includes col_name
+	res << property_list.new()
+	_for  a_col _over _self.colour_names.fast_elements()
+	_loop
+		_if a_col.index_of_seq(col_name) _isnt unset
+		_then
+			res[a_col] << _self.called(a_col)
+		_endif
+	_endloop
+	_return res
+_endmethod
+$
+
+_method object.p
+        print(_self)
+        _return _self
+_endmethod
+$
+
+_method object.dp
+        debug_print(_self)
+        _return _self
+_endmethod
+$
+
+_method object.ph
+        ## print_hierarchy of self
+        print_hierarchy(_self)
+        _return _self
+_endmethod
+$
+
+_method object.pa
+        ## print_ancestry of _self
+        print_ancestry(_self)
+        _return _self
+_endmethod
+$
+
+_global dbs << _proc @ roos_database_info ()
+                       _local d << ds_environment.views
+                       write("--------------------")
+                       write("Database information")
+                       write("DB                        Alternative path                         Writer #Readers")
+                       write("--------------------      ---------------------------------------- ------ --------")
+                       _for i_view _over d.fast_elements()
+                       _loop
+                               l_name << i_view.view_name.default(i_view)
+                               l_string << l_name.write_string.space_pad(26, _unset, _true)
+                               l_string +<< i_view.roos_info_string()
+                               write(l_string)
+                       _endloop
+                       write("--------------------      ---------------------------------------- ------ --------")
+               _endproc
+$
+
+_method ds_version_view.roos_info_string()
+        ## return info about path users and name
+        ## this will be a string
+        l_string << "|"
+        _for i_alt _over _self.alternative_path.fast_elements()
+        _loop
+                l_string +<< i_alt + "|"
+        _endloop
+        l_string << l_string.space_pad(40, _unset, _true)
+        l_writer << _self.current_writer.default("No writer")
+        l_string +<< " " + l_writer.space_pad(10, _unset, _true)
+        l_readers << _self.current_readers.size
+        l_string +<< " " + l_readers.write_string.space_pad(4, _unset, _true)
+        _return l_string
+_endmethod
+$
+
+_method basic_collection_mixin.nth_element(n)
+        _local i << 1
+        _if n < 1 _orif n > _self.size _then _return _endif
+        _for l _over _self.elements()
+        _loop
+                _if (i +^<< 1) = n
+                _then
+                        _return l
+                _endif
+        _endloop
+_endmethod
+$
+
+_method dd_field_type.where_used()
+        ##
+        ## Returns the collections and fields using the field_type
+        _for e _over col(:dd!field_type).select(predicate.eq(:name,_self.name)).elements()
+        _loop
+                f << col(:dd!physical_field).select(predicate.eq(:fid,e.fid)).an_element()
+                w(col(:dd!collection).at(f.tid).name,": ",f.name)
+        _endloop
+_endmethod
+$
+
+_method dd_record_and_collection_mixin.fdap(p_string)
+        ##
+        ## Writes/Returns fields with name matching string
+        l_string << p_string.write_string
+        l_f_rope << rope.new()
+        _for f _over _self.all_fields.fast_elements()
+        _loop
+                _if f.name.matches?("*"+l_string+"*")
+                _then
+                        w(f.name)
+                        l_f_rope.add_last(f)
+                _endif
+        _endloop
+        _return l_f_rope
+_endmethod
+$
+_global fdap << _proc @returns_all_fieldnames_matching_p_string_in_view (p_string, _optional p_view)
+                _local l_view << p_view.default(gis_program_manager.cached_dataset(:gis))
+                _for i_coll _over l_view.collections.fast_elements()
+                _loop
+                        _for i_fd _over i_coll.all_fields.fast_elements()
+                        _loop
+                                _if i_fd.name.matches?(write_string("*",p_string,"*"))
+                                _then
+                                        write(i_coll.name,": ",i_fd.name)
+                                _endif
+                        _endloop
+                _endloop
+        _endproc
+$
+_method dd_record_and_collection_mixin.df()
+        ##
+        _return _self.descriptor.describe_fields()
+_endmethod
+$
+
+_method ds_version_view.apn()
+        _return _self.alternative_path_name()
+_endmethod
+$
+
+_pragma(classify_level=debug, topic={utils})
+_global load_checkedout_files_from_view << _proc(base_dir)
+	  ## load files from base_dir and its sub directories
+	  ## that are currently checked out. Example:
+	  ## load_checkedout_files_from_view("z:/pni")
+	  ##
+	  ## Note: This does not take care of any dependencies between
+	  ## files. It therefore is most useful when developing small fixes.
+	  _global system
+
+	  _local out_stream, pid
+	  _local command<< "cleartool lsco -r -me -cview -fmt " + %" + "%n\n" + %"
+	  (out_stream,pid)<<system.input_from_command(command, base_dir)
+	  _loop
+		  _local line<<out_stream.get_line()
+		  _if line _is _unset _then _leave _endif
+		  _local path<<system.pathname_from_components(line,base_dir)
+		  load_file(path)
+	  _endloop
+  _endproc
+$
+
+_pragma(classify_level=debug, topic={utils})
+_global load_files_from_version << _proc(base_dir, version_selector)
+	  ## load *.magik files from base_dir and its sub directories
+	  ## that match a certain ClearCase version selector. Example:
+	  ## to load the latest version of branch bugfixes_jw_4, use
+	  ## load_files_from_version("z:/pni", "/main/orca_dev/bugfixes_jw_4/LATEST")
+	  ##
+	  ## Note: This does not take care of any dependencies between
+	  ## files. It therefore is most useful when developing small
+	  ## fixes. But even in this case things can go wrong. Beware!
+	  ##
+	  ## Note: This works independent of the config_spec of the
+	  ## view selected by base_dir.
+	  _global system
+
+	  _local out_stream, pid
+	  _local command<<"cleartool find . -name " +%" +"*.magik" +%" +" -version version("+version_selector+") -print"
+	  (out_stream,pid)<<system.input_from_command(command, base_dir)
+	  _loop
+		  _local line<<out_stream.get_line()
+		  _if line _is _unset _then _leave _endif
+		  _local path<<system.pathname_from_components(line,base_dir)
+		  load_file(path)
+	  _endloop
+  _endproc
+$
+
+_pragma(classify_level=debug, topic={utils})
+_global check_for_merged <<
+_proc(base_dir, _optional branch_max)
+	## tries to identify branches that may need a merge to the
+	## current view
+	##
+	## The current view and the relevant VOB is identified by base_dir.
+	## branch_max is the maximum number of branches to consider and defaults
+	## to 10000. The proc will consider up to n_max branch types from
+	## the current vob, including obsolete branch types.
+	## 
+	## The proc prints a branch type if find_merge finds at least one file that may need
+	## to be merged from /main/orca_dev/branch_xy/LATEST to the
+	## current view.
+	##
+	## Note that this process takes quite a while....
+	## Note: the number of files to merge is only an indicator. The
+	## exact number would need a merge of directories first. Please
+	## ignore the cleartool warnings
+	##
+	## Example: check_for_merge("z:/pni",10)
+
+	_global system
+
+	_local branch_out_stream, branch_pid
+	_local branch_count<<0
+	branch_max<<branch_max.default(10000)
+	# find all branch types
+	_local branch_command<<"cleartool lstype -obsolete -kind brtype -fmt " + %" + "%n\n" +%"
+	(branch_out_stream,branch_pid)<<system.input_from_command(branch_command, base_dir)
+	_loop
+		_local nothing_found?<<_true
+		_local branch_name<<branch_out_stream.get_line()
+		_if branch_name _is _unset _then _leave _endif
+		# show("working on ", branch_name)
+		_local find_command<<"cleartool findmerge . -all -visible -fversion /main/orca_dev/"+branch_name+"/LATEST -log NUL -print"
+		_local file_count<<0
+		_local find_out_stream, find_pid
+		(find_out_stream, find_pid)<< system.input_from_command(find_command, base_dir)
+		_loop
+			# read information from find merge, count files
+			_local a_file<<find_out_stream.get_line()
+			_if a_file _isnt _unset
+			_then
+				_if nothing_found?
+				_then
+					# first file found
+					nothing_found?<<_false
+					# print details about branch type
+					_local details_command<<"cleartool describe -fmt " +%" +
+								"Branch: %n %[locked]p %Lu %d \nComment: %.79Nc\n" +
+								%" +" -type brtype:"+branch_name
+					system.do_command(details_command, base_dir)
+				_endif
+				file_count+<<1
+			_else
+				_leave
+			_endif
+		_endloop 
+		find_out_stream.close()
+		_if file_count>0
+		_then
+			write("Elements To Merge: ", file_count)
+			write("--------------------------------")
+		_endif
+		
+		branch_count+<<1
+		_if branch_count>=branch_max _then _leave _endif 
+	_endloop 
+_endproc
+$

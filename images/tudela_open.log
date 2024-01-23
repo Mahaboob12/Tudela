@@ -1,0 +1,686 @@
+C:\Projects\Tudela\Smallworld\product\bin\share\..\x86\runalias.exe tudela_closed -noinit  
+
+
+Smallworld Core Spatial Technology Información de la versión:
+
+Producto Core:
+	Versión 	4.3.0 
+	Versión Spin : 250636, Producido : 19/01/2024 10:25:16
+	VM Magik	6.19.7 SF/VM3
+	Versión Gráfica	15.0.11 
+	Utilidades del GIS C	5.5.6 
+	"Datastore" C	7.2.1 127
+	Datastore Magik	9.26.0 
+
+Productos Layered:
+	sw_dev_tools	4.3.0	Development Tools
+	sw_core	4.3.0	Core product with engine and generic GUI classes
+	sw_kernel	4.3.0	Low-level kernel classes
+	soms	4.3.0	SOMs
+	soms_config	4.3.0	SOMS configuration product
+	soms_engines	4.3.0	SOMs engine code
+	soms_magik_gui	4.3.0	SOMs GUI interfaces
+	fme	4.3.0	Smallworld FME Translator
+	fme_config	4.3.0	FME configuration product
+	sw_dxf	4.3.0	DXF Translator
+	sw_dxf_config	4.3.0	DXF configuration product
+	sw_addon_google_maps	4.3.0 	Smallworld Addon for Google Maps(TM)
+	sw_addon_google_maps_config	4.3.0 	Smallworld Addon for Google Maps configuration product
+
+Producto de Personalización:
+	user_custom	4.3.0 	Product to hold user customisation resources
+	sw_core_help	4.3.0	Help resources for Core product help
+	localisation	4.3.0 	Language Pack
+	sw_addon_google_maps_lp	4.3.0 	Language Pack for Smallworld Addon for Google Maps(TM)
+
+
+MagikSF> 
+MagikSF> Módulo aguas_tudela_magik_images.1 ya está definido en C:/Projects/Tudela/Tudela430/config/magik_images.
+Recargando la definición del módulo para aguas_tudela_magik_images.1
+Cargando módulo aguas_tudela_magik_images.1
+cargando C:/Projects/Tudela/Tudela430/config/magik_images\source\databases.magik
+--- línea 0
+--- línea 9
+Ejecutando
+--- línea 19
+cargando C:/Projects/Tudela/Tudela430/config/magik_images\source\build_procedures.magik
+--- línea 0
+--- línea 1
+Definiendo variable sw:startup_with_cli
+a method_finder loading C:\Projects\Tudela\Tudela430\images\tudela_closed_1.mf
+method_finder: loaded
+--- línea 9
+Definiendo variable sw:tudela_pre_build_proc
+--- línea 26
+Definiendo variable sw:open_tudela_database_proc
+--- línea 58
+cargando C:/Projects/Tudela/Tudela430/config/magik_images\source\register.magik
+--- línea 0
+--- línea 8
+Ejecutando
+--- línea 11
+Ejecutando
+--- línea 96
+aguas_tudela_magik_images.1 ha sido cargado
+MagikSF> Imagen Magik registrada tudela_open encontrada
+Verificando : C:\Projects\Tudela\Smallworld\product\sw_core\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\soms430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\fme430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\dxf430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\sw_addon_google_maps111\source por parches para rev : 4.3.0 
+Añadiendo producto desde C:\Projects\Tudela\Smallworld\product\..\..\Tudela430\
+Cargando definiciones de módulo para producto'aguas_tudela' desde C:\Projects\Tudela\Tudela430
+Producto tudela_config ya está cargado desde C:\Projects\Tudela\Tudela430\config
+Cargando definición de módulo para basic_additions.1
+Cargando definición de módulo para basic_changes.1
+Cargando definición de módulo para cargador_topo.1
+Cargando definición de módulo para documentos_relacionados.1
+Cargando definición de módulo para editores.1
+Cargando definición de módulo para catalogo_multiple.1
+Cargando definición de módulo para custom_editors.1
+Cargando definición de módulo para editor_documentos_relacionados.1
+Cargando definición de módulo para ib_export.1
+Cargando definición de módulo para tudela_image_open.1
+Cargando definición de módulo para modelo_datos_abastecimiento.1
+Cargando definición de módulo para modelo_datos_saneamiento.1
+Cargando definición de módulo para modelo_datos_varios.1
+Cargando definición de módulo para traductor.1
+Cargando definición de módulo para administracion.1
+Cargando definición de módulo para captura.1
+Cargando definición de módulo para utils.1
+Módulo geometry_set_factory.1 ya está cargado
+Módulo actions.1 ya está cargado
+Módulo model.1 ya está cargado
+Módulo progress_manager.1 ya está cargado
+Módulo component_framework.1 ya está cargado
+Módulo acpt.1 ya está cargado
+Módulo xml_output.1 ya está cargado
+Módulo formats.1 ya está cargado
+Módulo value_managers.1 ya está cargado
+Módulo tree.24 ya está cargado
+Módulo units_core.1 ya está cargado
+Módulo units_definitions.1 ya está cargado
+Módulo tree_item.24 ya está cargado
+Módulo options_plugin.1 ya está cargado
+Módulo application.1 ya está cargado
+Módulo outlook_bar_plugin.1 ya está cargado
+Módulo control_panel_plugin.1 ya está cargado
+Módulo cached_record_collection.1 ya está cargado
+Módulo lazy_record_collection.1 ya está cargado
+Módulo scrapbook.3 ya está cargado
+Módulo browser.4 ya está cargado
+Módulo short_transaction_manager_base.1 ya está cargado
+Módulo short_transaction_manager_client.1 ya está cargado
+Módulo authorisation.2 ya está cargado
+Módulo authorisation_magik_gui.1 ya está cargado
+Módulo units_core_magik_gui.1 ya está cargado
+Módulo map_projections_config.1 ya está cargado
+Módulo object_trees_base.1 ya está cargado
+Módulo object_trees_magik_gui.1 ya está cargado
+Módulo document_list_views.1 ya está cargado
+Módulo documents.1 ya está cargado
+Módulo messages_magik_gui.1 ya está cargado
+Módulo extensible_dd_magik_gui.1 ya está cargado
+Módulo admin_tools_plugin.1 ya está cargado
+Módulo predicates.1 ya está cargado
+Módulo datastore_geometry_transforms.1 ya está cargado
+Módulo geometry_transforms.1 ya está cargado
+Módulo map_projections_catalogue.1 ya está cargado
+Módulo ace_core.1 ya está cargado
+Módulo ace_dialogs.1 ya está cargado
+Módulo dataset_controller_magik_gui.1 ya está cargado
+Módulo admin_ace_plugin.1 ya está cargado
+Módulo admin_soc_plugin.1 ya está cargado
+Módulo mgr_src.1 ya está cargado
+Módulo style_widgets.1 ya está cargado
+Módulo style_config.3 ya está cargado
+Módulo document_manager.1 ya está cargado
+Módulo display_grid.1 ya está cargado
+Módulo style_properties.1 ya está cargado
+Módulo style_symbol_magik_gui.1 ya está cargado
+Módulo style_dump_and_load_engine.1 ya está cargado
+Módulo progress_bar.1 ya está cargado
+Módulo style_dump_and_load.4 ya está cargado
+Módulo admin_style_plugin.1 ya está cargado
+Módulo dynamic_plugin_handler.1 ya está cargado
+Módulo command_design_pattern.1 ya está cargado
+Módulo history_manager.1 ya está cargado
+Módulo recordset_gui_component.1 ya está cargado
+Módulo integrity.2 ya está cargado
+Módulo integrity_magik_gui.1 ya está cargado
+Módulo version_management_plugin.1 ya está cargado
+Módulo uva_replication.1 ya está cargado
+Módulo replication_engine.1 ya está cargado
+Módulo version_management_replication_plugin.1 ya está cargado
+Módulo admin_application.1 ya está cargado
+Módulo ds_src.1 ya está cargado
+Módulo datastore_base.1 ya está cargado
+Módulo dataset_controller_core.1 ya está cargado
+Módulo rwo_core.1 ya está cargado
+Módulo information_flag.1 ya está cargado
+Módulo case_engines.1 ya está cargado
+Módulo case_magik_gui.1 ya está cargado
+Módulo case_swaf_magik_gui.1 ya está cargado
+Módulo case_swaf_application.1 ya está cargado
+Módulo data_representation.1 ya está cargado
+Módulo geometry_editors.1 ya está cargado
+Módulo map_support.1 ya está cargado
+Módulo editor_plugin.1 ya está cargado
+Módulo geometry_vector.1 ya está cargado
+Módulo geometry_raster.1 ya está cargado
+Módulo datastore_geometry_vector.1 ya está cargado
+Módulo datastore_geometry_raster.1 ya está cargado
+Módulo datastore_geometry_raster_acps.1 ya está cargado
+Módulo swaf_raster_editors.1 ya está cargado
+Módulo ui_resources.1 ya está cargado
+Módulo swaf_tin_editors.1 ya está cargado
+Módulo query_designers.1 ya está cargado
+Módulo sw_automation_client.1 ya está cargado
+Módulo collection_export_engine.1 ya está cargado
+Módulo widgets.1 ya está cargado
+Módulo base_dialogs.1 ya está cargado
+Módulo dialogs.1 ya está cargado
+Módulo browser_sub_dialogs.1 ya está cargado
+Módulo query_dialog.1 ya está cargado
+Módulo interaction_handler.1 ya está cargado
+Módulo rotate_view_dialog.1 ya está cargado
+Módulo map_trail.1 ya está cargado
+Módulo rwo_actions_plugin.1 ya está cargado
+Módulo multiple_deletion_dialog.1 ya está cargado
+Módulo map_plugin.1 ya está cargado
+Módulo spatial_context_viewer_plugin.1 ya está cargado
+Módulo overviewer_plugin.1 ya está cargado
+Módulo network_follower.2 ya está cargado
+Módulo network_analysis_plugin.1 ya está cargado
+Módulo conflict_viewer_common.1 ya está cargado
+Módulo conflict_viewer_framework.1 ya está cargado
+Módulo themes_base.1 ya está cargado
+Módulo themes_magik_gui.1 ya está cargado
+Módulo object_control_plugin.1 ya está cargado
+Módulo rwo_sets.1 ya está cargado
+Módulo urn_manager.1 ya está cargado
+Módulo output_collection_descriptor.1 ya está cargado
+Módulo xml_output_collection.1 ya está cargado
+Módulo explorer_plugin.1 ya está cargado
+Módulo query_wizards.1 ya está cargado
+Módulo pane_manager.1 ya está cargado
+Módulo drafting_plugin.1 ya está cargado
+Módulo dimension_plugin.1 ya está cargado
+Módulo scrapbook_plugin.1 ya está cargado
+Módulo transform_manager.1 ya está cargado
+Módulo swaf_transform_plugin.1 ya está cargado
+Módulo dynamic_transform_manager.1 ya está cargado
+Módulo layout_engine.1 ya está cargado
+Módulo plotting.2 ya está cargado
+Módulo printer_setup_wizard.1 ya está cargado
+Módulo memento.1 ya está cargado
+Módulo undo_manager.1 ya está cargado
+Módulo layout_gui.1 ya está cargado
+Módulo datastore_geometry_topology_engine.1 ya está cargado
+Módulo common_topology_editors.1 ya está cargado
+Módulo swaf_topology_editors.1 ya está cargado
+Módulo constructions_engine.1 ya está cargado
+Módulo constructions_plugin.1 ya está cargado
+Módulo reference_origin_plugin.1 ya está cargado
+Módulo triangulations.1 ya está cargado
+Módulo point_set_analysis_plugin.1 ya está cargado
+Módulo geometry_manipulation.1 ya está cargado
+Módulo qm_engine.1 ya está cargado
+Módulo formatted_document.1 ya está cargado
+Módulo qm_basic_sources.1 ya está cargado
+Módulo qm_app_sources.1 ya está cargado
+Módulo qm_gui.1 ya está cargado
+Módulo qm_generic_routines.1 ya está cargado
+Módulo raster_follower.1 ya está cargado
+Módulo swaf_professional_application.1 ya está cargado
+Cargando módulo ds_transfer.3
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_core\ds_transfer\source\message_usages.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_core\ds_transfer\source\conditions.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_core\ds_transfer\source\dst_table.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_core\ds_transfer\source\dst_mixin.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_core\ds_transfer\source\dst_constraint.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_core\ds_transfer\source\dst_view.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_core\ds_transfer\source\dst_db_reader.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_core\ds_transfer\source\dst_db_writer.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_core\ds_transfer\source\ds_transfer.magikc
+ds_transfer.3 ha sido cargado
+message_handler(dst) 
+Cargando módulo ds_transfer_dialog.1
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_common\ds_transfer_dialog\source\ds_transfer_progress_dialog.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_common\ds_transfer_dialog\source\ds_transfer_dialog.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_common\ds_transfer_dialog\source\ds_transfer_plugin.magikc
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\modules\sw_common\ds_transfer_dialog\source\message_usages.magikc
+ds_transfer_dialog.1 ha sido cargado
+message_handler(ds_transfer_plugin) 
+message_handler(ds_transfer_dialog) 
+Cargando módulo administracion.1
+cargando C:\Projects\Tudela\Tudela430\modules\tudela_applications\administracion\source\register.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\tudela_applications\administracion\source\message_usages.magikc
+administracion.1 ha sido cargado
+message_handler(administracion) 
+Cargando módulo captura.1
+cargando C:\Projects\Tudela\Tudela430\modules\tudela_applications\captura\source\register.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\tudela_applications\captura\source\message_usages.magikc
+captura.1 ha sido cargado
+Cargando módulo modelo_datos_saneamiento.1
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\tuberia_saneamiento.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\pozo_saneamiento.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\aliviadero.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\final_saneamiento.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\tanque_tormentas.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\canal.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\acometida_saneamiento.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\edar.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\arqueta_saneamiento.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\sumidero.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\grupo_bombeo_saneamiento.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\boquilla.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\sifon.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\saneamiento\source\valvula_vortex.magikc
+modelo_datos_saneamiento.1 ha sido cargado
+Cargando módulo modelo_datos_abastecimiento.1
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\tramo_tuberia.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\subtramo.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\cota_profundidad.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\boca_riego.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\valvula.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\desague.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\fuente.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\hidrante.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\acometida.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\etap.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\empresas_instaladoras.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\marcas_componentes.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\callejero.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\averia.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\cambio_diametro.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\red_riego.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\acotacion.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\detalle.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\arqueta.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\valvula_combi.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\ventosa.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\riego.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\deposito.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\grupo_bombeo.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\tapon_final.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\te_nodo.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\caudalimetro.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\cruce.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\problema.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\accesorio.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\abastecimiento\source\filtro.magikc
+modelo_datos_abastecimiento.1 ha sido cargado
+Cargando módulo modelo_datos_varios.1
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\varios\source\fondo_linea.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\varios\source\dibujo_punto.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\varios\source\fondo_texto.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\varios\source\mobiliario_urbano.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\varios\source\tapa.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\modelo_datos\varios\source\documento_relacionado.magikc
+modelo_datos_varios.1 ha sido cargado
+Cargando módulo basic_additions.1
+cargando C:\Projects\Tudela\Tudela430\modules\basic_additions\source\coordinate3d.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\basic_additions\source\charindex_mixin.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\basic_additions\source\property_list.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\basic_additions\source\sector_rope.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\basic_additions\source\chain.magikc
+basic_additions.1 ha sido cargado
+Cargando módulo basic_changes.1
+cargando C:\Projects\Tudela\Tudela430\modules\basic_changes\source\chain_dxf_mixin.magikc
+Monitor de Pragma: condition redefine_method
+cargando C:\Projects\Tudela\Tudela430\modules\basic_changes\source\map_view.magikc
+Monitor de Pragma: condition redefine_method
+cargando C:\Projects\Tudela\Tudela430\modules\basic_changes\source\float.magikc
+Monitor de Pragma: condition redefine_method
+Monitor de Pragma: condition redefine_method
+cargando C:\Projects\Tudela\Tudela430\modules\basic_changes\source\layout_plot_job.magikc
+basic_changes.1 ha sido cargado
+Cargando módulo traductor.1
+cargando C:\Projects\Tudela\Tudela430\modules\traductor\source\traductor_engine.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\traductor\source\traductor_framework.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\traductor\source\traductor_plugin.magikc
+traductor.1 ha sido cargado
+message_handler(traductor_framework) 
+Cargando módulo cargador_topo.1
+cargando C:\Projects\Tudela\Tudela430\modules\cargador_topo\source\cargador_topo_plugin.magikc
+Definiendo global user:cargador_topo_dialog
+cargando C:\Projects\Tudela\Tudela430\modules\cargador_topo\source\cargador_topo_dialog.magikc
+**** Advertencia: Cambiando la naturaleza de cargador_topo_dialog
+     global_changing_nature(name=:cargador_topo_dialog)
+Definiendo global user:cargador_topo_engine
+cargando C:\Projects\Tudela\Tudela430\modules\cargador_topo\source\cargador_topo_engine.magikc
+**** Advertencia: Cambiando la naturaleza de cargador_topo_engine
+     global_changing_nature(name=:cargador_topo_engine)
+Definiendo global user:topo_engine
+cargando C:\Projects\Tudela\Tudela430\modules\cargador_topo\source\topo_definicion.magikc
+cargador_topo.1 ha sido cargado
+message_handler(cargador_topo_plugin) 
+message_handler(cargador_topo_dialog) 
+Cargando módulo custom_editors.1
+cargando C:\Projects\Tudela\Tudela430\modules\editores\custom_editors\source\object_editor_mods.magikc
+Monitor de Pragma: condition redefine_method
+custom_editors.1 ha sido cargado
+Cargando módulo documentos_relacionados.1
+cargando C:\Projects\Tudela\Tudela430\modules\documentos_relacionados\source\conditions.magikc
+Definiendo global user:condition_proc
+cargando C:\Projects\Tudela\Tudela430\modules\documentos_relacionados\source\related_objects_provider.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\documentos_relacionados\source\documento_relacionado_editor_plugin.magikc
+documentos_relacionados.1 ha sido cargado
+message_handler(condition) 
+message_handler(documento_relacionado_editor_plugin) 
+Cargando módulo editor_documentos_relacionados.1
+cargando C:\Projects\Tudela\Tudela430\modules\editores\editor_documentos_relacionados\source\file_name_field_editor.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\Tudela430\modules\editores\editor_documentos_relacionados\source\documentos_relacionados_actions_mixin.magikc
+cargando C:\Projects\Tudela\Tudela430\modules\editores\editor_documentos_relacionados\source\documentos_relacionados_editor_framework.magikc
+Definiendo global user:numeric_string_cf_proc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\Tudela430\modules\editores\editor_documentos_relacionados\source\documentos_relacionados_editor_plugin.magikc
+editor_documentos_relacionados.1 ha sido cargado
+message_handler(documentos_relacionados_editor_framework) 
+message_handler(documentos_relacionados_editor_plugin) 
+Cargando módulo editores.1
+Módulo editores.1 no tiene ningún recurso
+**** Advertencia: editores.1 no tiene un archivo load_list.txt - No se ha cargado ninguna fuente.
+     sw_module_no_load_list(name=:editores, version=1)
+editores.1 ha sido cargado
+Cargando módulo tudela_image_open.1
+Módulo tudela_image_open.1 no tiene ningún recurso
+cargando C:\Projects\Tudela\Tudela430\modules\image_modules\tudela_image_open\source\session_startup.magikc
+tudela_image_open.1 ha sido cargado
+Verificando : C:\Projects\Tudela\Smallworld\product\sw_core\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\soms430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\fme430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\dxf430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\sw_addon_google_maps111\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\Tudela430\source por parches para rev : 4.3.0 
+Cargando parches de C:\Projects\Tudela\Smallworld\product\sw_core\source\release_patches
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\source\release_patches\declare_patches.magik
+--- línea 0
+--- línea 6
+Cargando parches de C:\Projects\Tudela\soms430\source\release_patches
+cargando C:\Projects\Tudela\soms430\source\release_patches\declare_patches.magik
+--- línea 0
+--- línea 6
+Cargando parches de C:\Projects\Tudela\fme430\source\release_patches
+cargando C:\Projects\Tudela\fme430\source\release_patches\declare_patches.magik
+--- línea 0
+--- línea 6
+Cargando parches de C:\Projects\Tudela\dxf430\source\release_patches
+cargando C:\Projects\Tudela\dxf430\source\release_patches\declare_patches.magik
+--- línea 0
+--- línea 6
+Cargando parches de C:\Projects\Tudela\sw_addon_google_maps111\source\release_patches
+cargando C:\Projects\Tudela\sw_addon_google_maps111\source\release_patches\P156564_1.magik
+--- línea 0
+--- línea 84
+cargando C:\Projects\Tudela\sw_addon_google_maps111\source\release_patches\P155016_1.magik
+--- línea 0
+--- línea 125
+cargando C:\Projects\Tudela\sw_addon_google_maps111\source\release_patches\P156789_1.magik
+--- línea 0
+--- línea 75
+Imagen actualizada, Guardar la imagen si es necesario
+Defining style_construction
+Defining symbol_definition
+Cargando el fichero "dd.ds".
+
+Cargando el fichero "gdb.ds".
+
+Cargando el fichero "rwo.ds".
+
+compiling acometida.catalogue_entries
+compiling acometida.editing_properties
+compiling acometida.join_aspects
+compiling acometida_saneamiento.catalogue_entries
+compiling acometida_saneamiento.editing_properties
+compiling acometida_saneamiento.join_aspects
+compiling aliviadero.editing_properties
+compiling arqueta.catalogue_entries
+compiling arqueta.editing_properties
+compiling arqueta_saneamiento.catalogue_entries
+compiling arqueta_saneamiento.editing_properties
+compiling arqueta_saneamiento.join_aspects
+compiling averia.join_aspects
+compiling boca_riego.catalogue_entries
+compiling canal.catalogue_entries
+compiling canal.editing_properties
+compiling desague.catalogue_entries
+compiling desague.editing_properties
+compiling desague.join_aspects
+compiling filtro.editing_properties
+compiling filtro.join_aspects
+compiling final_saneamiento.editing_properties
+compiling fuente.catalogue_entries
+compiling fuente.editing_properties
+compiling fuente.join_aspects
+compiling grupo_bombeo_saneamiento.editing_properties
+compiling hidrante.catalogue_entries
+compiling hidrante.editing_properties
+compiling hidrante.join_aspects
+**** Advertencia: linea_presion global requerido por modelo de datos no definido
+     dd_missing_global(name=:linea_presion)
+compiling pozo_saneamiento.catalogue_entries
+compiling pozo_saneamiento.editing_properties
+compiling red_riego.editing_properties
+compiling riego.join_aspects
+compiling subtramo.catalogue_entries
+compiling subtramo.editing_properties
+compiling subtramo.join_aspects
+compiling sumidero.catalogue_entries
+**** Advertencia: sw_google_area global requerido por modelo de datos no definido
+     dd_missing_global(name=:sw_google_area)
+**** Advertencia: sw_google_linea global requerido por modelo de datos no definido
+     dd_missing_global(name=:sw_google_linea)
+**** Advertencia: sw_google_point global requerido por modelo de datos no definido
+     dd_missing_global(name=:sw_google_point)
+compiling swif!info_flag.non_case_field_names
+compiling tapon_final.join_aspects
+compiling te_nodo.join_aspects
+**** Advertencia: texto_callejero global requerido por modelo de datos no definido
+     dd_missing_global(name=:texto_callejero)
+compiling tuberia_saneamiento.catalogue_entries
+compiling tuberia_saneamiento.editing_properties
+compiling valvula.catalogue_entries
+compiling valvula.editing_properties
+compiling valvula.join_aspects
+compiling valvula_combi.catalogue_entries
+compiling valvula_combi.editing_properties
+compiling valvula_combi.join_aspects
+compiling valvula_vortex.editing_properties
+compiling ventosa.catalogue_entries
+compiling ventosa.editing_properties
+compiling ventosa.join_aspects
+Defining construction
+Defining drafting_lines
+Defining drafting_texts
+Defining drafting_areas
+Defining drafting_points
+Defining dimensioning
+Defining edar
+Defining grupo_bombeo_saneamiento
+Defining dxf_lines
+Defining dxf_texts
+Defining dxf_inserts
+Defining dxf_dimensions
+Defining dxf_block_dimension
+**** Advertencia: Record exemplar dxf_block_dimension está compartido por las tablas dxf_dimensions y dxf_block_dimension!
+     shared_record_exemplar(exemplar_name=:dxf_block_dimension, table_name1=:dxf_dimensions, table_name2=:dxf_block_dimension)
+Defining dxf_block_line
+**** Advertencia: Record exemplar dxf_block_line está compartido por las tablas dxf_lines y dxf_block_line!
+     shared_record_exemplar(exemplar_name=:dxf_block_line, table_name1=:dxf_lines, table_name2=:dxf_block_line)
+Defining dxf_block_text
+**** Advertencia: Record exemplar dxf_block_text está compartido por las tablas dxf_texts y dxf_block_text!
+     shared_record_exemplar(exemplar_name=:dxf_block_text, table_name1=:dxf_texts, table_name2=:dxf_block_text)
+Defining dxf_points
+Defining dxf_attribs
+Defining dxf_block_insert
+**** Advertencia: Record exemplar dxf_block_insert está compartido por las tablas dxf_inserts y dxf_block_insert!
+     shared_record_exemplar(exemplar_name=:dxf_block_insert, table_name1=:dxf_inserts, table_name2=:dxf_block_insert)
+Defining dxf_areas
+Defining dxf_block_point
+**** Advertencia: Record exemplar dxf_block_point está compartido por las tablas dxf_points y dxf_block_point!
+     shared_record_exemplar(exemplar_name=:dxf_block_point, table_name1=:dxf_points, table_name2=:dxf_block_point)
+Defining dxf_block_area
+**** Advertencia: Record exemplar dxf_block_area está compartido por las tablas dxf_areas y dxf_block_area!
+     shared_record_exemplar(exemplar_name=:dxf_block_area, table_name1=:dxf_areas, table_name2=:dxf_block_area)
+Defining dxf_load_history
+Defining callejero
+**** Advertencia: Herencia equivocada para rwo record exemplar callejero: ignorándola
+     rwo_inheritance_wrong(name=:callejero)
+Defining sifon
+Defining cota_profundidad
+Defining subtramo
+Defining fuente
+Defining drawing_template
+Defining drawing
+**** Advertencia: Record exemplar drawing está compartido por las tablas drawing_template y drawing!
+     shared_record_exemplar(exemplar_name=:drawing, table_name1=:drawing_template, table_name2=:drawing)
+Defining function_geometry
+Defining ventosa
+Defining mobiliario_urbano
+Defining aliviadero
+Defining cruce
+Defining canal
+Defining boquilla
+Defining sumidero
+Defining sw_google_area
+**** Advertencia: sw_google_area global requerido por modelo de datos no definido
+     dd_missing_global(name=:sw_google_area)
+Defining te_nodo
+Defining fondo_linea
+Defining acometida
+Defining hidrante
+Defining linea_presion
+**** Advertencia: linea_presion global requerido por modelo de datos no definido
+     dd_missing_global(name=:linea_presion)
+Defining fondo
+Defining accesorio
+Defining acometida_saneamiento
+Defining tanque_tormentas
+Defining valvula_combi
+Defining filtro
+Defining cambio_diametro
+Defining documento_relacionado
+Defining tapon_final
+Defining tuberia_saneamiento
+Defining final_saneamiento
+Defining etap
+Defining red_riego
+Defining fondo_texto
+Defining ortofoto
+Defining arqueta_saneamiento
+Defining swif!info_flag
+Defining valvula
+Defining deposito
+Defining riego
+Defining texto_callejero
+**** Advertencia: texto_callejero global requerido por modelo de datos no definido
+     dd_missing_global(name=:texto_callejero)
+Defining desague
+Defining arqueta
+Defining tapa
+Defining grupo_bombeo
+Defining sw_google_linea
+**** Advertencia: sw_google_linea global requerido por modelo de datos no definido
+     dd_missing_global(name=:sw_google_linea)
+Defining valvula_vortex
+Defining pozo_saneamiento
+Defining sw_google_point
+**** Advertencia: sw_google_point global requerido por modelo de datos no definido
+     dd_missing_global(name=:sw_google_point)
+Defining boca_riego
+Cargando el fichero "raster.ds".
+
+Cargando el fichero "dd_extension.ds" utilizando los parámetros:
+        mode=frozen
+
+19/01/2024 10:26:24
+Base de datos Aguas de Tudela abierta: \\desktop-9b8efhr\C$\Projects\Tudela\ds\DS_ADMIN
+19/01/2024 10:26:24
+Autorizaciones abiertas
+
+
+19/01/2024 10:26:24
+
+
+Extension file:              C:\Users\aniba\AppData\Local\Temp\msfext.desktop-9b8efhr6728
+    maximum size:            16384
+    current size:            512
+    pages in use:            501
+    yellow zone size:        4096
+     - triggers at:          12288
+Pages:                       4096
+    requests:                1649637
+    misses:                  4808
+    writes:                  6
+    copies:                  559
+New space pages:             2048
+    occupancy:               723
+Old space pages:             1024
+    cluster rolls:           32
+    object reclaims:         0
+Virtual contexts:            64
+    virtual allocations:     9406629
+    real allocations:        53334
+    victimisations:          128
+    other reifications:      0
+GC cycles:                   14
+    GC space runouts:        11
+    GC object runouts:       0
+    promoted objects:        0
+    promoted pages:          0
+    max survivor pages:      721
+Miscellaneous:
+    weak references:         3612
+    uncles:                  541
+    post mortemed objects:   24
+    RObject pools in use:    2
+    RObjects per pool:       196624
+    RObjects allocated:      238066
+Disk surrogates:
+    surrogates:              5
+    references:              23
+    max surrogates:          5
+    max references:          23
+
+
+Extension file:              C:\Users\aniba\AppData\Local\Temp\msfext.desktop-9b8efhr6728
+    maximum size:            16384
+    current size:            512
+    pages in use:            501
+    yellow zone size:        4096
+     - triggers at:          12288
+
+
+Guardando imagen Magik C:\Projects\Tudela\Tudela430\images\tudela_open_1.msf
+a sw:system
+Comando: unset
+simple_vector(1,10):
+1 	:|save_delta()| 
+2 	"C:\Projects\Tudela\Tudela430\images\tudela_open_1.msf" 
+3 	:cache_pages 
+4 	:calculate 
+5 	:join 
+6 	unset 
+7 	:startup_proc 
+8 	proc startup_with_cli 
+9 	:redirection_file 
+10 	"C:\Projects\Tudela\Tudela430\images\tudela_open.msf" 
+cache_pages=1954
+method_finder: Done
+hash_table:
+:backup 	sw:magik_image(backup) 
+:appserver 	sw:magik_image(appserver) 
+:swaf_mega 	sw:magik_image(swaf_mega) 
+:tudela_open 	sw:magik_image(tudela_open) 
+:swaf 	sw:magik_image(swaf) 
+:tudela_closed 	sw:magik_image(tudela_closed) 
+MagikSF> El Salida de este proceso de compilación de imágenes es 0
+EXIT CODE from tudela_closed is 0

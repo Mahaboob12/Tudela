@@ -1,0 +1,56 @@
+
+_package user
+$
+def_slotted_exemplar(:pseudo_hole_export,
+		     {
+			  {:original_sectors,_unset },
+			  {:sectors_adjust_c,_unset } # Sector_rope con las curvas ajustadas como lineas 
+		     },{:ib_adjust_sector_curve})
+$
+
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method pseudo_hole_export.sectors
+	##
+
+	_local sectors
+	_if .sectors_adjust_c _is _unset _then
+		sectors << .original_sectors
+	_else		
+		sectors << .sectors_adjust_c
+	_endif
+
+	_return sectors
+_endmethod 
+$
+_method pseudo_hole_export.new(a_sector_rope, _optional adjust_curves_by_lines?)
+	>> _clone.init_with_sectors(a_sector_rope,adjust_curves_by_lines?)
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_hole_export.set_new_sector(a_new_sector)
+	##
+	## Asigna el valor A_NEW_SECTOR, al slot .sectors_adjust_c
+	##
+	.sectors_adjust_c << a_new_sector
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={external})
+_private _method pseudo_hole_export.init_with_sectors(a_sector_rope,adjust_curves_by_lines?)
+	##
+	## Si los sectores tienen curvas ajustar por puntos
+	##
+	
+	_dynamic !print_float_precision! << 10
+
+	.original_sectors << a_sector_rope
+	
+	# Verificar si se aproximan las curvas con lineas y generar la aproximacion
+	# si es necesaria
+	forze_close? << _true 
+	_self.init_adjust(adjust_curves_by_lines?, forze_close?)
+
+
+	_return _self 
+_endmethod
+$

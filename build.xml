@@ -1,0 +1,126 @@
+<project name="sw_core" basedir="." default="build">
+  <description>
+    Build the Core images.
+
+    Run "ant help" for more.
+    
+    Run "ant Properties" for display of properties
+
+    Run "ant -p" to list all targets
+  </description>
+
+  <property name="xml.magik_image_build" value="${basedir}/magik_image_build.xml"/>
+  <import file="${xml.magik_image_build}"/>
+
+  <!-- standard properties -->
+    
+  <property name="sw_gis_alias_files"      location="${basedir}/config/magik_images/resources/base/data/gis_aliases"/>
+  <property name="sw_save_image_dir"       location="${basedir}/../images"/>
+
+  <!--
+      if sw_log_dir is "" then log directory is calculated from
+      ${sw_save_image_dir}, or superceded by subsequent setting in environment element
+  -->
+  <property name="sw_log_dir"                 value=""/>
+
+  <!--
+      If sw_log_file_stdout is true then output is sent to STDOUT,
+      otherwise the Magik output is sent to a log file.
+  -->
+  <property name="sw_log_file_stdout"         value=""/>
+
+  <mkdir  dir="${sw_save_image_dir}"/>
+
+  <!-- Generic targets -->
+
+  <target name="clean"
+	  depends="sw_save_image_dir_format">
+    <delete dir="${sw_save_image_dir}"/>
+    <mkdir  dir="${sw_save_image_dir}"/>
+  </target>
+
+  <target name="build"
+	  depends="swaf,backup,swaf_mega"
+	  description="Build all Images"/>
+
+  <!-- Specific targets -->
+
+  <target name="backup"
+	  depends="sw_save_image_dir_format"
+	  description="build backup.msf">
+    <build_core_image alias="build_backup"/>
+  </target>
+
+  <target name="swaf"
+	  depends="sw_save_image_dir_format"
+	  description="build swaf.msf">
+    <build_core_image alias="build_swaf"/>
+  </target>
+
+  <target name="appserver"
+	  depends="sw_save_image_dir_format"
+	  description="build appserver.msf">
+    <build_core_image alias="build_appserver"/>
+  </target>
+
+  <target name="swaf_mega"
+	  depends="sw_save_image_dir_format"
+	  description="build swaf_mega.msf">
+    <build_core_image alias="build_swaf_mega"/>
+  </target>
+
+  <!-- Helper targets -->
+
+  <target name="Properties"
+	  depends="sw_save_image_dir_format"
+	  description="Display the properties used by this process">
+    <echo>
+      sw_gis_alias_files=${sw_gis_alias_files}
+      sw_save_image_dir=${sw_save_image_dir}
+
+      sw_log_dir=${sw_log_dir}
+      sw_log_file_stdout=${sw_log_file_stdout}
+    </echo>
+  </target>
+
+  <target name="help"
+	  description="Display help for this process">
+    <echo>
+ This process builds the Core images.
+
+ The following properties are required.
+ sw_gis_alias_files           PATH of locations of gis_aliases files.
+ sw_save_image_dir            Directory to store images to
+ sw_save_image_dir_format     Subdirectory structure format to use 
+ spin                         Spin number to use if appropriate
+ date                         Date format string to use if appropriate
+    </echo>
+  </target>
+
+  <!-- Macros -->
+
+  <macrodef name="build_core_image">
+    <!--
+	This macro provides a convenient wrapper to the magik_image_builder interface
+	that includes the standard settings for building the Core images.
+	The image build targets then simply call this macro and only need to override
+	specific attributes or environmental settings that are unique to that image.
+    -->
+    <attribute name="alias"/>
+    <attribute name="logdir"       default="${sw_log_dir}"/>
+    <attribute name="failonerror"  default="true"/>
+    <element   name="environment" optional="yes" implicit="yes"/>
+    <sequential>
+      <magik_image_builder alias   ="@{alias}"
+			   dir     ="${sw_save_image_dir}"
+			   aliases ="${sw_gis_alias_files}"
+			   logdir  ="@{logdir}"
+			   stdout  ="${sw_log_file_stdout}"
+			   task    ="mib:@{alias}"
+			   failonerror="@{failonerror}">
+	<environment/>
+      </magik_image_builder>
+    </sequential>
+  </macrodef>
+
+</project>

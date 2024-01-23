@@ -1,0 +1,680 @@
+##
+##----------------------------------------------------------
+## MODIFICACION 1
+##
+## Autor: P.Serrano
+## Fecha: 03-05-95
+##
+## DESCRIPCION:
+## Incluir el metodo centroide().
+##----------------------------------------------------------
+## MODIFICACION 2
+##
+## Autor: Carlos Valdezate Moya
+## Fecha: 02-06-95
+##
+## DESCRIPCION:
+## Creacion de los metodos:
+## -.sector_rope_merge(el_vector)
+## -.son_colineales?(el_vector)
+##----------------------------------------------------------
+## MODIFICACION 3
+##
+## Autor: Carlos Valdezate Moya
+## Fecha: 20-06-95
+## - En el metodo :long_parcial|()| se llama al metodo
+##   :find_mid_point|()| que si recibe una sector_rope con
+##   longitud cero devuelve _unset.
+##   Controlar el caso para que no de traceback.
+## - En el metodo :long_parcial|()| si las coordenadas de corte
+##   entre el sector y el area es unset cambiamos por
+##   coordenadas de corte entre el area y el sector.
+##----------------------------------------------------------
+$
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method sector_rope.find_mid_point()
+##
+## Busca el punto medio de un sector_rope
+#
+# Modificacion 5/9/94  (J.Slomp/M.Ros)
+# Correccion para los splines
+#
+	_if _self.line_length = 0
+	_then
+		_return
+	_endif
+	
+	target_length << _self.line_length/2
+	len << 0
+
+	# first loop over sectors to find the one containing the mid point
+	_for a_sec _over _self.sectors()
+	_loop
+		len +<< a_sec.line_length
+		_if len > target_length
+		_then 
+			target_sec << a_sec
+			_leave
+		_endif
+	_endloop
+
+	target_length << target_length - (len - target_sec.line_length)
+	len << 0
+	# loop over the sector coordinates to find those either side of mid point
+	_if _not target_sec.is_kind_of?(rational_b_spline)
+	_then
+		_for coord_num _over range(1,target_sec.size - 1)
+		_loop
+			dist << target_sec[coord_num].distance_to(target_sec[coord_num + 1])
+			len +<< dist
+			_if len > target_length
+			_then
+				c1 << target_sec[coord_num]
+				c2 << target_sec[coord_num + 1]
+				ndist << target_length - (len - dist)
+				_leave
+			_endif
+		_endloop
+
+		ang << c1.angle_to(c2)
+
+	# calculate the midpoint using coordinates either side and distance from first coordinate
+		x << c1.x
+		y << c1.y
+		x +<< cos(ang)*ndist
+		y +<< sin(ang)*ndist
+
+		_return coordinate(x,y),ang
+	_else
+#
+# Nuevo para splines (5/9/94)
+#
+		ll << target_sec.line_length/2
+		mp << target_sec.split_at_distances({ll})[1].last
+
+		_if _not mp.is_kind_of?(coordinate2h)
+		_then
+			mp << mp.last
+		_endif
+		##
+		## now find the angel at the mid-point - this is the tangent
+		## to the curve at the mid-point. Approximate this by
+		## converting the rational b spline into small straight
+		## segments, then use the above code (before the else command)
+		## to find the angle to the mid -point
+		##
+
+		dummy_sector << sector.new_from(target_sec.coords(0,3,3))
+		dummy_sector_rope << sector_rope.new_with(dummy_sector)
+
+		(dummy,ang) << dummy_sector_rope.find_mid_point()
+
+		_return coordinate.new(mp.x,mp.y),ang
+	_endif
+	
+_endmethod 
+$
+
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method sector_rope.last_mid_point()
+##
+##  Este metodo calcula el punto medio del ultimo
+##  segmento de la geometria chain
+
+	#
+	#  Anna R.  20/06/94
+	#
+	#
+
+	_if _self.line_length = 0 _then
+		_return
+	_endif  
+
+	#  target_sec al final del bucle contendra el ultimo
+	#  sector.
+	#
+	#  NOTA : se genera mas de un sector cuando se cruza
+	#  con otro elemento
+	
+	_for a_sec _over _self.sectors()
+	_loop
+		target_sec << a_sec
+	_endloop
+	
+	#  Obtiene a partir de la coordenada inicial y final, la
+	#  longitud del ultimo segmento (/2) y el angulo con el
+	#  que esta posicionado
+	
+	_for coord_num _over range(1,target_sec.size-1)
+	_loop
+		dist << target_sec[coord_num].distance_to(target_sec[coord_num+1])
+		c1 << target_sec[coord_num]
+		c2 << target_sec[coord_num+1]
+		ndist << dist/2
+	_endloop
+
+	# calcula el pto medio y el angulo
+	
+	ang << c1.angle_to(c2)
+	
+	x << c1.x
+	y << c1.y
+	x +<< cos(ang)*ndist
+	y +<< sin(ang)*ndist
+
+	_return coordinate(x,y),ang
+	
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method sector_rope.first_mid_point()
+	##
+	##  Este metodo calcula el punto medio del primer
+	##  segmento de la geometria chain
+
+	_if _self.line_length = 0 _then
+		_return
+	_endif  
+
+	target_sec << _self.sectors.an_element()
+	
+	#  Obtiene a partir de la coordenada inicial y final, la
+	#  longitud del segmento (/2) y el angulo con el que esta
+	#  posicionado
+	
+	_for coord_num _over range(1,target_sec.size-1)
+	_loop
+		dist << target_sec[coord_num].distance_to(target_sec[coord_num+1])
+		c1 << target_sec[coord_num]
+		c2 << target_sec[coord_num+1]
+		ndist << dist/2
+	_endloop
+
+	# calcula el pto medio y el angulo
+	
+	ang << c1.angle_to(c2)
+	
+	x << c1.x
+	y << c1.y
+	x +<< cos(ang)*ndist
+	y +<< sin(ang)*ndist
+
+	_return coordinate(x,y),ang
+	
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method sector_rope.long_in_area(an_area)
+##
+## Devuelve la longitud total de la "sector_rope" incluida dentro de "an_area"
+
+# Dividir "la_sector_rope" en sector_rope's, cada una de las cuales contenga un solo
+# sector con un solo segmento. De esta forma tendremos una rope de sector_rope's
+# rectas a las que podremos enviar el mensaje "all_intersections".
+
+	nueva_cadena << rope.new()
+	_for el_sector _over _self.fast_elements()
+	_loop
+		_for i _over range(1,el_sector.nsegments)
+		_loop
+			nueva_cadena.add(sector_rope.new_with(el_sector.segment(i)))
+		_endloop
+	_endloop 
+
+# Comprobar cada sector_rope (cada sector, por tanto) de nueva_cadena: esta dentro del area?:
+#   - Completamente fuera: ignorar su longitud
+#   - Completamente dentro: sumar toda su longitud al acumulador
+#   - Parcialmente dentro: buscar la longitud que tiene dentro
+
+	long_total << 0
+	_for sector_rope_recta _over nueva_cadena.fast_elements()
+	_loop
+		(incluye,toca) << an_area.surrounds??(sector_rope_recta)
+		_if incluye _is _false
+		_then
+			_continue 
+		_elif incluye _is _true 
+		_then
+			long_total +<< sector_rope_recta.line_length
+		_else
+			long_total +<< sector_rope_recta.long_parcial(an_area)
+		_endif
+	_endloop
+	>>long_total
+_endmethod 
+$
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method sector_rope.long_parcial(an_area)
+##
+## PARAMETROS:
+## an_area(E) : Area en la que busca
+## DESCRIPCION:
+## Calcular la longitud de la fraccion de una sector_rope "recta"
+## (o sea, que contenga un solo sector con un solo segmento)
+## contenida en la parte interior de un area que la
+## corta. Puede que dicha fraccion no sea una, sino varias.
+
+# Obtener las coordenadas de los puntos de corte "cadena-area" (aunque el mensaje "all_intersections"
+# devuelve cinco simple_vector's, solo interesa el primero). 
+
+	coords_corte << _self.all_intersections(an_area.sectors)
+	## MODIFICACION 3  Inicio.
+	_if coords_corte _is _unset
+	_then
+		coords_corte << an_area.sectors.all_intersections(_self)
+	_endif
+	## MODIFICACION 3  Fin.
+	len_coords_corte << coords_corte.size
+
+# Ordenarlas de mas cercana a mas lejana respecto a la primera coordenada de la_sector_rope
+	
+	_for i _over range(1,len_coords_corte - 1) 
+	_loop
+		menor_dist << coords_corte[i].distance_to(_self[1][1])
+		menor_dist_elem << i
+		_for j _over range(i+1,len_coords_corte)
+		_loop
+			dist_elem << coords_corte[j].distance_to(_self[1][1]) 
+			_if dist_elem < menor_dist
+			_then
+				menor_dist << dist_elem
+				menor_dist_elem << j
+			_endif
+		_endloop
+		aux << coords_corte[i]
+		coords_corte[i] << coords_corte[menor_dist_elem]
+		coords_corte[menor_dist_elem] << aux
+	_endloop
+
+# Tomando como coordenada inicial una de las de la_sector_rope y como final la de corte mas
+# cercana a ella, calcular el punto medio entre ambas (para lo cual generaremos antes una
+# sector_rope nueva sobre a la que enviar el mensaje "find_mid_point()") y ver si el area
+# contiene a dicho punto; si es asi acumularemos la longitud de dicha fraccion de la_sector_rope
+# (longitud de una coordenada a otra). Esto lo repetiremos tomando como coordenada inicial la
+# tratada anteriormente como final, y como final la coordenada de corte mas cercana a la inicial
+# actual o, si ya no quedan mas coordenadas de corte, la coordenada de la_sector_rope que aun queda
+# por tratar (la que no se tomo como coordenada inicial al comenzar el proceso).
+
+	long_total << 0
+	coord_inic << _self[1][1]
+	_for i _over range(1,len_coords_corte + 1)
+	_loop
+		_if i = len_coords_corte + 1
+		_then
+			coord_fin << _self[1][2]
+		_else
+			coord_fin << coords_corte[i]
+		_endif
+		nuevo_sector << sector.new_with_xy(coord_inic.x,coord_inic.y,
+						   coord_fin.x,coord_fin.y)
+		nueva_sector_rope << sector_rope.new_with(nuevo_sector)
+		## MODIFICACION 3  Inicio.
+		_if (punto_medio<<nueva_sector_rope.find_mid_point()) _isnt _unset
+		_then 
+			(incluye,toca) << an_area.surrounds??(punto_medio)
+			_if incluye _is _true 
+			_then
+				long_total +<< nueva_sector_rope.line_length
+			_endif
+		_endif
+		## MODIFICACION 3  Fin.
+		coord_inic << coord_fin
+	_endloop
+	>>long_total
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method sector_rope.cerrar_interseccion(dist)
+	##
+	## PARAMETROS
+	## dist(E) : Distancia
+	## DESCRIPCION:
+	## Mira si puede cerrar una sector rope a la
+	## distancia dist.
+	#
+	# Desarrollado Carlos Valdezate 02/03/95
+	#
+	# Esta hecho adaptado al programa de cerrar fondo linea.
+	# Si se quiere utilizar para otro programa hay que mirar si
+	# sirve sino hay que hacer uno de caracter mas general.
+	#
+	### Si esta cerrada no continuamos
+	_if _self.closed?
+	_then
+		_return _self
+	_endif 
+	
+	### Sumamos el 5% de la distancia porque el metodo intersection near
+	### no es muy exacto.
+	
+	dist_aux<<dist+((dist * 5.0 / 100.0))
+	s<<_self.copy().as_sector().copy()
+	tam<<s.size
+
+	### Alargamos los extremos a la distancia dist en la direccion del angulo
+	### que forman los extremos del sector_rope.
+
+	a<<s[2].angle_to(s[1])
+	x<<s[1].x
+	y<<s[1].y
+	c<<coordinate.new((x+<<cos(a)*dist),(y+<<sin(a)*dist))
+	s1_aux<<sector_rope.new_with(sector.new_with(s[1],c))
+
+	a<<s[tam-1].angle_to(s[tam])
+	x<<s[tam].x
+	y<<s[tam].y
+	c<<coordinate.new((x+<<cos(a)*dist),(y+<<sin(a)*dist))
+	s2_aux<<sector_rope.new_with(sector.new_with(s[tam],c))
+	
+	### Miramos si interseccionan
+	
+	(c,d)<<s1_aux.intersection_near(s2_aux,c,dist_aux)
+	_if c _isnt _unset _andif d <= dist
+	_then
+		s.remove_first()
+		s.add_first(c)
+		s.remove_last()
+		s.add_last(c)
+	_endif
+	
+	>>sector_rope.new_with(s)
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry}, usage={external})	
+_method sector_rope.cerrar_interseccion_doble(s2,dist)
+	##PARAMETROS:
+	## s2 (E) : Segunda sector rope
+	## dist (E) : Distancia
+	## DESCRIPCION:
+	## Dadas dos sector_rope alarga sus extremos a la
+	## distancia dist y devuelve las dos sector_rope
+	## interseccionadas entre ellas(si es que se llegan a cortar).
+	#
+	# Desarrollado Carlos Valdezate 02/03/95
+	#
+	# Esta hecho adaptado al programa de cerrar fondo linea.
+	# Si se quiere utilizar para otro programa hay que mirar si
+	# sirve sino hay que hacer uno de caracter mas general.
+	#
+	### Sumamos el 5% de la distancia porque el metodo intersection near
+	### no es muy exacto.
+	
+	dist_aux<<dist+((dist * 5.0 / 100.0))
+	s1<<_self.copy().as_sector().copy()
+	s2<<s2.copy().as_sector().copy()
+
+	### Alargamos los extremos a la distancia dist.
+	
+	s1_aux<<sector_rope.new_with(s1.copy().extend_ends(dist))
+	s2_aux<<sector_rope.new_with(s2.copy().extend_ends(dist))
+
+	### Miramos la interseccion mas cercana desde los extremos que hemos
+	### alargado y si se cortan esta coordenada se asigna.
+	### Comprobamos que este en el area de la distancia especificada.
+	
+	(c,d)<<s1_aux.intersection_near(s2_aux,s1_aux.first_coord,dist_aux)
+	_if c _isnt _unset _andif d <= dist
+	_then
+		s1.remove_first()
+		s1.add_first(c)
+	_endif 
+
+	(c,d)<<s1_aux.intersection_near(s2_aux,s1_aux.last_coord,dist_aux)
+	_if c _isnt _unset _andif d <= dist
+	_then
+		s1.remove_last()
+		s1.add(c)
+	_endif 
+
+	(c,d)<<s2_aux.intersection_near(s1_aux,s2_aux.first_coord,dist_aux)
+	_if c _isnt _unset _andif d <= dist
+	_then
+		s2.remove_first()
+		s2.add_first(c)
+	_endif 
+
+	(c,d)<<s2_aux.intersection_near(s1_aux,s2_aux.last_coord,dist_aux)
+	_if c _isnt _unset _andif d <= dist
+	_then
+		s2.remove_last()
+		s2.add(c)
+	_endif
+
+	### Devolvemos sector_rope
+	
+	>>(sector_rope.new_with(s1),sector_rope.new_with(s2))
+_endmethod 
+$
+
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method sector_rope.spline_a_sr(ancho_max)
+	## Convertir una sector_rope de tipo spline en una sector_rope
+	## de un solo sector (valor que retornara).
+	## ANCHO_MAX indicara el ancho de los segmentos de la nueva
+	## sector_rope.
+	#
+	# (creado inicialmente para textos curvilineos y utilizado por
+	#  exportador de viales)
+	#
+	ancho_max << ancho_max.default(10)
+
+	pi_num << float.pi
+	a_sector << sector.new()
+	
+	a_rope << rope.new()
+	d << _self.line_length / (ancho_max * 2) 
+	dist << 0
+	_for i _over 1.upto(d)
+	_loop
+		a_rope.add(dist +<< (ancho_max * 2))
+	_endloop
+
+	_if _self.first[1].x > _self.last[2].x
+	_then
+		girar? << _true
+		a_sector.add_first(coord_ini_segm << coordinate(_self.first[1].x,_self.first[1].y))
+	_else
+		girar? << _false
+		a_sector.add(coord_ini_segm << coordinate(_self.first[1].x,_self.first[1].y))
+	_endif
+	
+	_for i_sector _over _self.fast_elements()
+	_loop
+		sects << i_sector.split_at_distances(a_rope)
+		_for j _over sects.fast_elements()
+		_loop
+			_if j.class_name _is :rational_b_spline
+			_then
+				coord_fin << coordinate(j.last.x,j.last.y)
+			_elif j.class_name _is :sector_rope
+			_then
+				coord_fin << coordinate(j.last.last.x,j.last.last.y)
+			_endif
+			_if coord_ini _is _unset 
+			_then
+				coord_ini << coord_fin
+				ang1 << coord_ini_segm.angle_to(coord_fin)
+				_if ang1 < 0 _then ang1 +<< pi_num _endif
+				_continue 
+			_endif
+			ang2 << coord_ini.angle_to(coord_fin)
+			_if ang2 < 0 _then ang2 +<< pi_num _endif
+			_if (ang2 - ang1).abs.radians_to_degrees > 2
+			_then
+				_if girar?
+				_then
+					a_sector.add_first(coord_ini_segm << coord_ini)
+				_else
+					a_sector.add(coord_ini_segm << coord_ini)
+				_endif
+				ang1 << ang2
+			_endif
+			coord_ini << coord_fin
+		_endloop
+	_endloop
+	_if girar?
+	_then
+		a_sector.add_first(coord_fin)
+	_else
+		a_sector.add(coord_fin)
+	_endif
+
+	>> sector_rope.new_with(a_sector)
+	
+_endmethod
+$
+#-->
+# MODIFICACION 1
+
+_pragma(classify_level=advanced, topic={geometry}, usage={external})
+_method sector_rope.centroide()
+	## DESCRIPCION:
+	## Devuelve el centroide del area determinada por
+	## una sector_rope cerrada (el metodo trabaja con una copia de
+	## la sector_rope, que cierra, si no lo estaba).
+	##
+	## Este algoritmo es identico al desarrollado por Steve Hall
+	## para geometrias de tipo area.
+
+	sr << _self.deep_copy()
+	sr.close()
+	c1 << sr[1][1]
+	coord_org << coordinate.new(c1.x,c1.y)
+	x_momento << 0
+	y_momento << 0
+	_for a_sec _over sr.sectors.fast_elements()
+	_loop
+		sec << a_sec.coords(0,3,3)
+		coord_ant << _unset 
+		_for c _over sec.fast_elements()
+		_loop
+			coord_ant_ant << coord_ant
+			coord << c - coord_org
+			_if coord_ant_ant _is _unset 
+			_then
+				coord_ant << coord
+				_continue
+			_endif
+			x1 << coord_ant.x
+			y1 << coord_ant.y
+			x2 << coord.x
+			y2 << coord.y
+			delta_x << x2 - x1
+			delta_y << y2 - y1
+			x_momento -<< 0.1666667 * (x2*x2+x2*x1+x1*x1) * delta_y
+			y_momento +<< 0.1666667 * (y2*y2+y2*y1+y1*y1) * delta_x
+			coord_ant << coord
+		_endloop
+	_endloop
+	ar << sr.area.abs
+	_return coordinate ( x_momento/ar, y_momento/ar ) + coord_org
+_endmethod
+$
+
+#<--
+
+
+_method sector_rope.sector_rope_merge(el_vector)
+	## Dado el_vector que es una collection de sector_rope
+	## 'consecutivos', nos devuelve la union de ellos en un nuevo
+	## sector_rope. Hacemos un test de colinealidad para ver si son
+	## consecutivos.
+	## son.
+	## Retorno: - unset sino es colineal.
+	##          - Nueva sector_rope si son colineales.
+	#
+	# Carlos Valdezate Moya  02/06/95
+	
+	tam<<el_vector.size
+	_if tam = 0
+	_then
+		_return _unset
+	_elif tam = 1
+	_then
+		_return _unset
+	_endif
+	
+	## Test de colinealidad
+	(flag,nodo1,nodo2)<<_self.son_colineales?(el_vector)
+	_if _not flag _then _return _unset _endif 
+	
+	## Ordenamos los sector_rope en uno nuevo.
+	s<<sector_rope.new()
+	i<<0
+	_loop
+		_if el_vector.size = 0 _then _leave _endif 
+		i+<<1
+		first<<el_vector[i].first_coord
+		last <<el_vector[i].last_coord
+		_if  first = nodo1
+		_then
+			nodo1<<last
+			s.add_sectors_last(el_vector[i])
+			el_vector.remove(el_vector[i])
+			i<<0
+		_elif last = nodo1
+		_then
+			nodo1<<first
+			s.add_sectors_last(el_vector[i].reversed())
+			el_vector.remove(el_vector[i])
+			i<<0
+		_endif
+	_endloop
+
+	_return s
+_endmethod
+$
+	
+_method sector_rope.son_colineales?(el_vector)
+	## Devuelve booleano dependiendo si se mantiene la colinealidad
+	## entre los sector_rope que contiene el_vector.
+	## Devuelve tambien first_coord y last_coord.
+	#
+	# Carlos Valdezate Moya  02/06/95
+
+	tam<<el_vector.size
+	nodos << equality_set.new()
+	
+	>>_if tam = 0
+	  _then
+		  >> (_false,_unset,_unset) 
+	  _elif tam = 1
+	  _then
+		  i<<el_vector.an_element()
+		  >>(_true, i.first_coord, i.last_coord)
+	  _else
+		  #
+		  # Nos basamos en una collection de igualdad para obtener el
+		  # primer y ultimo nodo de un tramo con mas de un subtramo. 
+		  #
+		  _for ele _over el_vector.fast_elements()
+		  _loop
+			  nodo_first<<ele.first_coord
+			  nodo_last<<ele.last_coord
+			  _if nodos.includes?(nodo_first)
+			  _then 
+				  nodos.remove(nodo_first)
+			  _else
+				  nodos.add(nodo_first)
+			  _endif 
+			  _if nodos.includes?(nodo_last)
+			  _then 
+				  nodos.remove(nodo_last)
+			  _else
+				  nodos.add(nodo_last)
+			  _endif 				
+		  _endloop
+		  nodos<<nodos.as_simple_vector()
+		  >>_if nodos.size = 2
+		    _then
+			    >> (_true,nodos[1],nodos[2]) 
+		    _else
+			    >> (_false,_unset,_unset)
+		    _endif
+	  _endif
+_endmethod
+$
+

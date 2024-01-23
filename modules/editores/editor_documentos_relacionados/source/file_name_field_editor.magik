@@ -1,0 +1,37 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma(classify_level=restricted)
+def_slotted_exemplar(:file_name_field_editor,
+                     {
+                     },
+		     :in_place_text_field_editor)
+$
+
+message_handler.new(:file_name_field_editor).add_uses(:in_place_text_field_editor)
+$
+
+_pragma(classify_level=restricted)
+_method file_name_field_editor.activate_sub_dialog()
+	##
+	## Description:
+	##  Activate the open file dialog relative to self's realised
+	## contents
+	##
+	## Return values:
+	##  An activated file dialog
+	##
+
+	_if (l_sd << .sub_dialog) _is _unset 
+	_then
+		l_sd << .sub_dialog << file_dialog.new(_self, :|dialog_contents_changed()|)
+	_endif
+	
+	l_sd.activate()
+
+	>> l_sd
+
+_endmethod
+$

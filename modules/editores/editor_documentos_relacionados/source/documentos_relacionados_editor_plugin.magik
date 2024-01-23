@@ -1,0 +1,81 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma(classify_level=restricted, topic=editor_plugin)
+def_slotted_exemplar(:documentos_relacionados_editor_plugin,
+		     {
+			     {:internal_framework, _unset}
+		     },
+		     :editor_plugin)
+$
+
+_pragma(classify_level=restricted)
+documentos_relacionados_editor_plugin.define_property(:definition_module_name,
+	                                              :string,
+						      "Nombre del modulo que contiene los ficheros de definicion",
+						      _unset, _unset, "editor_documentos_relacionados" )
+$
+
+_pragma(classify_level=restricted)
+documentos_relacionados_editor_plugin.define_property(:gui_definition_file_name,
+						      :string,
+						      "Nombre del fichero gui de definicion",
+						      _unset, _unset, "documentos_relacionados_gui.xml" )
+
+_pragma(classify_level=restricted)
+documentos_relacionados_editor_plugin.define_property(:config_definition_file_name,
+	                                              :string,
+						      "Nombre del fichero config de definicion",
+						      _unset, _unset, "documentos_relacionados_config.xml" )
+$
+
+_pragma(classify_level=advanced)
+_method documentos_relacionados_editor_plugin.build_gui(a_container, _optional properties)
+	##
+	##
+
+	.internal_framework << rif << documentos_relacionados_editor_framework.new(_unset, _self.framework,
+					:gui_definition_module_name,    _self.definition_module_name,
+					:gui_definition_file_name,      _self.gui_definition_file_name,
+					:config_definition_module_name, _self.definition_module_name,
+					:config_definition_file_name,   _self.config_definition_file_name,
+					:databus, _self.databus )
+
+	gui << rif.build_gui( a_container )
+
+	gui.tab_label << _self.message(:tab_label)
+
+	>> gui
+	
+_endmethod
+$	
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_plugin.terminate()
+	##
+	##
+
+	_if .internal_framework _isnt _unset
+	_then
+		.internal_framework.terminate()
+	_endif
+
+	_super.terminate()
+
+_endmethod
+$
+
+_pragma(classify_level=advanced)
+_method documentos_relacionados_editor_plugin.bring_to_front()
+	##
+	##
+
+	_if .internal_framework _isnt _unset 
+	_then
+		.internal_framework.bring_to_front()    
+	_endif
+
+_endmethod
+$

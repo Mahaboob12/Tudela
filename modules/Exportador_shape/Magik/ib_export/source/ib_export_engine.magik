@@ -1,0 +1,436 @@
+#% text_encoding = iso8859_1
+##
+## Motor de exportacion del formato:
+##
+## - SHAPE
+##
+
+_package user
+$
+
+_pragma(classify_level=basic)
+def_slotted_exemplar(:ib_export_engine,
+	{
+		{:shape_export_options, _unset },
+		{:shape_import_options, _unset },
+		{:dxf_export_options, _unset },
+		{:dxf_import_options, _unset },
+		{:xml_config_read?, _unset },
+		{:xml_config_file,_unset }
+	})
+
+$
+_pragma(classify_level=basic, topic={ib_export})
+## Manejador de mensajes
+ib_export_engine.define_shared_constant( :message_accessor,
+                                    message_handler.new(:ib_export_engine),:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_engine.new (_gather properties)
+     ## 
+     ## 
+     ##	
+     >> _clone.init(_scatter properties) 
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.init(_gather properties) 
+   ## 
+   ## 
+   ##
+	.xml_config_read? << _false 
+	_return _self 
+_endmethod 
+$
+################################################################################################################################
+##
+## MÉTODOS DE INICIALIZACIÓN
+##
+################################################################################################################################
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.initilize_slots()
+	##
+	## 
+	##
+	.xml_config_read? << _false
+	.xml_config_file << _unset
+	
+_endmethod
+
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.initilizate_dxf_import_options()
+	##
+	## 
+	##
+	_self.initilize_slots()
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.initilizate_dxf_export_options()
+	##
+	## 
+	##
+	_self.initilize_slots()
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.initilizate_shape_import_options()
+	##
+	## 
+	##
+	_self.initilize_slots()
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.initilizate_shape_export_options(exportation_options,a_table,a_geom_field_name)
+	##
+	## Verifica la configuracion de exportacion SHAPE pasada por parametro
+	## Si es correcta se asigna al slot .SHAPE_EXPORT_OPTIONS
+	##
+
+	_self.initilize_slots()
+
+	_local options << equality_hash_table.new()	
+	a_dataset << a_table.dataset
+	
+	_if exportation_options _is _unset _orif
+	    (tam << exportation_options.size) = 0
+	_then
+		# Extraer las opciones de exportación del fichero XML
+		# de configuración por defecto
+		_self.export_parameters_from_xml()
+	_else
+		_if (tam _mod 2) <> 0  
+		_then
+			condition.raise(:no_valid_export_config)
+		_endif
+
+		_for index _over range(1,tam,2)
+		_loop
+			key << exportation_options[index]
+			value << exportation_options[index + 1]
+
+			_if value _is _unset _then _continue _endif
+			
+			_if key _is :xml_corresp_file
+			_then
+				# Leer opciones de configuracion, no pasadas por parametro, del
+				# fichero de exportacion indicado en VALUE
+				_self.export_parameters_from_xml(value)
+				_continue 
+			_endif
+			
+			options[key] << value
+		_endloop	
+	_endif
+
+	.shape_export_options << options
+	validations << ib_export_validations.new()
+
+	# Ruta destino
+	_self.set_destination_path(validations)
+	
+	# Sistema de coordenadas destino y transformacion
+	_self.set_projection_and_transform(a_dataset,validations)
+
+	# Correspondencias
+	_self.set_correspondences(a_dataset,a_table,a_geom_field_name)
+		
+	
+_endmethod 
+$
+################################################################################################################################
+##
+## CHEQUEOS CONFIGURACION DE EXPORTACION SHAPE
+##
+################################################################################################################################
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.set_correspondences(a_dataset,a_table,a_geom_field_name)
+	##
+	##
+	##
+
+	_if _not .shape_export_options.includes_key?(:correspondences) _then
+	# Obtener las correspondencias a partir de la informacion leida
+	# en el XML
+
+		xml_config << _self.export_parameters_from_xml()
+
+		_if (xml_config _is _unset) _orif
+		    ((all_corresp << xml_config[:correspondences]) _is _unset ) _orif 
+		    ((dataset_corresp << all_corresp[a_dataset.name.as_symbol()]) _is _unset) _orif
+		    ((table_corresp << dataset_corresp[a_table.name])_is _unset ) _orif
+		    ((a_geom_field_name _isnt _unset) _andif  
+		     ((geom_corresp << table_corresp[a_geom_field_name.as_symbol()])_is _unset )) 
+		_then
+			## ERROR : opciones de configuracion incompletas, no fue posible obtener correspondencias entre SW y SHAPE
+			## para el dataset, la tabla y la geometria indicadas
+			write(_self.message(:err_correspondences))
+			_return
+		_endif
+
+		# Si no se definio un campo geometrico utiliza la primera
+		# geometria visible
+		a_table_export_struct << ib_table_export_structure.new (:table, a_table,
+									:info_export, geom_corresp,
+									:geom_field_name,a_geom_field_name)
+
+		.shape_export_options[:correspondences] <<  a_table_export_struct
+	_endif
+	
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.set_destination_path(validations)
+	##
+	##
+	##
+
+	validations << validations.default(ib_export_validations.new())	
+	validations.set_destination_path(.shape_export_options[:destination_path])
+	.shape_export_options[:destination_path] << validations.destination_path
+	
+_endmethod 
+################################################################################################################################
+##
+## 
+##
+################################################################################################################################
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.set_projection_and_transform(a_dataset, _optional validations)
+	##
+	## Asignar valor de proyeccion destino y calcular la
+	## transformacion a aplicar si fuera necesario
+	##
+
+	_local a_projection, a_transform,current_projection
+
+	validations << validations.default(ib_export_validations.new())
+	
+	#Sistema de coordenadas destino
+	_if (a_projection << .shape_export_options[:destination_projection]) _is _unset _then		
+		# Extraer sistema de coordenadas destino del XML de configuracion
+		xml_config << _self.export_parameters_from_xml()
+		a_projection << xml_config[:destination_projection]
+	_endif
+
+	_if a_projection _isnt _unset _then
+		validations.set_destination_projection(a_projection,a_dataset)
+	_endif
+
+	# Calcular transformacion
+	a_transform << .shape_export_options[:projection_transform]
+	_if (a_transform _is _unset) _orif
+	    (a_projection _is _unset) _then
+		# Faltan datos, recuperarlos a partir del sistema de
+		# coordenadas actual del dataset
+		current_projection << a_dataset.world.coordinate_system #ds_coordinate_system
+	_endif	
+	validations.set_projection_transform(a_transform, current_projection)
+
+	_if validations.destination_projection _is _unset _then 
+		# ERROR No se proporciono un sistema de coordenadas destino
+		write(_self.message(:err_no_file_projection))
+	_endif
+
+	.shape_export_options[:destination_projection] << validations.destination_projection
+	.shape_export_options[:projection_transform] << validations.projection_transform
+
+	# Unidades
+	_if (a_unit << .shape_export_options[:destination_units]) _is _unset _then
+		_if xml_config _is _unset _then
+			# Extraer unidades del XML
+			xml_config << _self.export_parameters_from_xml()
+		_endif
+		a_unit << xml_config[:destination_units]
+	_endif
+
+	_if a_unit _is _unset _then _return _endif
+
+	validations.set_destination_units(a_unit)
+	.shape_export_options[:destination_units] << validations.destination_units
+	.shape_export_options[:units_transform] << validations.units_transform
+	
+_endmethod
+$
+################################################################################################################################
+##
+## ACCESO FICHERO XML
+##
+################################################################################################################################
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.export_parameters_from_xml(_optional xml_file_path)
+	##
+	## Devuelve
+	##
+	##
+
+	.xml_config_read? << .xml_config_read?.default(_false)
+
+	_if _not .xml_config_read? _then 
+
+		_if xml_file_path _is _unset _then
+			# recuperar configuración por defecto
+			xml_file_path << _self.get_default_file_full_path()
+		_endif
+
+		_if xml_file_path _isnt _unset _then 
+			xml_engine << ib_export_shape_xml_correspondence.new(:config_export_shape,_self ,
+		 			               :default_file_full_path,xml_file_path)
+			.xml_config_file << xml_engine.get_default_export_configuration()
+		_endif 
+		.xml_config_read? << _true 
+	_endif
+
+	_return .xml_config_file
+	
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_engine.get_default_file_full_path()
+	##
+	## Ruta completa del fichero de configuracion por defecto
+	##
+
+	_local file_name? << _false
+	_local file_path? << _false
+	_local file_name,file_path
+	_local file_full_path
+	
+	# Leer el fichero de configuracion del modulo para obtener la
+	# ruta por defecto
+	
+	exp_module << sw_module_manager.module(_self.module_name)
+	
+	full_path_config_file << exp_module.get_resource_file("config.xml",:data)
+	xml_config_file << simple_xml.read_document_file(full_path_config_file)
+
+	_if (xml_config_file _is _unset) _orif
+	    ((xml_elems << xml_config_file.xml_elements).size = 0) 	    
+	_then _return _endif
+
+	_for a_xml_elem _over xml_elems.fast_elements()
+	_loop
+		_if a_xml_elem.xml_tag _isnt :config _then _continue _endif
+
+		xml_frame_data << a_xml_elem.element_matching_name("framework_data")
+		_for a_xml_property _over xml_frame_data.xml_elements()
+		_loop
+			a_name << a_xml_property.xml_attributes[:name]
+			a_value << a_xml_property.xml_attributes[:value]
+
+			_if a_value _is _unset _orif
+			    a_value = "" _then _continue _endif 
+			
+			_if  a_name = "default_xml_config_export_file_name" _then
+				file_name? << _true
+				file_name << a_value
+			_elif a_name = "default_xml_config_export_file_path" _then
+				file_path? << _true
+				file_path << a_value
+			_endif 				
+
+			_if file_name? _andif file_path? _then
+				file_full_path << system.pathname_from_components(file_name,file_path)
+				_leave
+			_endif 
+		_endloop 
+	_endloop
+
+	_if file_name? _andif (_not file_path?) _then
+		file_full_path << exp_module.get_resource_file(file_name,:data)
+	_endif
+
+	_return file_full_path
+	
+_endmethod
+$
+################################################################################################################################
+##
+## MÉTODOS DE EJECUCIÓN DE EXPORTACIONES/IMPORTACIONES
+##
+################################################################################################################################
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_engine.write_shape(list_objects,geom_field_name, _gather exportation_options)
+	##
+	## Exporta a ficheros SHAPE los objetos LIST_OBJECTS(han de ser
+	## del mismo tipo).
+	## GEOM_FIELD_NAME es el nombre del campo geometrico, que se va a exportar.
+	##
+	## Los parametros de exportación vienen proporcionados por la
+	## lista EXPORTATION_OPTIONS que puede tener los siguientes
+	## pares de valores:
+	##
+	## OUTPUT_PATH    : Ruta destino donde se generaran el/los ficheros.
+	##                  (se genera un fichero por cada geometria a exportar)
+	## PROJECTION     : Sistema de coordenadas destino
+	## UNITS          : Unidades destino
+	##
+	## Para determinar las correspondencias entre los elementos SW y SHAPE, se puede
+	## proporcionar un objeto de tipo ib_table_export_structure con ellas o un fichero XML que
+	## contenga dicha configuración.
+	##
+	##   CORRESPONDENCES(objeto de tipo ib_table_export_structure)
+	##     o
+	##   XML_CORRESP_FILE(XML de configuracion)
+	##
+	## Si no se proporciona ninguno de los dos se utilizará 
+	## el fichero de configuración por defecto si existe alguno.
+	##
+	## Si no se dispone de alguno de los valores OUTPUT_PATH, PROJECTION o UNITS, 
+	## se tomará la información del fichero XML o en ultimo termino
+	## se aplicarán transformaciones de identidad.
+	##
+	## Opcionalmente se pueden proporcionar tambien los valores
+	## TRANSFORM_PROJECTION o TRANSFORM_UNITS, con las
+	## transformaciones que han de aplicarse sobre las geometrias
+	## para convertirlas en el sistema de coordenadas y las
+	## unidades destino
+	##
+
+	_local a_table,a_dataset
+
+	_if list_objects _is _unset _orif
+	    list_objects.size=0 _then
+		# Devuelve un mensaje indicando que no hay registros
+		_return
+	_endif
+
+	a_table << list_objects.an_element().source_collection
+
+	# inicializar opciones de exportacion
+	_self.initilizate_shape_export_options(exportation_options,a_table,geom_field_name)
+
+	# Exportar		
+	transform_acp << ib_shape_file_acp.new (_self, :destination_path,.shape_export_options[:destination_path],
+						       :destination_projection,.shape_export_options[:destination_projection], # el sistema de coordenadas
+						                                                                               # no el nombre
+						       :destination_units,.shape_export_options[:destination_units],
+						       :export_structure,.shape_export_options[:correspondences],
+					               :projection_transform,.shape_export_options[:projection_transform],
+					               :units_transform,.shape_export_options[:units_transform])
+	
+	transform_acp.write_shape_file(list_objects)
+	
+_endmethod
+$
+########################################################################################################################
+#
+# GESTION DE MENSAJES
+#
+########################################################################################################################
+_pragma(classify_level=basic)
+_method ib_export_engine.message( message_id, _gather  args )
+	##
+	## Devuelve el texto del mensaje message_id
+	##
+        _return  _self.message_accessor.human_string(
+                           message_id, _unset, _scatter args )
+_endmethod
+$

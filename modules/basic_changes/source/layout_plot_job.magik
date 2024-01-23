@@ -1,0 +1,7 @@
+##
+## Se modifica la shared_constant acrobat_command_line_options
+## para que solucionar problemas de ploteo
+##
+$
+layout_plot_job.define_shared_constant(:acrobat_command_line_options, "-k pdf -d 2", :public)
+$

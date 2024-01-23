@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<serial_xml_thing format="1">
+    <export_parameters>
+	<!-- Parametros de exportacion -->
+	<export_parameter name="destination_path">C:\Temp</export_parameter>
+	<export_parameter name="destination_projection">EPSG:4326</export_parameter> 
+	<export_parameter name="destination_units">Kilómetro</export_parameter>
+	<export_parameter name="bound_limit">trail</export_parameter>
+	<export_parameter name="geometry"></export_parameter>
+	<!-- este parametro solo es necesario si en el elemento "correspondences"
+             hay definidas configuraciones de más de un dataset, si el parametro no existe o no tiene valor 
+             se toma como dato el del primer dataset que aparece en "correspondences" -->
+	<export_parameter name="dataset">gis</export_parameter>
+    </export_parameters>
+    <correspondences>
+	<dataset name="gis">
+	    <!-- sw_geom y sh_entity no son obligatorios
+                 *si sw_geom no existe se toma la geometria por defecto
+                 *si sh_entity no existe se toma el nombre de la tabla en smallworld -->
+	    <table sw_internal_name="cable" sw_geom="route" sh_entity="" export_empties="False">
+		<!-- sw_field - se corresponde con uno de los siguientes tipos de elementos
+		                * un campo del objeto sw
+                                * una secuencia de campos join separados por puntos
+				  join1.join2.campo_objeto2
+                                * un método implementado sobre el objeto que devuelve el dato que se quiere exportar
+
+                     format_method - se utiliza solo en el caso de que la sw_field sea un join o secuencia de joins
+                                     es un metodo que se llama sobre el registro devuelto por el join y devuelve el dato
+                                     que se quiere exportar con su formato adecuado
+		     export_empties- a False indica que se exportarán solo registros que tengan valor en el campo 
+                                     geométrico. Por defecto su valor es True(en cuyo caso no es necesario que aparezca la etiqueta) 
+
+		-->
+		<field sw_field="provincia" shape_field="" type="" format_method="nombre"/>
+		<field sw_field="provincia.municipio.name" shape_field="" type="" />
+		<field sw_field="provincia.municipio.distrito" shape_field="" type="" format_method="descripcion_distrito()" />
+		<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids" sw_unit="" sh_unit="" format_method=""/>
+	    </table>	
+	    <!-- Ejemplo de configuracion de una geometria de texto, para exportar orientacion, desplazamiento vertical y horizontal-->
+	    <table sw_internal_name="texto_zona" sw_geom="texto" sh_entity="">
+		<field sw_field="ibtr_full_id" type="ds_char16_vector" shape_field="sw_ids"/>
+		<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees"/>
+		<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m"/>
+		<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m"/>
+	    </table>
+        </dataset>
+	<dataset name="cartografia">
+	    <table sw_internal_name="manzana" sw_geom="contorno" sh_entity="manzana_contorno_manzana">
+		<field sw_field="num_locales" type="integer" shape_field="" sw_unit="" sh_unit="" format_method=""/>
+		<field sw_field="cod_man" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method=""/>
+		<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids" sw_unit="" sh_unit="" format_method=""/>
+	    </table>
+        </dataset>
+    </correspondences>
+</serial_xml_thing>

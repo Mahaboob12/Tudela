@@ -1,0 +1,93 @@
+#% text_encoding = iso8859_1
+_package user
+#
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:boca_riego,{},:rwo_record)
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method boca_riego.ramal_trigger(tipo,att_det,geom)
+	## Crea posicion al final del ramal
+
+	_if _self.posicion _isnt _unset
+	_then
+		_self.unset_geometry(:posicion)
+	_endif
+	_if att_det _is :attach
+	_then
+		(dummy,ang) << _self.ramal.sectors.last_mid_point()
+		coord << _self.ramal.sectors.last_coord
+		
+		pos << _self.make_geometry(:posicion,coord)
+		pos.orientation << ang
+	_endif	
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method boca_riego.posicion_trigger(nombre,att_det,geom)
+	
+	## Coloca la anotacion de la presion
+
+	_if att_det _is :attach
+	_then
+		# Coloca el texto de la presion
+		coord << _self.posicion.coord
+		txt << _self.texto_text
+		_if _self.texto _isnt _unset _then
+			_self.unset_geometry(:texto)
+		_endif
+		# Si la presion es unset, se anula el texto
+		_if txt <> ""
+		_then 
+			texto << _self.make_geometry(:texto,coord,txt)
+			texto.just << 11
+		_endif 
+	_endif 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method boca_riego.texto_text
+
+	## Devuelve la presion si existe
+	str << ""
+	_if _self.presion _isnt _unset
+	_then
+		# Cambiamos el numero de decimales a 1 en la unidades Bar
+		# No reponemos el original porque no es necesario
+		_self.presion.unit.default_format.float_decimal_places << 1
+
+		str << write_string(%(,_self.presion,%))
+	_endif 
+	_return str 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method boca_riego.texto_trigger()
+	## Cambia el texto de la presion, si es que existe
+	_if _self.texto _isnt _unset
+	_then
+		_self.unset_geometry(:texto)
+	_endif
+
+	_if (pos << _self.posicion) _is _unset
+	_then
+		_return
+	_endif
+	
+	coord << pos.coord
+	txt << _self.texto_text
+	# Si hay string no esta vacio, se crea el texto
+	_if txt <> ""
+	_then
+		#_self.texto.string << txt
+		texto << _self.make_geometry(:texto,coord,txt)
+		texto.just << 11
+	_endif 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method boca_riego.valida_geometria(args)
+	##
+	## Verifica "nada"
+
+_endmethod

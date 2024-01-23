@@ -1,0 +1,333 @@
+$
+#remex(:traductor_engine)
+$
+def_slotted_exemplar(:traductor_engine,{
+	              {:framework, _unset,:writable}
+		     },:engine_model)
+$
+_pragma(classify_level=restricted, usage={external})
+traductor_engine.define_shared_constant(:tablas,{:fondo_linea,:fondo_texto},:public)
+
+$
+_pragma(classify_level=restricted, usage={external})
+traductor_engine.define_shared_constant(
+	:fondo_linea,
+	hash_table.new_with(    
+		:geometrias,  {
+				      # {nombre_geometria,nivel,color,peso,estilo}      
+				      {:parcela_urbana,18,0,0,0},
+				      {:parcela_rustica,11,3,0,0}, # de 21 a 56
+				      {:parcela_mixta,59,4,0,0},
+				      {:parcela_mixta,59,3,0,0},
+				      {:subparcela_rustica,12,4,0,0},
+				      {:subparcela_rustica,12,140,0,0},
+				      {:edificacion_rustica,19,1,2,0},
+				      {:edificacion_urbana,13,140,0,0},
+				      {:vial,9,2,0,0}, 
+				      {:limite_municipio,4,0,0,0},
+				      {:limite_concejo,5,2,2,0},
+				      {:lineas_decorativas,17,70,0,0}
+
+				      ## Otros
+
+				      #{:altimetria,{4,5}},
+				      #{:exterior_manzana,},
+				      #{:interior_manzana,},
+				      #{:mobiliario_urbano,{}},
+				      #{:marco_plano,{4}},
+				      #{:mobiliario_urbano,{4}},
+				      #{:hidrografia,{4}},
+				      #{:red_electrica,{4}},
+				      #{:red_telefonica,{4}},
+				      #{:varios,{4,5,6,7}}
+				      
+		},
+		:tipo_capa,{:line,:chain}
+
+		   ),
+	:public)
+$
+_pragma(classify_level=restricted, usage={external})
+traductor_engine.define_shared_constant(
+	:fondo_texto,
+	hash_table.new_with(    
+		:geometrias,  {
+			     # {nombre_geometria,nivel,color,peso,estilo}
+			     
+			     {:portal,                 57,    0,   0,   _unset },    # texto portales
+			     {:centroide_parcela,      61,    0,   2,   _unset },    # texto parcela urbana
+			     {:centroide_parcela,      11,    3,   2,   _unset },    # texto parcela rustica
+			     {:centroide_parcela,      11,  170,   2,   _unset },    # texto parcela rustica
+		             {:altura_edificacion,     61,    0,   1,   _unset },    # texto edificacion
+			     {:varios,                 14,    0,   0,          0}    # id de municipio
+
+			     # OTROS
+			     #{:punto_altimetria,{}},
+			     #{:toponimia_urbana,{}},
+			     #{:centroide_manzana,{}},
+			     #{:calle,{}},
+			     
+		},
+		:tipo_capa,{:text,:text}
+
+		   ),
+	:public)
+$
+_pragma(classify_level=restricted, usage={external})
+traductor_engine.define_shared_constant(
+	:mobiliario,
+	hash_table.new_with(    
+		:geometrias,  {     		      
+			     {:punto,{}}		     
+		},
+		:tipo_capa,{:cell,:point}
+
+		   ),
+	:public)
+$
+_pragma(classify_level=restricted, usage={external})
+traductor_engine.define_shared_constant(
+	:tapas,
+	hash_table.new_with(    
+		:geometrias,  {     		      
+			     {:punto,{}}		     
+		},
+		:tipo_capa,{:cell,:point}
+
+		   ),
+	:public)
+$
+_pragma(classify_level=restricted, usage={external})
+traductor_engine.define_shared_constant(
+	:callejero,
+	hash_table.new_with(    
+		:geometrias,  {
+			{:texto,                 9,    3,   0,   _unset }   # texto calles
+		},
+		:tipo_capa,{:text,:text}
+		   ),
+	:public)
+
+$
+_pragma(classify_level=restricted, usage={external})
+traductor_engine.define_shared_constant(
+	:tapa,
+	hash_table.new_with(    
+		:geometrias,  {
+				      {:punto,                 9,    3,   0,   _unset }   # texto calles   
+		},
+		:tipo_capa,{:text,:text}
+		   ),
+	:public)
+
+
+$
+_pragma(classify_level=basic)
+_method traductor_engine.new(parent)
+
+	_self.init(parent)
+	>> _self
+	
+_endmethod
+$
+_pragma(classify_level=basic)
+_method traductor_engine.init(parent)
+
+	.framework << parent
+	_super.init(parent)
+	>> _self
+	
+_endmethod
+$
+_pragma(classify_level=basic)
+_method traductor_engine.copiar_elementos_catastro()
+
+	_for tab_destino _over _self.tablas.elements()
+	_loop
+		write("procesando TABLA: ", tab_destino)
+		tipo_capa << _self.perform(tab_destino)[:tipo_capa]
+
+		_for geom _over _self.perform(tab_destino)[:geometrias].elements()
+		_loop
+			#write(tab_char,"geometria: ", geom[1])
+			_self.copiar_capa(tab_destino, geom, tipo_capa)  
+
+		_endloop
+	_endloop
+
+
+	_self.copiar_callejero()
+
+	write("FIN de Traduccion")
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_method traductor_engine.copiar_capa(n_tab_destino, geom, t_capa)
+
+	# Tabla destino: [fondo_linea|fondo_texto|....]
+	# Tipo_capa:     [line|point|text|...]
+	# Nivel_capa:    [1,2,..]
+
+	n_geom_destino <<  geom[1]   # geometria destino
+	n_capa         <<  geom[2]   # nivel  dgn
+	n_color        <<  geom[3]   # color  dgn
+	n_peso         <<  geom[4]   # peso   dgn
+	n_estilo       <<  geom[5]   # estilo dgn
+
+	
+	write(2*tab_char,n_tab_destino,"-",n_geom_destino,"-NIVEL:", n_capa)
+
+	vdestino    <<  gis_program_manager.databases[:gis]
+	vorigen     <<  gis_program_manager.databases[:tudela]
+
+	
+	n_tabla_origen << t_capa[1]   # Nombre Tabla     origen
+	n_geom_origen  << t_capa[2]   # Nombre Geometría origen
+
+
+	# Seleccion por nivel
+	
+	pred1 << predicate.eq(:level, "Level "+ n_capa.write_string) _or predicate.eq(:level, "Level  "+ n_capa.write_string)
+
+	# Seleccion por peso
+	pred2 << predicate.eq(:weight,n_peso)
+	# Seleccion por color
+	pred3  << predicate.eq(:color,"Color "+n_color.write_string) _or predicate.eq(:color,"Color  "+n_color.write_string) _or
+		   predicate.eq(:color,"Color   "+n_color.write_string)
+
+
+	
+	# Recorro las tablas origen con datos
+	tab_origen  <<  vorigen.collections[n_tabla_origen]
+	my_selection << tab_origen.select(pred1 _and pred2 _and pred3)
+
+	tab_destino << vdestino.collections[n_tab_destino]
+	write(3*tab_char,my_selection.size)
+	# Recorro las tablas origen con datos
+
+	write("empiezo a escribir en: ",tab_destino )
+
+	_for reg_tab_origen _over my_selection.elements()
+	_loop
+
+		#write(reg_tab_origen)
+		nr << tab_destino.new_detached_record()
+
+		#write("TIPO DE CAPA: ", t_capa[1])
+		_try _with fout 
+			_if t_capa[1] _is :text
+			_then				
+				nr.make_geometry(n_geom_destino,
+						 reg_tab_origen.perform(n_geom_origen).sectors, reg_tab_origen.string.default(""))
+			_else
+				nr.make_geometry(n_geom_destino,
+						 reg_tab_origen.perform(n_geom_origen).sectors)
+			_endif
+			
+		_when error
+
+			write(tab_char, "ERROR record ",nr , "cause: ",fout.report_contents_string)
+			_continue	
+		_endtry
+		
+
+	rec << tab_destino.insert(nr)
+
+
+		_if t_capa[1] _is :point
+		_then
+			nr.perform(n_geom_destino).orientation << reg_tab_origen.perform(n_geom_origen).orientation
+			nr.perform(n_geom_destino).scale <<       reg_tab_origen.perform(n_geom_origen).scale
+
+		_elif t_capa[1] _is :text
+		_then
+			write("texto")
+			n_geom_destino << :texto
+			n_geom_origen << :text
+			nr.perform(n_geom_destino).orientation <<  reg_tab_origen.perform(n_geom_origen).orientation
+#			nr.perform(n_geom_destino).height <<       reg_tab_origen.perform(n_geom_origen).height
+#			nr.perform(n_geom_destino).just <<         reg_tab_origen.perform(n_geom_origen).justification	
+		_endif
+
+
+		
+	_endloop
+_endmethod
+$
+_pragma(classify_level=basic)
+_method traductor_engine.copiar_callejero()
+
+	#write("copiar callejero")
+	tipo_capa << _self.callejero[:tipo_capa]
+
+	vdestino    <<  gis_program_manager.databases[:gis]
+	vorigen     <<  gis_program_manager.databases[:catastro]
+
+	n_tabla_origen << tipo_capa[1]   # Nombre Tabla     origen
+	n_geom_origen  << tipo_capa[2]   # Nombre Geometría origen
+
+	tab_destino << vdestino.collections[:callejero]
+
+	geom << _self.callejero[:geometrias][1]
+
+	n_geom_destino <<  geom[1]   # geometria destino
+	n_capa         <<  geom[2]   # nivel  dgn
+	n_color        <<  geom[3]   # color  dgn
+	n_peso         <<  geom[4]   # peso   dgn
+	n_estilo       <<  geom[5]   # estilo dgn
+
+	
+	
+	# Seleccion por nivel
+	
+	pred1 << predicate.eq(:level, "Level "+ n_capa.write_string) _or predicate.eq(:level, "Level  "+ n_capa.write_string)
+
+	# Seleccion por peso
+	pred2 << predicate.eq(:weight,n_peso)
+	# Seleccion por color
+	pred3  << predicate.eq(:color,"Color "+n_color.write_string) _or predicate.eq(:color,"Color  "+n_color.write_string) _or
+		   predicate.eq(:color,"Color   "+n_color.write_string)
+
+
+	tab_origen  <<  vorigen.collections[n_tabla_origen]
+	my_selection << tab_origen.select(pred1 _and pred2 _and pred3)
+	
+
+	
+	_for reg_tab_origen _over my_selection.elements()
+	_loop
+		nr << tab_destino.new_detached_record()
+		nr.nombre << ""
+		rec << tab_destino.insert(nr)
+
+		rec.make_geometry(n_geom_destino,
+				  reg_tab_origen.perform(n_geom_origen).sectors,
+				  reg_tab_origen.string.default("") )
+		rec.perform(n_geom_destino).orientation <<  reg_tab_origen.perform(n_geom_origen).orientation
+		rec.perform(n_geom_destino).just <<         reg_tab_origen.perform(n_geom_origen).justification	
+	_endloop
+	
+_endmethod
+$
+_pragma(classify_level=basic)
+_method traductor_engine.cargar_datos_de_fichero(n_fichero)
+	ex_stream << external_text_input_stream.new(n_fichero)
+	
+	_loop
+		_if (val << ex_stream.get_line()) _is unset
+		_then
+			_leave
+		_endif
+
+		
+		info_rec << val.split_by(" ")
+		id << info_rec[1]
+		x << info_rec[2]
+		y << info_rec[3]
+		z << info_rec[4]
+		tipo << info_rec[5]
+
+		write(tipo, tab_char, x,tab_char,y)
+	_endloop		
+_endmethod

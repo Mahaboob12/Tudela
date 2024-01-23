@@ -1,0 +1,6 @@
+_package user
+
+$
+message_handler.new(:captura).set_uses_list({:swaf_professional_application})
+
+$

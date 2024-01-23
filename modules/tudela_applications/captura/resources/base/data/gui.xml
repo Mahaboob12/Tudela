@@ -1,0 +1,215 @@
+<?xml version="1.0" standalone="yes"?>
+
+<!-- gui.xml for the SWAF Professional application -->
+
+<gui base="swaf_professional_application.gui">
+    <!-- MENUBAR -->
+
+    <menu name="menubar" type="menubar">  
+        
+	<submenu name="file" mnemonic_id="file_m">
+	    <action name="versions.activate_version_management" mnemonic_id="activate_version_management_m"/>
+	    <action name="versions.commit" mnemonic_id="commit_m" />
+	    <action name="versions.rollback" mnemonic_id="rollback_m"/>
+	    <separator/>
+	    <action name="plotting.quick_preview" mnemonic_id="quick_plot_preview_m"/>
+	    <separator/>
+	    <action name="exit" mnemonic_id="exit_m"/>
+	</submenu>
+	<submenu name="edit" mnemonic_id="edit_m">
+	    <action name="undo" mnemonic_id="undo_m"/>
+	    <action name="redo" mnemonic_id="redo_m"/>
+	    <separator/>
+	    <action name="editor_manager.edit_object" mnemonic_id="edit_object_m"/>
+	    <action name="spatial_context_viewer.view_object" mnemonic_id="view_object_m"/>
+	    <separator/>
+	    <action name="maps.map_clear_selection" mnemonic_id="clear_selection_m"/>
+	    <action name="maps.map_next_selection_candidate" mnemonic_id="next_selection_m"/>
+	    <action name="maps.map_previous_selection_candidate" mnemonic_id="previous_selection_m"/>
+	    <action name="maps.map_gui_multiple_selection_dialog" mnemonic_id="multiple_selection_dialog_m"/>
+	    <separator/>
+	    <action name="maps.map_copy_to_clipboard" mnemonic_id="map_copy_to_clipboard_m"/>
+	    <submenu name="paste_from_scrapbook" mnemonic_id="paste_from_scrapbook_m">
+		<action name="transform.dynamic_paste" mnemonic_id="dynamic_paste_m"/>
+		<action name="transform.paste_to_trail" mnemonic_id="paste_to_trail_m"/>
+	    </submenu>
+	    <submenu name="duplicate_selection" mnemonic_id="duplicate_selection_m">
+	    	<action name="transform.duplicate_dynamic"  caption_id="position_dynamic" mnemonic_id="position_dynamic_m"/>
+	    	<action name="transform.duplicate_by_trail" caption_id="position_by_trail" mnemonic_id="position_by_trail_m"/>
+	    </submenu>
+	    <action name="maps.map_gui_delete_selection"     mnemonic_id="map_gui_delete_selection_m"/>
+            <action name="maps.map_set_selection_invisible"  mnemonic_id="map_set_selection_invisible_m" />
+	</submenu>
+	<submenu name="view" mnemonic_id="view_m">
+	    <action name="maps.view_refresh" mnemonic_id="refresh_m"/>
+	    <action name="maps.view_interrupt_refresh" mnemonic_id="interrupt_refresh_m"/>
+	    <separator/>
+	    <action name="maps.map_gui_previous_view" mnemonic_id="previous_view_m" caption_id="previous_view"/>
+	    <action name="maps.map_gui_next_view" mnemonic_id="next_view_m" caption_id="next_view"/>
+	    <action name="maps.map_gui_home_view" mnemonic_id="home_view_m"/>
+	    <action name="maps.map_gui_bookmark_dialog" mnemonic_id="bookmark_tool_m"/>
+	    <separator/>
+	    <submenu name="zoom" mnemonic_id="zoom_m">
+	    	<action name="maps.view_zoom_in" mnemonic_id="zoom_in_m"/>
+	    	<action name="maps.view_zoom_out" mnemonic_id="zoom_out_m"/>
+	    	<action name="maps.view_zoom_to_trail" mnemonic_id="zoom_zoom_to_trail_m"/>
+	    	<action name="maps.view_zoom_to_selection" mnemonic_id="zoom_to_selection_m"/>
+	    </submenu>
+	    <action name="maps.map_gui_rotate_view" mnemonic_id="angle_rotate_m"/>
+	    <action name="maps.view_rotate_to_trail" mnemonic_id="rotate_to_trail_m"/>
+	    <action name="maps.view_pan_to_selected_trail_point" mnemonic_id="pan_to_selected_trail_point_m"/>
+	    <separator/>
+	    <action name="maps.map_gui_properties" mnemonic_id="view_properties_m"/>
+	</submenu>
+
+	<submenu name="trail" mnemonic_id="trail_m">
+	    <action name="maps.trail_clear" mnemonic_id="clear_trail_m"/>
+	    <action name="maps.trail_reverse" mnemonic_id="reverse_trail_m"/>
+	    <action name="maps.trail_close" mnemonic_id="close_trail_m"/>
+	    <separator/>
+	    <action name="maps.map_set_trail_to_selection" mnemonic_id="set_trail_to_selection_m"/>
+	    <separator/>
+	    <action name="maps.trail_dynamics_on_self" mnemonic_id="trail_dynamics_on_self_m"/>
+	    <action name="maps.trail_lock_length" mnemonic_id="trail_lock_length_m"/>
+	    <action name="maps.trail_lock_angle" mnemonic_id="trail_lock_angle_m"/>
+	    <separator/>
+	    <action name="map_trail.points_tool" mnemonic_id="trail_activate_tool_m"/>
+	    <action name="map_trail.trail_properties_dialog" mnemonic_id="trail_properties_dialog_m"/>
+	</submenu>
+
+	<submenu name="tools" mnemonic_id="tools_m">
+	    <action name="explorer.start_explorer" mnemonic_id="start_explorer_m"/>
+	    <action name="query_tool.activate_query_tool" mnemonic_id="activate_query_tool_m"/>
+	    <action name="quality_management.activate_quality_check_dialog"/>
+	    <separator/>
+	    <action name="plotting.layout_designer" mnemonic_id="layout_m"/>
+	    <separator/>
+	    <submenu name="analysis" mnemonic_id="analysis_m">
+		<action name="analysis.activate_network_analysis_dialog"               mnemonic_id="activate_network_analysis_dialog_m"/>
+		<action name="point_set_analysis.activate_proximity_analysis_dialog" mnemonic_id="activate_proximity_analysis_dialog_m"/>
+		<action name="point_set_analysis.activate_cluster_analysis_dialog"   mnemonic_id="activate_cluster_analysis_dialog_m"/>
+	    </submenu>
+	    <submenu name="topology" mnemonic_id="topology_m">
+	        <action name="topology.activate_topology_editor" mnemonic_id="topology_editor_m"/>
+	        <action name="topology.activate_manifold_editor" mnemonic_id="manifold_editor_m"/>
+	    </submenu>
+	    <action name="scrapbook.activate_scrapbook_dialog"  mnemonic_id="scrapbook_m"/>
+	    <separator/>
+
+	    <!-- this is where floating toolbars will be listed -->
+	    <submenu name="floating_toolbars" mnemonic_id="floating_toolbars_m" role="floating_toolbars"/>
+
+	    <!-- this is where panes controlled by the pane_manager will be listed -->
+	    <submenu name="tabs" mnemonic_id="tabs_m" role="pane_manager"/>
+
+	    <action name="application_manager" mnemonic_id="application_manager_m"/>
+	    <action name="change_password" mnemonic_id="change_password_m"/>
+	    <action name="options.activate_options_dialog" mnemonic_id="options_m"/>
+
+	    
+	    <separator/>
+	    <!-- Anadido menu de SOMS y de DXF -->
+	    <action name="dxf.activate_import_dialog" mnemonic_id="dxf_import_dialog_m"/>
+	    <action name="dxf.activate_export_dialog" mnemonic_id="dxf_export_dialog_m"/>	    
+	    <separator/>
+	    <action name="soms.activate_soms_management"/>
+	    <separator/>
+	    <action name="traductor.activar_menu_cartografia"/>
+	    <action name="cargador_topo.abrir_cargador_topo"/>
+		 <action name="ib_export.open_export_shape"/>
+	</submenu>
+
+	<submenu name="window" mnemonic_id="window_m" role="new_document_actions">
+	    <action name="maps.map_gui_additional_view" mnemonic_id="activate_additional_view_m"/>
+	    <action name="maps.map_gui_detail_view" mnemonic_id="detail_view_m"/>
+	    <!-- this is where additional windows will be listed
+	    <separator/>  --> 
+	</submenu>
+
+	<submenu name="help" mnemonic_id="help_m">
+	    <action name="help_contents_and_index" mnemonic_id="help_contents_and_index_m"/>
+	    <action name="how_to_get_help" mnemonic_id="how_to_get_help_m"/>
+	    <separator/>
+	    <action name="about_application" mnemonic_id="about_application_m"/>
+	</submenu>
+    </menu> <!-- menubar -->
+
+    <toolbar name="view">
+	<action name="maps.view_view_scale"/>
+	<action name="maps.view_display_style"/>
+	<action name="maps.view_lock_display_style"/>
+	<action name="maps.view_coordinate_system"/>
+	<action name="maps.view_snapshot"/>
+	<!-- requerido por goole_maps -->
+	<!--<action name="map_tiles.background_map_type"/>
+	<action name="map_tiles.intensity_value"/>-->
+	<!-- requerido por goole_maps -->
+    </toolbar>
+
+    <!-- requerido por google_maps-->
+    <!--<toolbar name="add_google_maps" role="add_google_maps_role" hidden="no">
+	  <action source="application" name="map_tiles.background_map_type"/>
+	  <action source="application" name="map_tiles.intensity_value"/>
+    </toolbar>
+
+    <toolbar name="swaf_address_search_toolbar">
+	  <action source="application" name="swaf_address_search.address_to_search"/>
+	  <action source="application" name="swaf_address_search.search_address"/>
+    </toolbar> -->
+    <!-- fin requerido por google_maps-->
+
+    <dock name="top">
+        <!-- free text search -->   
+	<toolbar name="advanced_find"/>
+	<toolbar name="navigation"/>
+	<toolbar name="objects"/>
+	<toolbar name="transform"/>
+	<section/>
+	<toolbar name="interaction"/>
+	<toolbar name="map_modes"/>
+	<toolbar name="refresh"/>
+	<toolbar name="view"/>
+	<!-- requerido por google_maps-->
+    	<toolbar name="swaf_address_search_toolbar"/>
+	<!-- fin requerido por google_maps-->
+    </dock>
+
+    <!-- WORK AREA -->
+
+    <work_area>
+        <paned_window side_by_side="yes">
+	    <plugin plugin_name="document_manager" stretch="1">
+                <document plugin_name="maps" map_type="geographic" />
+            </plugin>
+
+            <paned_window side_by_side="no">
+                <!-- note: role viewport_mapping means Layouts is allowed to build panes inside this tab -->
+                <tab_box role="viewport_mapping">
+		    <!-- these roles are used by the pane_manager to allow 
+		         the user to switch the visibility of these tabs -->
+                    <plugin plugin_name="object_control"           role="object_control"/>
+                    <plugin plugin_name="editor_manager"           role="editor_manager"/>
+                </tab_box>
+
+		<tab_box role="viewers">
+                    <plugin plugin_name="spatial_context_viewer">
+                        <properties>
+                            <property name="width" value="300"/>
+                            <property name="height" value="300"/>
+                        </properties>
+                    </plugin>
+		    <plugin plugin_name="overviewer">
+                        <properties>
+                            <property name="width" value="300"/>
+                            <property name="height" value="300"/>
+                        </properties>
+		    </plugin>
+		    <!-- requerido por google_maps-->
+		    <plugin plugin_name="streetview"/>
+		    <!-- fin requerido por google_maps-->
+		</tab_box>
+            </paned_window>
+        </paned_window>
+    </work_area>
+
+</gui>

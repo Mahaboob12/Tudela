@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<config base="editor_plugin.config.xml">
+    <plugins>
+        <super/>
+	<plugin name="documentos_relacionados" class_name="documentos_relacionados_editor_plugin"/>
+    </plugins>
+</config>

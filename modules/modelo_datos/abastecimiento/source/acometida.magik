@@ -1,0 +1,136 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:acometida,{},:rwo_record)
+$
+_method acometida.consumo_calculado()
+	# Metodo del campo calculado consumo_medio
+	q_med << 3.5 * 0.00175 * _self.n_vdas_uso.default(0)
+	_return q_med
+_endmethod
+$
+_method acometida.consumo_maximo()
+	
+	# Metodo del campo calculado consumo_punta
+	q_max<< 3.5 * 0.00175 * _self.n_vdas_uso.default(0) * 4
+	_return q_max
+_endmethod
+$
+_method acometida.acometida_texto
+	# Metodo de texto del campo texto
+	txt << _self.diametro.default("DE").write_string + _self.material.default("DE").write_string
+	_return txt
+_endmethod
+$
+_method acometida.acometida_trigger(tipo,att_det,geom)
+
+	# Trigger de insercion/borrado de los campos de ramales y
+	# llaves 
+	_if att_det _is :attach
+	_then
+		_self.posicion_texto(att_det)
+
+		_if geom.is_kind_of?(chain)
+		_then
+			_self.poner_flecha(tipo)
+		_endif
+		
+	_elif att_det _is :detach
+	_then
+		_if geom.is_kind_of?(chain)
+		_then
+			_self.borrar_flecha_y_llave(tipo)
+		_endif 
+	_endif
+_endmethod
+$
+_method acometida.posicion_texto(att_det)
+
+	# Posiciona el texto de la acometida en el centro del primer segmento
+	_if _self.ramal _is _unset
+	_then
+		_return
+	_endif
+	
+	(coord,ang) << _self.ramal.sectors.first_mid_point()
+
+	_if ang < -90.degrees_to_radians _then
+		ang << ang + 180.degrees_to_radians
+	_else
+		_if ang > 90.degrees_to_radians _then
+			ang << ang - 180.degrees_to_radians
+		_endif 
+	_endif
+
+	txt << _self.acometida_texto
+
+	_if _self.texto _isnt _unset
+	_then
+		texto << _self.unset_geometry(:texto)
+	_endif
+	
+	texto << _self.make_geometry(:texto,coord,txt)
+	texto.orientation << ang
+	texto.just << 13
+
+_endmethod
+$	
+_method acometida.poner_flecha(tipo)
+	# Ponemos el punto flecha al final del ramal de acometida
+	# Es un simple_point que se dispara por un trigger
+
+	_if tipo _is :ramal
+	_then
+		flecha << :flecha
+		ramal << :ramal
+		
+	_elif tipo _is :ramal_2
+	_then
+		flecha << :flecha_2
+		ramal << :ramal_2
+
+	_elif tipo _is :ramal_3
+	_then
+		flecha << :flecha_3
+		ramal << :ramal_3
+	_endif 
+
+	(dummy,ang) << _self.perform(ramal).sectors.last_mid_point()
+	coord << _self.perform(ramal).sectors.last_coord
+	_if _self.perform(flecha) _isnt _unset _then
+		fl <<  _self.unset_geometry(flecha)
+	_endif
+
+	fl << _self.make_geometry(flecha,coord)
+	fl.orientation << ang
+
+_endmethod
+$
+
+_method acometida.borrar_flecha_y_llave(tipo)
+	# Elimina la flecha y la llave correspondientes al ramal
+	# eliminado
+
+	_if tipo _is :ramal
+	_then
+		flecha << :flecha
+		llave  << :llave
+		
+	_elif tipo _is :ramal_2
+	_then
+		flecha << :flecha_2
+		llave  << :llave_2
+
+	_elif tipo _is :ramal_3
+	_then
+		flecha << :flecha_3
+		llave  << :llave_3
+	_endif
+
+	_self.unset_geometry(flecha)
+	_self.unset_geometry(llave)
+_endmethod
+$

@@ -1,0 +1,495 @@
+#% text_encoding = iso8859_1
+##
+## Motor para exportar objetos desde SW a ficheros SHAPE
+##
+##
+
+_package user
+$
+_pragma(classify_level=basic)
+def_slotted_exemplar(:ib_export_shape_engine,
+	{
+		{:owner,_unset},                    # owner de self 
+		{:export_dataset,_unset },          # dataset de exportación
+				
+		# Slots que almacenan informacion de configuracion para obtener
+		# las geometrias que se van a exportar
+		{:export_bound,_unset },            # Bound que delimita los limites de exportación de la vista actual
+		{:overlapping?,_unset },            # Indica si se exportan las geometrias superpuestas en el limite del bound
+		
+		# Configuraciones de exportacion, correspondencias, sistemas de
+		# coordenadas, unidades, carpeta destino
+		{:dataset_correspondences,_unset }, # Correspondencias entre de Sw y Shape
+		{:export_configuration, _unset }
+	},
+        :engine_model)
+$
+_pragma(classify_level=basic,topic={ib_export})
+##
+## Indica si hay limite registros a exportar
+## (usado durante la fase de test)
+ib_export_shape_engine.define_shared_variable(:limite, _unset , :public)
+$
+_pragma(classify_level=basic,topic={ib_export})
+ib_export_shape_engine.define_slot_access(:export_dataset,:write)
+$ 
+_pragma(classify_level=basic,topic={ib_export})
+ib_export_shape_engine.define_slot_access(:export_bound,:write)
+$
+_pragma(classify_level=basic,topic={ib_export})
+ib_export_shape_engine.define_slot_access(:overlapping?,:write)
+$
+_pragma(classify_level=basic,topic={ib_export})
+ib_export_shape_engine.define_slot_access(:dataset_correspondences,:write)
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_shape_engine.new(a_framework, _gather  properties)
+	##
+	##
+
+	_return _clone.init( a_framework,properties)
+_endmethod
+
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_shape_engine.init(a_framework,_optional  properties)
+	##
+	##
+
+	_super.init()
+
+	.owner << a_framework
+	_return _self 
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.notify_message(a_message)
+	##
+	## Notifica el mensaje 
+	##
+	_self.changed(:result_message,a_message)
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.busy?(value)
+	##
+	## Indica si se está ejecutando un proceso
+	##
+	_if (fr << .owner) _isnt _unset _then
+		fr.busy? << value
+	_endif		
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.database
+	##
+	## Devuelve una instancia de la base de datos
+	_return .owner.framework.database
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.update_framework_to_running
+	##
+	##	
+_endmethod
+$
+
+_pragma(classify_level=basic, usage={internal,subclass})
+_private _method  ib_export_shape_engine.run_status << new_status
+	## Set run_status and notify dependents with
+	## change on :run_status and :run_status_string
+	## The run_status is either
+	##	:ready    (nothing happening)
+	##	:running  (thread running)
+       	##	:inactive (thread suspended)
+	##	:cleanup  (thread interrupted and in cleanup phase)
+	.run_status << new_status
+	_self.changed(:run_status,new_status)
+	_self.changed(:run_status_string)
+	_self.sync_display()
+_endmethod
+$
+################################################################################################################################
+##
+## METODOS PUBLICOS EXPORTACION
+##
+################################################################################################################################
+
+_pragma(classify_level=basic,topic={ib_export})
+_method ib_export_shape_engine.start_export(export_configuration)
+	##
+	## Ejecuta la exportación en segundo plano, utilizando la
+	## configuración de exportación EXPORT_CONFIGURATION
+	##
+
+	# Iniciar parametros
+	_self.clean_export_parameters()
+	# Iniciar ejecución
+	_self.start_engine(export_configuration)
+_endmethod
+
+$
+_pragma(classify_level=basic,topic={ib_export})
+_method ib_export_shape_engine.cancel_export()
+	##
+	## Interrumpe el proceso de exportación si se está ejecutando alguno
+
+	_protect
+		_try _with cond
+			_self.interrupt_engine()
+		_when error
+			write(cond)
+			_self.notify_message(_self.message(:error_cancel,_unset,cond.report_contents_string))
+		_endtry 
+	_protection
+		   _self.busy?(_false )
+        _endprotect
+_endmethod
+$
+_pragma(classify_level=basic,topic={ib_export})
+_method ib_export_shape_engine.clean_export_parameters()
+	##
+	## Inicializa el valor de exportacion, .OVERLAPPING? 
+	## por defecto a _false
+	##
+
+	.export_dataset << _unset
+	.export_configuration << _unset
+	.export_bound << _unset
+	.overlapping? << _false
+	.dataset_correspondences << _unset
+_endmethod
+$
+################################################################################################################################
+##
+## EJECUCIÓN EN SEGUNDO PLANO
+##
+################################################################################################################################
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.start_engine(export_configuration)
+	##
+	## Ejecuta la exportación shape en segundo plano, utilizando la
+	## configuración de exportación EXPORT_CONFIGURATION
+	##
+	_self.run_engine( _thisthread.background_priority,:int!export_shape|()|,export_configuration)
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.int!export_shape(export_configuration)
+	## 
+	## Ejecuta la exportación shape con la configuración EXPORT_CONFIGURATION
+	##
+
+	_local ok? << _false
+
+	_protect		
+		_try _with cond
+			_self.busy?(_true )
+
+			_if _self.validate_export_config(export_configuration) _then 
+				_self.do_export()
+				ok? << _true
+			_endif 
+		_when error
+			write(cond.report_contents_string)
+			_self.notify_message(_self.message(:error_export,_unset,cond.report_contents_string))
+		_endtry
+	_protection
+		_if ok? _then
+			_self.notify_message(_self.message(:fin_export_ok))
+		_endif 
+		_self.busy?(_false )
+	_endprotect
+	
+	
+_endmethod
+$
+################################################################################################################################
+##
+## VALIDACIONES
+##
+################################################################################################################################
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.validate_export_config(export_configuration)
+	##
+	## Valida la configuración de exportación e inicializa los
+	## slots con los valores para la exportación
+	##
+
+	_local ok? << _true
+	_local cont_check << 0
+	_local error_message
+	_local export_parameters, export_correspondences , dataset_correspondences
+	.export_configuration << ib_export_validations.new()
+
+	_loop 
+		cont_check +<< 1
+
+		_if cont_check = 1 _then
+			#
+			_if (export_parameters << export_configuration[:export_parameters]) _is _unset _orif
+			    (export_correspondences << export_configuration[:correspondences]) _is _unset _then
+				ok? << _false
+				error_message << _self.message(:error_config)
+			_endif 
+		_elif cont_check = 2 _then 
+			# Existe dataset
+			_if ((dataset_name << export_parameters[:dataset]) _is _unset) _orif
+			    (.export_dataset << _self.database.dataset(dataset_name)) _is _unset  _then				
+				ok? << _false
+				error_message << _self.message(:error_dataset, _unset,dataset_name.write_string)
+			_endif
+		_elif cont_check = 3 _then
+			# Verificar si hay definidas correspondencias para el dataset
+			.dataset_correspondences << export_correspondences[dataset_name.as_symbol()]
+			ok? << ((error_message << _self.check_correspondences()) _is _unset )  
+		_elif cont_check = 4 _then
+			# Verificar proyección 
+			ok? << ((error_message << .export_configuration.set_destination_projection(export_parameters[:destination_projection])) _is _unset )
+		_elif cont_check = 5 _then
+			# Verificar unidades
+			ok? << ((error_message << .export_configuration.set_destination_units(export_parameters[:destination_units])) _is _unset )
+		_elif cont_check = 6 _then
+			# Validar y asignar bound de exportación
+			ok? << ((error_message << _self.check_bound(export_parameters[:bound_limit])) _is _unset )
+		_elif cont_check = 7 _then
+			# Valida geometry y asignar . overlapping? 
+			ok? << ((error_message << _self.check_geometry(export_parameters[:geometry])) _is _unset )
+		_elif cont_check = 8 _then
+			# Verificar ruta destino			
+			ok? << ((error_message << .export_configuration.set_destination_path(export_parameters[:destination_path])) _is _unset )
+		_else
+			# superados todos los chequeos
+			_leave 
+		_endif 
+
+		_if _not ok? _then
+			# Notificar error
+			_self.notify_message(_self.message(:error_export,_unset,error_message))
+			_leave 
+		_endif 		
+	_endloop
+
+	# Calcular transformacion
+	_self.set_projection_transform()
+	
+	_return ok?
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.check_bound(bound_limit)
+	##
+	## Obtiene el bound a partir del tipo de limite BOUND_LIMIT
+	## y verifica si es un valor valido
+	##
+
+	_if bound_limit _is _unset _then
+		_return  _self.message(:err_bound)
+	_endif
+	
+	.export_bound << .owner.perform(bound_limit)	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.check_geometry(geometry_param)
+	##
+	## Valida el valor de GEOMETRY_PARAM, e inicializa el slot
+	## overlapping?
+	##
+
+	_if geometry_param _is _unset _then
+		_return _self.message(:err_geometry)
+	_endif 
+
+	.overlapping? << geometry_param _is :overlapping
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.check_correspondences()
+	##
+	## Valida las correspondencias 
+	##
+	
+	_if .dataset_correspondences _is _unset _then
+		_return _self.message(:no_correspondences,_unset , .export_dataset.name)
+	_endif
+	## ************* PENDIENTE AÑADIR MAS VALIDACIONES
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_private _method ib_export_shape_engine.set_projection_transform()
+	##
+	## Transformación para obtener las geometrias en el sistema de coordenadas
+	## destino
+
+	app_cs << .owner.current_view_coordinate_system	
+	.export_configuration.set_projection_transform(_unset,app_cs)
+
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_private _method ib_export_shape_engine.units_transform
+	##
+	##
+	##
+
+	_return .export_configuration.units_transform
+
+_endmethod
+$
+################################################################################################################################
+##
+## PROCESO DE EXPORTACIÓN
+##
+################################################################################################################################
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.do_export()
+	##
+	## Ejecuta la exportación
+	##
+
+	# Exportar datos
+	_self.export_objects()
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.export_objects()
+	##
+	## Ejecuta la exportación
+	##
+	
+
+
+	_for a_table_name, a_info_export _over .dataset_correspondences.fast_keys_and_elements()
+	_loop
+
+         _try _with cond
+
+		_if (a_table_name _is _unset) _orif
+		    (a_table << .export_dataset.collections[a_table_name.as_symbol()]) _is _unset _orif
+		    a_info_export _is _unset 
+		_then
+			# Nombre de tabla SW no valido o sin información de
+			# correspondencias
+			_continue
+		_endif
+
+		_for a_geom_field_name, a_info_geom _over a_info_export.fast_keys_and_elements()
+		_loop
+			# crear estrutura de exportacion de la tabla, para el campo geometrico
+			# a_geom_field_name
+			a_table_export_struct << ib_table_export_structure.new (:table, a_table,
+										:info_export, a_info_geom,
+										:geom_field_name,a_geom_field_name)
+
+			_if a_table_export_struct _is _unset _then _continue _endif
+			_if (a_field << a_table_export_struct.geom_field) _is _unset _then _continue _endif 
+
+			# Localizar listado de geometrias a exportar
+			_if a_field.mapped? _then
+				# campo geometrico mapeado
+				geom_fields_elems << a_field.mapped_geometry_fields.elements
+				
+				# el tipo de campos de mapeo puede no coincidir con el tipo del
+				# campo de la geometria que se quiere exportar
+				
+				_if (index_field << geom_fields_elems.index_of(a_field)) _isnt _unset _then 
+				# Si es el caso, eliminar de la tabla de control para realizar el scanner
+				      geom_fields_elems << geom_fields_elems.new_removing(index_field,index_field)
+				_endif
+				
+				tab_control_geoms_fields << {_scatter geom_fields_elems}
+				scan_geom_type << geom_fields_elems.an_element().geom_type
+			_else 
+				tab_control_geoms_fields << {a_field}
+				scan_geom_type << a_field.geom_type
+			_endif
+
+			geoms_scanner << {("sw_gis!"+scan_geom_type).as_symbol()}
+
+			_if .export_bound _is _unset _then
+				# exportar toda la coleccion
+				rwos_to_export << a_table
+			_else 
+				_if (rwos_to_export << _self.scan_exported_geoms(geoms_scanner,tab_control_geoms_fields)) _is _unset _orif
+				    rwos_to_export.size =0 
+				_then
+					_continue
+				_endif
+			_endif 
+
+			exp_eng << ib_export_engine.new()
+			exp_eng.write_shape(rwos_to_export,a_field.name,
+						     :destination_path,.export_configuration.destination_path,
+						     :destination_projection,.export_configuration.destination_projection,
+						     :destination_units,.export_configuration.destination_units,
+						     :correspondences,a_table_export_struct,
+					             :projection_transform,.export_configuration.projection_transform,
+					             :units_transform,_self.units_transform)
+
+	
+			
+		_endloop
+	_when error
+		write(cond.report_contents_string)		
+		_self.notify_message(_self.message(:error_export,_unset,cond.report_contents_string))
+	_endtry
+		
+	_endloop
+	
+_endmethod
+$
+################################################################################################################################
+##
+## SCANNERS
+##
+################################################################################################################################
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_engine.scan_exported_geoms(geoms_scanner,tab_control_geoms_fields)
+	##
+	##
+	##
+
+	_local list_rwos << rope.new()
+
+
+	_protect
+		_local tc << .export_dataset.table_control_for(tab_control_geoms_fields)		
+		scanner << .export_dataset.geometry_scanner(geoms_scanner)
+		scanner.start_scan(.export_bound,tc)
+ 
+		_loop 
+			_local a_geom << scanner.get()
+			_if a_geom _is _unset _then _leave _endif
+			
+			_if (a_rwo << a_geom.rwo) _is _unset _orif
+			    list_rwos.includes_by_equality?(a_rwo)
+			_then
+				_continue
+			_endif 
+
+			_if .overlapping? _then
+				geom_method << :interacts_with?|()|
+			_else
+				geom_method << :within?|()|
+			_endif
+
+			_if a_geom.perform(geom_method,.export_bound) _then 
+				list_rwos.add_last(a_rwo)
+			_endif 
+		_endloop		
+	_protection
+		_if scanner _isnt _unset _then 
+			scanner.return_to_scanner_pool()
+		_endif 
+	_endprotect
+
+	
+	_return list_rwos
+	
+_endmethod
+$

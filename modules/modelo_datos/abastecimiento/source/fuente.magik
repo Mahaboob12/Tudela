@@ -1,0 +1,29 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:fuente,{},:rwo_record)
+$
+_method fuente.ramal_trigger(tipo,att_det,geom)
+	#
+	# Trigger de insercion del campo ramal
+	#
+	_if att_det _is :attach
+	_then
+		(dummy,ang) << _self.ramal.sectors.last_mid_point()
+
+		coord << _self.ramal.sectors.last_coord
+
+		_if _self.posicion _is _unset
+		_then
+			pos << _self.unset_geometry(:posicion)	
+		_endif
+
+
+		pos << _self.make_geometry(:posicion,coord)
+		pos.orientation << ang
+	_endif
+_endmethod
+$

@@ -1,0 +1,58 @@
+#% text_encoding = iso8859_1
+#---------------------------------------------------
+## <Req. #> : <Description>
+##
+#
+# Customization for Project : Aguas Tudela
+#
+#---------------- Revision History -----------------
+# (16/05/2011 E.Lumbreras) : Created
+#-------------- end revision history ---------------
+_package user
+$
+#remex(:cargador_topo_plugin)
+$
+
+_pragma(classify_level=basic)
+def_slotted_exemplar(:cargador_topo_plugin,
+	{
+		{:dialog, _unset}
+	},
+:plugin)
+$
+cargador_topo_plugin.define_slot_access(:dialog, :read, :public)
+$
+_method cargador_topo_plugin.init_actions()
+	## 
+	## 
+	_self.add_action(sw_action.new(:abrir_cargador_topo,
+				       :image, {:cargador_topo, _self.module_name},
+				       :engine, _self,
+				       :action_message, :abrir_cargador_topo|()|))
+_endmethod
+$
+_pragma(classify_level=basic)
+_method cargador_topo_plugin.abrir_cargador_topo()
+	##
+	## 
+	_if .dialog _is _unset 
+	_then
+		.dialog << cargador_topo_dialog.new(_self)
+		.dialog.activate()
+	_endif
+
+	_if _not .dialog.frame_active?
+	_then
+		.dialog.reactivate()
+	_endif
+
+_endmethod
+$
+_pragma(classify_level=basic)
+_method cargador_topo_plugin.clear_cargador_topo()
+	##
+	## Reset del dialogo
+	# Se usa para desarrollo
+	.dialog << _unset
+_endmethod
+$

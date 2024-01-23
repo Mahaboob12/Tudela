@@ -1,0 +1,268 @@
+#% text_encoding = iso8859_1
+##
+##
+## Clase que realiza las validaciones sobre las
+## configuraciones de exportacion (ruta destino, sistema de
+## coordenadas, unidades del fichero y transformaciones)
+##
+##
+
+_package user
+$
+_pragma(classify_level=basic)
+def_slotted_exemplar(:ib_export_validations,
+	{
+		{:destination_projection,_unset },  # Sistema de coordenadas del fichero de exportación
+		{:destination_units,_unset },       # Unidades de exportación
+		{:destination_path,_unset },        # carpeta destino de los ficheros generados en la exportación
+		{:projection_transform, _unset },   # Transformacion que se ha de aplicar para tranformar los datos al sistema de coordenadas
+		                                    # destination_projection
+		{:units_transform,_unset }
+	})
+
+$
+
+
+_pragma(classify_level=basic,topic={ib_export})
+ib_export_validations.define_shared_constant( :message_accessor,
+                                    message_handler.new(:ib_export_validations),:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+_private _method ib_export_validations.message( message_id, _gather  args )
+        >> _self.message_accessor.human_string(
+                           message_id, _unset, _scatter args )
+_endmethod
+
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_validations.new()
+	##
+	_return _clone.init()
+_endmethod
+
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_validations.init()
+	##
+	##
+	_return _self 
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.set_destination_projection(a_projection, _optional a_dataset)
+	##
+	## Asigna el sistema de coordenadas pasado por parametro al
+	## slot .DESTINATION_PROJECTION
+	##
+	## El sistema de coordenadas destino ha de ser EPSG
+	##
+	## A_PROJECTION puesde ser:
+	## - un objeto (de tipo application_coordinate_system o ds_coordinate_system)
+	##   o
+	## - un texto con el nombre externo del sistema de coordenadas
+	##   definido en el dataset A_DATASET (es obligatorio en este caso)
+	##
+
+	_if a_projection _is _unset _then
+		_return _self.message(:err_projection)
+	_endif
+
+	_if  a_projection.is_kind_of?(application_coordinate_system) _orif
+	     a_projection.is_kind_of?(ds_coordinate_system)
+	_then 
+		destination_projection << a_projection
+	_elif (a_projection.is_class_of?("") _andif
+	      (a_projection << a_projection.trim_spaces()) <> "")  _then
+							
+		# obtener el sistema de coordenadas destino a partir de su
+		# nombre externo
+		_if a_dataset _is _unset _then
+			_return _self.message(:err_no_dataset)
+		_endif
+		
+		t_coord << a_dataset.collections[:sw_gis!coordinate_system]
+		sel_sis << t_coord.select(predicate.eq(:external_cs_name,a_projection))
+		destination_projection << sel_sis.an_element()
+	_endif
+
+	_if destination_projection _is _unset _then
+		# Sistema de coordenadas NO valido
+		_return _self.message(:err_coord_sys)
+	_endif
+
+	_if _not _self.is_epsg?(destination_projection) _then
+		# No es EPSG
+		_return _self.message(:err_not_epsg)
+	_endif
+
+	.destination_projection << destination_projection
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.is_epsg?(a_coordinate_sys)
+	##
+	## Verifica si el sistema de coordenadas A_COORDINATE_SYSTEM
+	## (objeto de tipo application_coordinate_system o ds_coordinate_system)
+	## es EPSG
+	##
+
+
+	is? << (a_coordinate_sys.name.index_of_seq("EPSG") _isnt _unset)
+
+	_return is?
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.destination_projection
+	_return .destination_projection 
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.set_destination_units(a_unit_or_name)
+	##
+	##
+	##
+
+	_if a_unit_or_name _is _unset _then _return _endif
+
+	_if a_unit_or_name.is_kind_of?(unit) _then
+		a_unit << a_unit_or_name
+	_else
+		a_unit << unit_manager.unit(a_unit_or_name)
+	_endif 
+
+	# Validar unidades	
+	.destination_units << a_unit
+	
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.destination_units
+	_return .destination_units 
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.set_destination_path(output_path)
+	##
+	## Asignar OUTPUT_PATH  al slot .DESTINATION_PATH
+	## que almacena la ruta destino para la creacion de los ficheros de exportacion
+	## (Se utiliza la carpeta temporal de usuario si no se
+	## proporciona ningun valor)
+	
+	_if output_path _is _unset _then
+		output_path << system.temp_directory_name
+	_endif
+
+	.destination_path << output_path
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.destination_path
+	_return .destination_path 
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.set_projection_transform(a_transform,_optional coord_sys_orig)
+	##
+	## Verifica/Asigna la tranformacion a aplicar al slot .PROJECTION_TRANSFORM
+	## A_TRANSFORM    - transformacion que se aplica para convertir los datos al sistema de coordenadas destino .DESTINATION_PROJECTION
+	##                  (puede ser _unset)
+	## COORD_SYS_ORIG - sistema de coordenadas origen ,si este parametro tiene valor, se valida que la transformacion es correcta o
+	##                  si A_TRANSFORM es _unset, se calcula a partir del .DESTINATION_PROJECTION 
+	##
+	## Cuando no se dispone ni de sistema de coordenadas destino ni
+	## de transformacion, se considera que no es necesario realizar ninguna transformacion sobre los datos y
+	## se asigna TRANSFORM_OR_COORD_SYS como .DESTINATION_PROJECTION
+	##
+
+	_if a_transform _is _unset _then
+		_if coord_sys_orig _isnt _unset _then
+			_if (destination_coord_sys << _self.destination_projection) _is _unset _then
+				# No se realiza transformacion, el sistema de coordenadas
+				# destino sera el origen
+				_self.set_destination_projection(coord_sys_orig)
+			_elif _not _self.same_coordinates_sys?(coord_sys_orig,destination_coord_sys) _then
+				# calcular transformacion
+				a_transform << _self.create_transform(coord_sys_orig)
+			_endif 
+		_endif
+	_else
+		_if coord_sys_orig _isnt _unset _then
+			# verificar transformacion
+		_endif 
+	_endif
+
+	.projection_transform << a_transform
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.create_transform(coord_sys_o)
+	##
+	##
+	##
+
+	coord_sys_d << _self.destination_projection
+	
+	_if coord_sys_o _isnt _unset _andif
+	    coord_sys_d _isnt _unset _andif
+	    coord_sys_o ~= coord_sys_d
+	_then
+		_return transform.new_converting_cs_to_cs(coord_sys_o,coord_sys_d)
+	_endif
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.projection_transform
+	_return .projection_transform
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.same_coordinates_sys?(coord_sys_o,coord_sys_d)
+	##
+	## Indica si los sistemas de coordenadas
+	## COORD_SYS_O,COORD_SYS_D son el mismo. Pueden ser objetos de
+	## tipos distintos cada uno o del mismo(
+	## application_coordinate_system o ds_coordinate_system)
+	##
+
+	sys_coords << {coord_sys_o,coord_sys_d}
+	names << rope.new()
+
+	_for i _over 1.upto(2)
+	_loop
+		a_name << _unset 
+		sys_coord << sys_coords[i]
+		_if sys_coord.is_kind_of?(application_coordinate_system) _then
+			a_name << sys_coord.external_projection_name()
+		_else
+			a_name << sys_coord.external_cs_name
+		_endif
+		names.add_last(a_name)
+	_endloop
+
+	equals_sys? << (names[1] = names[2])
+
+	_return equals_sys?	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_validations.units_transform
+
+	_if .units_transform _is _unset _then
+		# Verificar si es necesario hacer transformacion de unidades
+		_if (dp<<_self.destination_projection) _is _unset _orif
+		    .destination_units _is _unset  _orif
+		    (u_pj << unit_manager.unit(dp.unit_name)) = .destination_units
+		_then _return _endif
+
+		.units_transform << transform.scale(u_pj.factor/.destination_units.factor)
+	_endif 
+
+	_return .units_transform
+	
+_endmethod
+$

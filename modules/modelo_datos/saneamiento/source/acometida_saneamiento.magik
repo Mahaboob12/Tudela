@@ -1,0 +1,34 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:acometida_saneamiento,{},:rwo_record)
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method acometida_saneamiento.export_dxf_clase_acometida()
+	##
+	## Devuelve la capa, el estilo y el color del objeto que
+	## corresponde en el fichero DXF exportado, segun el valor
+	## del campo clase de la acometida
+
+	_local capa, estilo, color
+
+	_if _self.clase = "FECALES"
+	_then
+		capa << "SAN_ACOMETIDAFECAL"
+		estilo << "TRAZOS"
+		color << 130
+		
+	_elif _self.clase = "PLUVIALES" _orif
+	      _self.clase = "UNITARIO"
+	_then
+		capa << "SAN_ACOMETIDAPLUVIAL"
+		estilo << "TRAZOS"
+		color << 132
+	_endif 
+
+	_return capa, estilo, color
+_endmethod
+$

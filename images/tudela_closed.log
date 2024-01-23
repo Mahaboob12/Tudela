@@ -1,0 +1,1929 @@
+C:\Projects\Tudela\Smallworld\product\bin\share\..\x86\runalias.exe swaf -noinit  
+
+
+Smallworld Core Spatial Technology Version Information:
+
+Core Product:
+	Release No.	4.3.0 
+	Release Spin No 250636 (date time)
+	Magik VM	6.19.7 SF/VM3
+	Graphics	15.0.11 
+	Gis C Utils	5.5.6 
+	Datastore C	7.2.1 127
+	Datastore Magik	9.26.0 
+
+Layered Products:
+	sw_dev_tools	4.3.0	Development Tools
+	sw_core	4.3.0	Core product with engine and generic GUI classes
+	sw_kernel	4.3.0	Low-level kernel classes
+
+Customisation Products:
+	user_custom	4.3.0 	Product to hold user customisation resources
+	sw_core_help	4.3.0	Help resources for Core product help
+
+
+MagikSF> 
+MagikSF> Checking : C:\Projects\Tudela\Smallworld\product\sw_core\source for patches to rev : 4.3.0 
+Adding product from C:\Projects\Tudela\Tudela430\config
+Loading module definitions for product 'tudela_config' from C:\Projects\Tudela\Tudela430\config
+Loading module definition for aguas_tudela_magik_images.1
+Checking : C:\Projects\Tudela\Smallworld\product\sw_core\source for patches to rev : 4.3.0 
+Loading module aguas_tudela_magik_images.1
+Loading C:/Projects/Tudela/Tudela430/config/magik_images\source\databases.magik
+--- line 0
+--- line 9
+Running something
+--- line 19
+Loading C:/Projects/Tudela/Tudela430/config/magik_images\source\build_procedures.magik
+--- line 0
+--- line 1
+Defining variable sw:startup_with_cli
+a method_finder loading C:\Projects\Tudela\Smallworld\product\images\main\swaf.mf
+method_finder: loaded
+--- line 9
+Defining variable sw:tudela_pre_build_proc
+--- line 26
+Defining variable sw:open_tudela_database_proc
+--- line 58
+Loading C:/Projects/Tudela/Tudela430/config/magik_images\source\register.magik
+--- line 0
+--- line 8
+Running something
+--- line 11
+Running something
+--- line 96
+aguas_tudela_magik_images.1 has been loaded
+message_handler(aguas_tudela_magik_images_register) 
+MagikSF> Found registered Magik image tudela_closed
+**** WARNING: Loading product soms from alternative location C:\Projects\Tudela\Tudela430\..\soms430
+Checking : C:\Projects\Tudela\Smallworld\product\sw_core\source for patches to rev : 4.3.0 
+Adding product from C:\Projects\Tudela\Tudela430\..\soms430
+Loading module definitions for product 'soms' from C:\Projects\Tudela\soms430
+Adding product from C:\Projects\Tudela\soms430\config (as a sub product of soms)
+Loading module definitions for product 'soms_config' from C:\Projects\Tudela\soms430\config
+Loading module definition for soms_magik_images.1
+Adding product from C:\Projects\Tudela\soms430\modules\engines (as a sub product of soms)
+Loading module definitions for product 'soms_engines' from C:\Projects\Tudela\soms430\modules\engines
+Loading module definition for sas_all_som_engine.2
+Loading module definition for sas_core.2
+Loading module definition for sas_dgn.2
+Loading module definition for sas_dwg_dxf.2
+Loading module definition for sas_ecw.2
+Loading module definition for sas_fme.2
+Loading module definition for sas_fme_plugin.1
+Loading module definition for sas_iff.2
+Loading module definition for sas_midmif.2
+Loading module definition for sas_mrsid.2
+Loading module definition for sas_raster.2
+Loading module definition for sas_raster_stream.1
+Loading module definition for sas_shape.2
+Loading module definition for sas_soms_plugin.2
+Loading module definition for sas_soms_swaf_plugin.1
+Loading module definition for sas_wms.2
+Adding product from C:\Projects\Tudela\soms430\modules\magik_gui (as a sub product of soms)
+Loading module definitions for product 'soms_magik_gui' from C:\Projects\Tudela\soms430\modules\magik_gui
+Loading module definition for swaf_soms_application.1
+Loading module definition for sas_all_som_magik_gui.2
+Loading module definition for sas_core_magik_gui.2
+Loading module definition for sas_data_copier.1
+Loading module definition for sas_dgn_magik_gui.2
+Loading module definition for sas_dwg_dxf_magik_gui.2
+Loading module definition for sas_ecw_magik_gui.2
+Loading module definition for sas_iff_magik_gui.2
+Loading module definition for sas_midmif_magik_gui.2
+Loading module definition for sas_mrsid_magik_gui.2
+Loading module definition for sas_raster_magik_gui.2
+Loading module definition for sas_shape_magik_gui.2
+**** WARNING: Loading product fme from alternative location C:\Projects\Tudela\Tudela430\..\fme430
+Checking : C:\Projects\Tudela\Smallworld\product\sw_core\source for patches to rev : 4.3.0 
+Checking : C:\Projects\Tudela\soms430\source for patches to rev : 4.3.0 
+Adding product from C:\Projects\Tudela\Tudela430\..\fme430
+Loading module definitions for product 'fme' from C:\Projects\Tudela\fme430
+Adding product from C:\Projects\Tudela\fme430\config (as a sub product of fme)
+Loading module definitions for product 'fme_config' from C:\Projects\Tudela\fme430\config
+Loading module definition for fme_magik_images.1
+Loading module definition for fme_engine.2
+Loading module definition for fme_export_plugin.2
+Loading module definition for fme_image.1
+Loading module definition for fme_import_plugin.2
+Loading module definition for fme_plugin.1
+Loading module definition for swaf_fme_application.1
+**** WARNING: Loading product sw_dxf from alternative location C:\Projects\Tudela\Tudela430\..\dxf430
+Checking : C:\Projects\Tudela\Smallworld\product\sw_core\source for patches to rev : 4.3.0 
+Checking : C:\Projects\Tudela\soms430\source for patches to rev : 4.3.0 
+Checking : C:\Projects\Tudela\fme430\source for patches to rev : 4.3.0 
+Adding product from C:\Projects\Tudela\Tudela430\..\dxf430
+Loading module definitions for product 'sw_dxf' from C:\Projects\Tudela\dxf430
+Adding product from C:\Projects\Tudela\dxf430\config (as a sub product of sw_dxf)
+Loading module definitions for product 'sw_dxf_config' from C:\Projects\Tudela\dxf430\config
+Loading module definition for sw_dxf_magik_images.1
+Loading module definition for dxf_database_upgrades.1
+Loading module definition for dxf_db_core.1
+Loading module definition for dxf_input_engine.1
+Loading module definition for dxf_output_engine.1
+Loading module definition for grs_dxf_common_gui.1
+Loading module definition for grs_dxf_input_gui.1
+Loading module definition for grs_dxf_output_gui.1
+Loading module definition for swaf_dxf_application.1
+Loading module definition for swaf_dxf_common_gui.1
+Loading module definition for swaf_dxf_export_gui.1
+Loading module definition for swaf_dxf_import_gui.1
+Loading module definition for swaf_dxf_mapping_gui.1
+**** WARNING: Loading product localisation from alternative location C:\Projects\Tudela\Tudela430\..\localization\product_lp
+Checking : C:\Projects\Tudela\Smallworld\product\sw_core\source for patches to rev : 4.3.0 
+Checking : C:\Projects\Tudela\soms430\source for patches to rev : 4.3.0 
+Checking : C:\Projects\Tudela\fme430\source for patches to rev : 4.3.0 
+Checking : C:\Projects\Tudela\dxf430\source for patches to rev : 4.3.0 
+Adding product from C:\Projects\Tudela\Tudela430\..\localization\product_lp
+Loading customisation product 'localisation' from C:\Projects\Tudela\localization\product_lp
+Skipping resources in C:\Projects\Tudela\localization\product_lp
+message_handler(condition) 
+message_handler(database_context_component) 
+message_handler(condition) 
+message_handler(ace_default) 
+message_handler(gis_program_manager) 
+message_handler(drawing_application_editor) 
+message_handler(scale_entry_editor) 
+message_handler(ace_config) 
+message_handler(view_scale_editor) 
+message_handler(object_visibility_editor) 
+message_handler(ace_create_prompter) 
+message_handler(ace_object_properties_dialog) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(admin_ace_plugin) 
+message_handler(admin_ace_framework) 
+message_handler(admin_application) 
+message_handler(admin_soc_plugin) 
+message_handler(admin_soc_framework) 
+message_handler(style_system_properties_component) 
+message_handler(admin_style_framework) 
+message_handler(admin_style_plugin) 
+message_handler(admin_tools_plugin) 
+message_handler(condition) 
+message_handler(application) 
+message_handler(condition) 
+message_handler(auth_alternative) 
+message_handler(table_help) 
+message_handler(auth_table) 
+message_handler(authorisation_groups_plugin) 
+message_handler(authorisation_group_alternatives_properties_page) 
+message_handler(authorisation_sub_page_users) 
+message_handler(authorisation_sub_page_groups) 
+message_handler(authorisation_group_tables_properties_page) 
+message_handler(authorisation_properties_dialog) 
+message_handler(authorisation_group_general_properties_page) 
+message_handler(authorisation_plugin) 
+message_handler(condition) 
+message_handler(authorisation_right_general_properties_page) 
+message_handler(authorisation_new_right_dialog) 
+message_handler(authorisation_user_member_of_properties_page) 
+message_handler(authorisation_framework) 
+message_handler(authorisation_new_user_dialog) 
+message_handler(authorisation_user_general_properties_page) 
+message_handler(authorisation_sub_page_rights) 
+message_handler(authorisation_tab_plugin) 
+message_handler(authorisation_new_group_dialog) 
+message_handler(authorisation_sub_dialog) 
+message_handler(authorisation_choice_dialog) 
+message_handler(authorisation_rights_plugin) 
+message_handler(authorisation_group_rights_properties_page) 
+message_handler(authorisation_group_tables_advanced_dialog) 
+message_handler(authorisation_users_plugin) 
+message_handler(backup_tables) 
+message_handler(condition) 
+message_handler(backup_manager) 
+message_handler(backup_manager_log_plugin) 
+message_handler(backup_manager_backup_plugin) 
+message_handler(backup_manager_drives_plugin) 
+message_handler(backup_manager_report_plugin) 
+message_handler(backup_manager_recovery_plugin) 
+message_handler(backup_manager_datasets_plugin) 
+message_handler(backup_progress_dialog) 
+message_handler(backup_manager_plugin_mixin) 
+message_handler(backup_manager_dialog) 
+message_handler(blocking_prompter) 
+message_handler(record_selection_dialog) 
+message_handler(condition) 
+message_handler(run_engine_dialog) 
+message_handler(file_selection) 
+message_handler(file_dialog) 
+message_handler(about_dialog) 
+message_handler(prompter) 
+message_handler(choice_lister) 
+message_handler(directory_selection) 
+message_handler(progress_dialog) 
+message_handler(condition) 
+message_handler(basic_mapping) 
+message_handler(browser) 
+message_handler(browser_options) 
+message_handler(condition) 
+message_handler(sql) 
+message_handler(browser_parser) 
+message_handler(type_prompter) 
+message_handler(browser_option_menu) 
+message_handler(sql_browser_options) 
+message_handler(condition) 
+message_handler(case_hetero_relationship) 
+message_handler(sw_case_manager) 
+message_handler(case_entity) 
+message_handler(case_update_api) 
+message_handler(case_apply) 
+message_handler(condition) 
+message_handler(case_report_previewer) 
+message_handler(case_model_validator) 
+message_handler(case_swaf_application) 
+message_handler(case_application) 
+message_handler(case_domain_selector_dialog) 
+message_handler(case_object_fields_editor_plugin) 
+message_handler(case_relationship_dialog) 
+message_handler(case_archive_load_dialog) 
+message_handler(case_conversion_script_editor) 
+message_handler(case_object_validator_editor_plugin) 
+message_handler(case_creation_dialog) 
+message_handler(case_explicit_rules_editor_plugin) 
+message_handler(case_relationship_field_mapping_editor) 
+message_handler(case_incomplete_entities_dialog) 
+message_handler(case_report_dialog) 
+message_handler(case_field_value_dialog) 
+message_handler(case_manifold_editor_plugin) 
+message_handler(case_apply_manifold_dialog) 
+message_handler(case_reverse_engineer_dialog) 
+message_handler(case_manifold_editor) 
+message_handler(case_enumerator_editor_plugin) 
+message_handler(case) 
+message_handler(case_object_manifold_rules_editor_plugin) 
+message_handler(case_magik_viewer) 
+message_handler(case_report) 
+message_handler(case_field_modifications_dialog) 
+message_handler(case_deletions_dialog) 
+message_handler(case_relationship_view_editor) 
+message_handler(case_apply_deletions_dialog) 
+message_handler(case_relationship_editor_plugin) 
+message_handler(case_editor) 
+message_handler(case_relationship_props_editor) 
+message_handler(case_field_mapping_editor_plugin) 
+message_handler(case_domain_predicate_dialog) 
+message_handler(case_hetero_relationship_editor_plugin) 
+message_handler(case_stored_unit_selector) 
+message_handler(case_object_visible_fields_editor_plugin) 
+message_handler(case_domain_editor_plugin) 
+message_handler(case_object_editor_plugin) 
+message_handler(case_relationship_part_of_editor) 
+message_handler(case_apply_dialog) 
+message_handler(case_editor_plugin) 
+message_handler(case_object_index_editor_plugin) 
+message_handler(case_relationship_join_via_editor) 
+message_handler(case_field_editor_plugin) 
+message_handler(case_object_trigger_editor_plugin) 
+message_handler(case_object_index_dialog) 
+message_handler(case_plugin) 
+message_handler(case_archive_dialog) 
+message_handler(case_object_index_field_editor) 
+message_handler(case_field_type_selector) 
+message_handler(case_field_type_editor_plugin) 
+message_handler(case_object_catalogue_mapping_editor_plugin) 
+message_handler(case_manifold_rule_gui) 
+message_handler(class_browser) 
+message_handler(collection_export_engine) 
+message_handler(rules_editor) 
+message_handler(tolerance_editor) 
+message_handler(component_framework) 
+message_handler(databus_monitor) 
+message_handler(visual_framework) 
+message_handler(condition) 
+message_handler(sw_databus) 
+message_handler(databus_monitor_dialog) 
+message_handler(thread_engine) 
+message_handler(visual_composite_component) 
+message_handler(sw_component) 
+message_handler(plugin_framework) 
+message_handler(action_gui_manager) 
+message_handler(config_application) 
+message_handler(far_conflict_dialog) 
+message_handler(cv_affected_objects_lister) 
+message_handler(conflict_dialog) 
+message_handler(far_cv_affected_objects_lister) 
+message_handler(conflict_viewer_record_desc) 
+message_handler(far_conflict_viewer_record_desc) 
+message_handler(far_conflict_viewer_dialog) 
+message_handler(conflict_viewer_dialog) 
+message_handler(conflict_resolution_record) 
+message_handler(condition) 
+message_handler(connection_service_manager) 
+message_handler(constructions_plugin) 
+message_handler(constructions_length_angle_prompter) 
+message_handler(constructions_parallel_prompter) 
+message_handler(constructions_xy_prompter) 
+message_handler(constructions_options_panel) 
+message_handler(constructions_distance_angle_prompter) 
+message_handler(multiple_constructions_possible_dialog) 
+message_handler(control_panel_component_small_icons_view) 
+message_handler(control_panel_component_details_view) 
+message_handler(control_panel_component_large_icons_view) 
+message_handler(system) 
+message_handler(dd) 
+message_handler(sorted_collection) 
+message_handler(conflict_resolution_process_reporter) 
+message_handler(database) 
+message_handler(conflict_resolution_setup_manager) 
+message_handler(magik_parser) 
+message_handler(licence) 
+message_handler(conflict_resolver) 
+message_handler(magik_image) 
+message_handler(condition) 
+message_handler(conflict_resolution_processes) 
+message_handler(attribute_combining_resolution_process) 
+message_handler(conflict_db_validation_test) 
+message_handler(spatial_context) 
+message_handler(magik_rep) 
+message_handler(text_converter) 
+message_handler(date_time) 
+message_handler(conflict_rules_storage_engine) 
+message_handler(condition) 
+message_handler(coverage_analyser) 
+message_handler(basic_replication_engine) 
+message_handler(basic_db_params_editor) 
+message_handler(basic_field_type_editor) 
+message_handler(basic_table_name_editor) 
+message_handler(condition) 
+message_handler(basic_data_replication_editor) 
+message_handler(basic_replication_plugin) 
+message_handler(basic_field_mapping_editor) 
+message_handler(basic_replication_config_editor) 
+message_handler(basic_mapping_editor) 
+message_handler(basic_custom_params_editor) 
+message_handler(basic_replication_editor) 
+message_handler(gen_graphics) 
+message_handler(field_item_lister) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(sw_job) 
+message_handler(datamodel) 
+message_handler(datamodel_tools_plugin) 
+message_handler(swdp_manager) 
+message_handler(database_undoable_command) 
+message_handler(condition) 
+message_handler(sw_database) 
+message_handler(grid_manager) 
+message_handler(cspec_validation_entry) 
+message_handler(dataset_manager) 
+message_handler(dataset_controller) 
+message_handler(dataset_prompter) 
+message_handler(connect_specification_editor) 
+message_handler(dd_record_mixin) 
+message_handler(condition) 
+message_handler(gis_ds_view) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(coordinate_system) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(dev_tools_application) 
+message_handler(dev_tools) 
+message_handler(dev_options) 
+message_handler(condition) 
+message_handler(alternative_prompter) 
+message_handler(query_field_operators) 
+message_handler(file_viewer) 
+message_handler(find_dialog) 
+message_handler(condition) 
+message_handler(typed_value_prompter) 
+message_handler(save_load_menu) 
+message_handler(list_chooser) 
+message_handler(magik_workspace) 
+message_handler(query_predicate_component) 
+message_handler(key_prompter) 
+message_handler(help_display) 
+message_handler(catalogue_choice_lister) 
+message_handler(report_previewer) 
+message_handler(query_predicate_dialog) 
+message_handler(dimension_options_panel) 
+message_handler(dimension_plugin) 
+message_handler(condition) 
+message_handler(document_manager) 
+message_handler(bookmark_dialog) 
+message_handler(condition) 
+message_handler(system_bookmarks_plugin) 
+message_handler(bookmark_collection) 
+message_handler(system_bookmarks_framework) 
+message_handler(condition) 
+message_handler(document_previewer) 
+message_handler(condition) 
+message_handler(drafting) 
+message_handler(drawing_functions) 
+message_handler(drafting_plugin) 
+message_handler(drafting_options_panel) 
+message_handler(drawing_converter_application) 
+message_handler(template_conversion_plugin) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(dst) 
+message_handler(ds_transfer_plugin) 
+message_handler(ds_transfer_dialog) 
+message_handler(condition) 
+message_handler(dxf_create_database) 
+message_handler(dxf_input_translator) 
+message_handler(dxf_output_translator) 
+message_handler(dynamic_transform_manager) 
+message_handler(transform_interaction_handler) 
+message_handler(condition) 
+message_handler(in_place_boolean_field_editor) 
+message_handler(object_editor) 
+message_handler(in_place_text_field_editor) 
+message_handler(db_join_selector) 
+message_handler(in_place_kleenean_field_editor) 
+message_handler(in_place_editable_catalogue_field_editor) 
+message_handler(catalogue_field_value_editor) 
+message_handler(classic_editor_manager) 
+message_handler(rwo_specials_plugin) 
+message_handler(in_place_choose_owner_join_field_editor) 
+message_handler(components_join_selector) 
+message_handler(in_place_choice_field_editor) 
+message_handler(in_place_multiple_join_field_editor) 
+message_handler(db_join_lister) 
+message_handler(join_field_value_viewer) 
+message_handler(simple_join_selector) 
+message_handler(in_place_raster_geom_field_editor) 
+message_handler(single_join_field_value_editor) 
+message_handler(reorder_records_dialog) 
+message_handler(geometry_z_prompter) 
+message_handler(in_place_tin_geom_field_editor) 
+message_handler(object_editor_field_lister) 
+message_handler(in_place_filtered_choice_field_editor) 
+message_handler(catalogue_selector) 
+message_handler(drawing_editor_plugin) 
+message_handler(editor_descriptions) 
+message_handler(in_place_geometry_set_field_editor) 
+message_handler(condition) 
+message_handler(single_join_field_value_viewer) 
+message_handler(editor_manager) 
+message_handler(editor_viewer) 
+message_handler(in_place_join_field_editor) 
+message_handler(editor_browse_plugin) 
+message_handler(join_field_value_editor) 
+message_handler(in_place_component_join_field_editor) 
+message_handler(in_place_geometry_field_editor) 
+message_handler(in_place_catalogue_field_editor) 
+message_handler(explorer_model_application_rwo_sets_plugin) 
+message_handler(explorer_model_map_selection_plugin) 
+message_handler(explorer_search_input_view) 
+message_handler(explorer_export_plugin) 
+message_handler(explorer_popup_navigation_component) 
+message_handler(explorer_model_datasets_plugin) 
+message_handler(explorer_world_owner_rwo_set_output_view) 
+message_handler(explorer_properties_plugin) 
+message_handler(explorer_address_bar_view) 
+message_handler(explorer_model_framework) 
+message_handler(explorer_model_user_results_plugin) 
+message_handler(explorer_group_element) 
+message_handler(explorer_input_plugin) 
+message_handler(explorer_find_bar_view) 
+message_handler(explorer_group_output_view) 
+message_handler(explorer_navigation_input_view) 
+message_handler(explorer_rwo_set_output_view) 
+message_handler(explorer_model_themes_plugin) 
+message_handler(explorer_view_framework) 
+message_handler(explorer_output_plugin) 
+message_handler(explorer_plugin) 
+message_handler(explorer_query_input_view) 
+message_handler(explorer_model_search_plugin) 
+message_handler(explorer_model_scrapbook_plugin) 
+message_handler(explorer_edit_plugin) 
+message_handler(explorer_properties_dialog) 
+message_handler(condition) 
+message_handler(extdb) 
+message_handler(extended_admin_application) 
+message_handler(extensible_enumerator_dialog) 
+message_handler(condition) 
+message_handler(extensible_enumerator_dialog_plugin) 
+message_handler(extensible_domain_dialog) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(extractor_plugin) 
+message_handler(extractor_dialog) 
+message_handler(extractor_setup_dialog) 
+message_handler(condition) 
+message_handler(database_extractor) 
+message_handler(geometry_editor) 
+message_handler(trim_geometry_selector) 
+message_handler(extend_geometry_selector) 
+message_handler(geometry_manipulation_plugin) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(map_projections) 
+message_handler(coordinate_system_catalogue) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(new_group) 
+message_handler(glazier) 
+message_handler(general) 
+message_handler(glazier_file_selection) 
+message_handler(wizard_demo) 
+message_handler(dxf_application_editor) 
+message_handler(dxf_translation_table_editor) 
+message_handler(dxf_rwo_editor) 
+message_handler(dxf_load_history_editor) 
+message_handler(dxf_input_editors) 
+message_handler(table_help) 
+message_handler(table_help) 
+message_handler(dxf_out_translation_table_editor) 
+message_handler(dxf_output_editors) 
+message_handler(history_manager) 
+message_handler(html_cb_topic_hierarchy) 
+message_handler(condition) 
+message_handler(html_cb_class) 
+message_handler(html_class_doc_creator) 
+message_handler(icon_selector) 
+message_handler(icon_viewer) 
+message_handler(open_image) 
+message_handler(app_source_status) 
+message_handler(ace_prompter) 
+message_handler(image_config_wizard) 
+message_handler(scan_status) 
+message_handler(load_mode) 
+message_handler(app_source_prompter) 
+message_handler(image_config_error_viewer) 
+message_handler(dbpath_prompter) 
+message_handler(basic_or_adv) 
+message_handler(undefined_rwos) 
+message_handler(status) 
+message_handler(old_product_prompter) 
+message_handler(undefined_methods) 
+message_handler(ace_name_prompter) 
+message_handler(condition) 
+message_handler(ignored_exemplars) 
+message_handler(theend) 
+message_handler(save_open_image) 
+message_handler(save_closed_image) 
+message_handler(image_crawler_wizard) 
+message_handler(image_scan_dialog) 
+message_handler(two_images_comparison) 
+message_handler(three_images_comparison) 
+message_handler(info_flag) 
+message_handler(condition) 
+message_handler(insync) 
+message_handler(insync_mapping_editor) 
+message_handler(insync_field_mapping_editor) 
+message_handler(condition) 
+message_handler(insync_custom_mapping_editor) 
+message_handler(insync_custom_params_editor) 
+message_handler(insync_config_editor) 
+message_handler(insync_mapping_plugin) 
+message_handler(consistency_editor) 
+message_handler(condition) 
+message_handler(selection_manager_component) 
+message_handler(condition) 
+message_handler(job_options_panel) 
+message_handler(job_server_framework) 
+message_handler(job_server_status_plugin) 
+message_handler(job_archive_dialog) 
+message_handler(job_list_options_dialog) 
+message_handler(condition) 
+message_handler(sw_job_parameter_editor) 
+message_handler(job_release_dialog) 
+message_handler(prioritise_job_type_dialog) 
+message_handler(job_cancel_dialog) 
+message_handler(job_server_activation_plugin) 
+message_handler(job_list_plugin) 
+message_handler(jobs_list_gui_framework) 
+message_handler(job_hold_dialog) 
+message_handler(job_purge_dialog) 
+message_handler(repetition_dialog) 
+message_handler(job_server_plugin) 
+message_handler(legend_layout) 
+message_handler(textbox_layout) 
+message_handler(input_layout) 
+message_handler(northarrow_element) 
+message_handler(symbol_layout) 
+message_handler(autotext_layout) 
+message_handler(bitmap_layout) 
+message_handler(viewporttext_layout) 
+message_handler(viewport_element) 
+message_handler(northarrow_layout) 
+message_handler(layout_plot_engine) 
+message_handler(viewport_layout) 
+message_handler(scalebar_layout) 
+message_handler(condition) 
+message_handler(layout_document) 
+message_handler(attribute_layout) 
+message_handler(index_layout) 
+message_handler(custom_property_layout) 
+message_handler(layout_detail_area) 
+message_handler(layout_element) 
+message_handler(layout_plot_menu) 
+message_handler(layout_manager_plugin) 
+message_handler(layout_general_options_panel) 
+message_handler(layout_designer) 
+message_handler(layout_frame_dialog) 
+message_handler(layout_detail_setup_editor) 
+message_handler(layout_document_properties) 
+message_handler(layout_plugin) 
+message_handler(layout_page_setup) 
+message_handler(viewport_mapping_plugin) 
+message_handler(layout_custom_properties_dialog) 
+message_handler(layout_view) 
+message_handler(layout_grid_options_panel) 
+message_handler(layout_plot_plugin) 
+message_handler(layout_preview) 
+message_handler(master_legend_editor) 
+message_handler(layout_element_plugin) 
+message_handler(layout_file_locations_options_panel) 
+message_handler(plot_page_selection) 
+message_handler(layout_gui_framework) 
+message_handler(master_legend_manager) 
+message_handler(layout_gui) 
+message_handler(layout_detail_manager) 
+message_handler(master_legend_plugin) 
+message_handler(layout_series_plugin) 
+message_handler(layout_manager_plugin_options_panel) 
+message_handler(layout_viewport_filter_name_tool) 
+message_handler(layout_viewport_mapping_options_panel) 
+message_handler(plot_device_selection_plugin) 
+message_handler(layout_custom_attributes) 
+message_handler(layout_page_setup_part) 
+message_handler(ldap_login_panel) 
+message_handler(authorisation_ldap_page3) 
+message_handler(authorisation_ldap_page2) 
+message_handler(authorisation_ldap_page1) 
+message_handler(authorisation_ldap_plugin) 
+message_handler(authorisation_properties_ldap) 
+message_handler(authorisation_ldap_page4) 
+message_handler(authorisation_groupmap_dialog) 
+message_handler(condition) 
+message_handler(swlm_menu) 
+message_handler(login) 
+message_handler(sw_object_spy) 
+message_handler(gen_graphics) 
+message_handler(sw_table) 
+message_handler(sw_container_base) 
+message_handler(clickable_dialog) 
+message_handler(implementors_viewer) 
+message_handler(click_monitor) 
+message_handler(senders_viewer) 
+message_handler(traceback_viewer) 
+message_handler(very_simple_debugger) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(map_navigator_component) 
+message_handler(map_component) 
+message_handler(selectable_candidates_dialog) 
+message_handler(trail_properties_dialog) 
+message_handler(map_plugin_topology_options_panel) 
+message_handler(condition) 
+message_handler(map_extent_prompt_dialog) 
+message_handler(map_properties_dialog) 
+message_handler(geometry_calculations_options_panel) 
+message_handler(map_trail_options_panel) 
+message_handler(map_view) 
+message_handler(map) 
+message_handler(map_tooltip_plugin) 
+message_handler(map_plugin_view_interaction_options_panel) 
+message_handler(map_manager) 
+message_handler(map_gui_framework) 
+message_handler(map_plugin_grid_and_snaps_options_panel) 
+message_handler(map_plugin_view_defaults_options_panel) 
+message_handler(condition) 
+message_handler(coordinate_system_editor) 
+message_handler(coordinate_system_editor_plugin) 
+message_handler(condition) 
+message_handler(bookmark_manager_component) 
+message_handler(bookmark_tool) 
+message_handler(trail_segment) 
+message_handler(map_trail_buffer_dialog) 
+message_handler(probe) 
+message_handler(map_trail) 
+message_handler(condition) 
+message_handler(map_trail_points_table) 
+message_handler(map_trail_points_tool) 
+message_handler(map_trail_offset_dialog) 
+message_handler(map_trail_gui_framework) 
+message_handler(corner_style) 
+message_handler(trail_segment_dialog) 
+message_handler(map_trail_plugin) 
+message_handler(condition) 
+message_handler(text_translator_dialog) 
+message_handler(text_translator_dialog_plugin) 
+message_handler(condition) 
+message_handler(gen_graphics) 
+message_handler(sw_product) 
+message_handler(script_manager) 
+message_handler(application_definition) 
+message_handler(script_engine) 
+message_handler(condition) 
+message_handler(patch_manager) 
+message_handler(smallworld_product) 
+message_handler(sw_module_manager) 
+message_handler(sw_module) 
+message_handler(sw_module_dialog) 
+message_handler(magik_images_plugin) 
+message_handler(magik_image_builder_engine) 
+message_handler(condition) 
+message_handler(parent_images_add_dialog) 
+message_handler(logout_prompter) 
+message_handler(script_dialog) 
+message_handler(product_list_load_dialog) 
+message_handler(smallworld_application_manager) 
+message_handler(magik_image_builder_dialog) 
+message_handler(database_location_add_dialog) 
+message_handler(magik_image_dialog) 
+message_handler(product_location_modify_dialog) 
+message_handler(sw_module_builder) 
+message_handler(multiple_deletion_dialog) 
+message_handler(network_loop_detection_plugin) 
+message_handler(network_analysis_component) 
+message_handler(network_trace_configuration) 
+message_handler(swaf_network_analysis_dialog) 
+message_handler(network_analysis_tool) 
+message_handler(script_query_designer_adapter) 
+message_handler(example_trace_results_plugin) 
+message_handler(shortest_path_results_plugin) 
+message_handler(swaf_block_query_dialog) 
+message_handler(network_analysis_plugin) 
+message_handler(object_control_data_view) 
+message_handler(object_control_settings_plugin) 
+message_handler(object_control_themes_view) 
+message_handler(object_control_by_geometry_plugin) 
+message_handler(object_control_by_geometry_dialog) 
+message_handler(object_control_options_panel) 
+message_handler(object_control_vhs_plugin) 
+message_handler(object_control_plugin) 
+message_handler(object_control_by_geometry) 
+message_handler(object_control_settings_dialog) 
+message_handler(object_control_framework) 
+message_handler(object_control_edit_plugin) 
+message_handler(object_control_view) 
+message_handler(object_control_find_plugin) 
+message_handler(action_inspector_pane) 
+message_handler(plugin_framework_xml_inspector_pane) 
+message_handler(sw_databus_inspector_pane) 
+message_handler(framework_xml_inspector_pane) 
+message_handler(inspector_pane) 
+message_handler(framework_inspector_pane) 
+message_handler(elements_inspector_pane) 
+message_handler(datastore_inspector_pane) 
+message_handler(advanced_inspector_pane) 
+message_handler(sw_component_inspector_pane) 
+message_handler(simple_xml_thing_inspector_pane) 
+message_handler(gui_framework_xml_inspector_pane) 
+message_handler(abstract_ref_inspector_pane) 
+message_handler(condition) 
+message_handler(class_details_inspector_pane) 
+message_handler(method_explorer) 
+message_handler(component_framework_inspector_pane) 
+message_handler(dependencies_inspector_pane) 
+message_handler(database_view_inspector_pane) 
+message_handler(object_inspector) 
+message_handler(property_tree_editor) 
+message_handler(flagged_object_tree_editor) 
+message_handler(flagged_tree_list_view) 
+message_handler(oledb_provider_component) 
+message_handler(system_preferences_framework) 
+message_handler(condition) 
+message_handler(cursors_options_panel) 
+message_handler(options_panel) 
+message_handler(options_dialog) 
+message_handler(options_plugin) 
+message_handler(system_preferences_plugin) 
+message_handler(condition) 
+message_handler(ora_vm_objects_dataset_manager) 
+message_handler(condition) 
+message_handler(oracle_objects_dataset_manager) 
+message_handler(outlook_bar_component) 
+message_handler(outlook_bar_component_view) 
+message_handler(overviewer_plugin) 
+message_handler(condition) 
+message_handler(performance_monitor) 
+message_handler(test_plot_menu) 
+message_handler(plotter_config_menu) 
+message_handler(condition) 
+message_handler(drafting) 
+message_handler(swaf_proximity_analysis_dialog) 
+message_handler(point_set_analysis_plugin) 
+message_handler(swaf_cluster_analysis_dialog) 
+message_handler(point_set_analysis_dialog) 
+message_handler(condition) 
+message_handler(test_print_dialog) 
+message_handler(edit_filter) 
+message_handler(hp_custom_properties) 
+message_handler(paper_sizes) 
+message_handler(printer_setup_wizard) 
+message_handler(condition) 
+message_handler(priority_analyser) 
+message_handler(xprf_dialog) 
+message_handler(swpmgr_menu) 
+message_handler(condition) 
+message_handler(qm_current_selection_source) 
+message_handler(qm_trace_results_source) 
+message_handler(qm_current_window_source) 
+message_handler(qm_within_trail_source) 
+message_handler(qm_alternative_diffs_source) 
+message_handler(qm_scrapbook_source) 
+message_handler(qm_configuration) 
+message_handler(qm_engine) 
+message_handler(geometry_mapping_routine) 
+message_handler(self_intersect_chain_routine) 
+message_handler(orphan_geometry_routine) 
+message_handler(mandatory_fields_routine) 
+message_handler(rwo_no_geom_routine) 
+message_handler(infinite_arcs_routine) 
+message_handler(empty_text_routine) 
+message_handler(zero_len_chain_routine) 
+message_handler(coincident_geom_routine) 
+message_handler(default_geometry_routine) 
+message_handler(info_flag_editor) 
+message_handler(quality_check_tool) 
+message_handler(qm_plugin) 
+message_handler(query_designer_base) 
+message_handler(script_query_designer) 
+message_handler(sql_query_designer) 
+message_handler(query_builder_base) 
+message_handler(query_dialog) 
+message_handler(query_tool_plugin) 
+message_handler(ace_query_manager) 
+message_handler(new_query_dialog) 
+message_handler(query_definition) 
+message_handler(query_count_dialog) 
+message_handler(query_export_dialog) 
+message_handler(query_navigation_plugin) 
+message_handler(query_export_plugin) 
+message_handler(query_toolbar_plugin) 
+message_handler(min_road_plugin) 
+message_handler(query_edit_plugin) 
+message_handler(query_interrupt_plugin) 
+message_handler(query_count_plugin) 
+message_handler(query_result_control) 
+message_handler(query_multiple_results_control) 
+message_handler(query_results_options_panel) 
+message_handler(query_result_manager) 
+message_handler(query_result_framework) 
+message_handler(query_engine) 
+message_handler(query_wizard_base) 
+message_handler(query_wizard_input_field) 
+message_handler(query_wizard_geom_cols_pane) 
+message_handler(query_wizard_filter_records_pane) 
+message_handler(query_wizard_title_pane) 
+message_handler(query_wizard_collection_pane) 
+message_handler(query_wizard_geom_choice_pane) 
+message_handler(script_simple_wizard) 
+message_handler(raster_follower_dialog) 
+message_handler(raster_follower_plugin) 
+message_handler(condition) 
+message_handler(record_set_navigator) 
+message_handler(condition) 
+message_handler(reference_origin_plugin) 
+message_handler(condition) 
+message_handler(remote_databus) 
+message_handler(replication_dialogs) 
+message_handler(replication_dialog) 
+message_handler(replica_create_dialog) 
+message_handler(version_form_editor) 
+message_handler(spatial_replica_create_editor) 
+message_handler(replication_setup_dialog) 
+message_handler(replication_engine) 
+message_handler(replication_manager) 
+message_handler(condition) 
+message_handler(rotate_view_dialog) 
+message_handler(condition) 
+message_handler(sas_dataset) 
+message_handler(sas_dataset_menu) 
+message_handler(sas_map_transform_menu) 
+message_handler(sas_dataset_menu) 
+message_handler(sas_dataset_menu) 
+message_handler(sas_dataset_menu) 
+message_handler(sas_dataset_menu) 
+message_handler(fme_objects_manager) 
+message_handler(sas_fme_plugin) 
+message_handler(sas_fme_manager) 
+message_handler(sas_fme_management_framework) 
+message_handler(sas_dataset_menu) 
+message_handler(sas_dataset_menu) 
+message_handler(sas_dataset_menu) 
+message_handler(sas_dataset_menu) 
+message_handler(condition) 
+message_handler(sas_dataset_menu) 
+message_handler(sas_soms_plugin) 
+message_handler(sas_soms_management_framework) 
+message_handler(sas_password_dialog) 
+message_handler(sas_soms_manager_engine) 
+message_handler(sas_soms_manager) 
+message_handler(sas_soms_swaf_plugin) 
+message_handler(sas_dataset_menu) 
+message_handler(scrapbook) 
+message_handler(condition) 
+message_handler(scrapbook_save_prompter) 
+message_handler(scrapbook_dialog) 
+message_handler(scrapbook_plugin) 
+message_handler(condition) 
+message_handler(dsst) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(spatial_context_viewer_gui_framework) 
+message_handler(spatial_context_viewer_plugin) 
+message_handler(replica_create_dialog) 
+message_handler(sr!area_selector_dialog) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(sql2) 
+message_handler(condition) 
+message_handler(sql_server) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(vchar_editor) 
+message_handler(gis_style_editor) 
+message_handler(font_attr_prompter) 
+message_handler(vector_font_editor) 
+message_handler(range_map_editor) 
+message_handler(custom_type_selector) 
+message_handler(style_system) 
+message_handler(condition) 
+message_handler(system_styles) 
+message_handler(style_dump_editor) 
+message_handler(style_load_editor) 
+message_handler(style_loader) 
+message_handler(style_properties_component) 
+message_handler(geometry_interaction_area_square_plugin) 
+message_handler(geometry_interaction_area_circle_plugin) 
+message_handler(geometry_interaction_line_square_plugin) 
+message_handler(geometry_interaction_text_plugin) 
+message_handler(geometry_interaction_select_plugin) 
+message_handler(style_symbol_gui_framework) 
+message_handler(geometry_interaction_framework) 
+message_handler(geometry_interaction_pan_zoom_plugin) 
+message_handler(geometry_interaction_area_multi_plugin) 
+message_handler(geometry_interaction_point_plugin) 
+message_handler(geometry_interaction_line_plugin) 
+message_handler(geometry_interaction_line_circle_plugin) 
+message_handler(geometry_interaction_line_multi_plugin) 
+message_handler(style_symbol_manager) 
+message_handler(style_symbol_properties_component) 
+message_handler(geometry_interaction_edit_component) 
+message_handler(geometry_interaction_rotate_plugin) 
+message_handler(style_symbol_manage_dialog) 
+message_handler(style_symbol) 
+message_handler(style_symbol_editor) 
+message_handler(style_symbol_open_dialog) 
+message_handler(geometry_interaction_component) 
+message_handler(symbol_editor_units_options_panel) 
+message_handler(style_symbol_magik_gui) 
+message_handler(fill_percentage_popup_model) 
+message_handler(hatch_pattern_builder) 
+message_handler(hatch_pattern_popup_model) 
+message_handler(in_place_line_join_style_editor) 
+message_handler(line_end_style_popup_model) 
+message_handler(in_place_line_end_style_editor) 
+message_handler(line_width_popup_model) 
+message_handler(in_place_dash_pattern_editor) 
+message_handler(in_place_colour_editor) 
+message_handler(colour_popup_model) 
+message_handler(line_join_style_popup_model) 
+message_handler(in_place_line_width_editor) 
+message_handler(in_place_fill_percentage_editor) 
+message_handler(dash_pattern_popup_model) 
+message_handler(line_width_value_manager) 
+message_handler(dash_pattern_value_manager) 
+message_handler(in_place_hatch_pattern_editor) 
+message_handler(colour_builder) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(sw_automation) 
+message_handler(condition) 
+message_handler(ole_help) 
+message_handler(sw_core_magik_images_register) 
+message_handler(condition) 
+message_handler(sw_job) 
+message_handler(drawing_functions) 
+message_handler(swaf_dxf_application) 
+message_handler(object_editor) 
+message_handler(dxf_gui_framework) 
+message_handler(swaf_dxf_export_options_editor) 
+message_handler(dxf_export_gui_framework) 
+message_handler(dxf_rwo_editor_plugin) 
+message_handler(dxf_load_history_editor_plugin) 
+message_handler(dxf_load_history_editor) 
+message_handler(swaf_dxf_options_editor) 
+message_handler(dxf_import_gui_framework) 
+message_handler(dxf_out_translation_table_editor_plugin) 
+message_handler(dxf_import_translation_control_dialog) 
+message_handler(swaf_dxf_transform_editor) 
+message_handler(swaf_dxf_application_editor) 
+message_handler(dxf_mapping_plugin) 
+message_handler(dxf_translation_table_editor_plugin) 
+message_handler(dxf_translation_control_dialog) 
+message_handler(dxf_export_translation_control_dialog) 
+message_handler(swaf_professional_application) 
+message_handler(swaf_professional_application) 
+message_handler(map_gui_framework) 
+message_handler(raster_loader) 
+message_handler(swaf_raster_loading_menu) 
+message_handler(condition) 
+message_handler(swaf_raster_load_details_menu) 
+message_handler(swaf_raster_more_menu) 
+message_handler(condition) 
+message_handler(swaf_ev_tin_plugin) 
+message_handler(swaf_tin_editor_framework) 
+message_handler(swaf_view_tin_plugin) 
+message_handler(swaf_export_tin_plugin) 
+message_handler(swaf_load_tin_plugin) 
+message_handler(condition) 
+message_handler(topology_editor_plugin) 
+message_handler(topology_geometry_dialog) 
+message_handler(topology_manifold_dialog) 
+message_handler(condition) 
+message_handler(transform_plugin) 
+message_handler(condition) 
+message_handler(swish) 
+message_handler(swmfs_menu) 
+message_handler(swmfs_auth_menu) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(sys_monitor) 
+message_handler(themes_setup_dialog) 
+message_handler(themes_setup_plugin) 
+message_handler(themes_setup_properties_dialog) 
+message_handler(thread_manager) 
+message_handler(tics) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(transform_manager) 
+message_handler(condition) 
+message_handler(in_place_choice_editor) 
+message_handler(in_place_filtered_choice_editor) 
+message_handler(in_place_file_editor) 
+message_handler(in_place_date_editor) 
+message_handler(in_place_multi_line_editor) 
+message_handler(condition) 
+message_handler(gen_graphics) 
+message_handler(tree_item_column_manager) 
+message_handler(in_place_editor) 
+message_handler(in_place_unit_editor) 
+message_handler(in_place_combo_editor) 
+message_handler(filtered_choice_dialog) 
+message_handler(in_place_boolean_editor) 
+message_handler(undo_manager) 
+message_handler(unit_display_group) 
+message_handler(condition) 
+message_handler(unit) 
+message_handler(unit_manager) 
+message_handler(unit_display_group_editor_plugin) 
+message_handler(unit_display_group_editor) 
+message_handler(unit_specific_format_editor) 
+message_handler(unit_dimensionality) 
+message_handler(unit) 
+message_handler(condition) 
+message_handler(create_db_ace_location_wizard_plugin) 
+message_handler(datamodel_help_dialog) 
+message_handler(create_database_dialog) 
+message_handler(merge_dialog_presenter) 
+message_handler(upgrade_summary_wizard_plugin) 
+message_handler(upgrade_details_wizard_plugin) 
+message_handler(merge_summary_wizard_plugin) 
+message_handler(upgrade_checkpoint_wizard_plugin) 
+message_handler(upgrade_ace_location_wizard_plugin) 
+message_handler(upgrade_language_wizard_plugin) 
+message_handler(merge_dialog) 
+message_handler(sw_progress_dialog) 
+message_handler(merge_description_wizard_plugin) 
+message_handler(upgrade_dialog_presenter) 
+message_handler(create_db_summary_wizard_plugin) 
+message_handler(upgrade_description_wizard_plugin) 
+message_handler(upgrade_error_mode_wizard_plugin) 
+message_handler(create_db_defaults_wizard_plugin) 
+message_handler(upgrade_alternative_wizard_plugin) 
+message_handler(datamodel_dialog) 
+message_handler(merge_jobs_wizard_plugin) 
+message_handler(merge_error_mode_wizard_plugin) 
+message_handler(create_db_description_wizard_plugin) 
+message_handler(merge_datasets_alternatives_wizard_plugin) 
+message_handler(upgrade_dialog) 
+message_handler(wizard_framework) 
+message_handler(upgrade_log_wizard_plugin) 
+message_handler(create_db_dataset_wizard_plugin) 
+message_handler(merge_job_session_key_wizard_plugin) 
+message_handler(create_database_dialog_presenter) 
+message_handler(condition) 
+message_handler(uva64_converter) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(uva_replication) 
+message_handler(scale_value_manager) 
+message_handler(gen_graphics) 
+message_handler(condition) 
+message_handler(vm_check_physical_integrity_dialog) 
+message_handler(version_management_options_panel) 
+message_handler(vm_alternative_tree_plugin) 
+message_handler(vm_find_plugin) 
+message_handler(alternative_history_manager) 
+message_handler(version_management_framework) 
+message_handler(version_manager) 
+message_handler(vm_relational_integrity_plugin) 
+message_handler(vm_physical_database_plugin) 
+message_handler(commit_rollback_dialog) 
+message_handler(vm_checkpoints_list_plugin) 
+message_handler(datasets_options_panel) 
+message_handler(vm_checkpoint_properties_dialog) 
+message_handler(vm_find_dialog_page) 
+message_handler(vm_sub_alternatives_list_plugin) 
+message_handler(vm_find_dialog_users_page) 
+message_handler(version_management_plugin) 
+message_handler(vm_find_dialog) 
+message_handler(vm_alternative_properties_dialog) 
+message_handler(vm_find_dialog_alternatives_page) 
+message_handler(vm_address_bar_plugin) 
+message_handler(vm_replication_plugin) 
+message_handler(sw_version_selector) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(web_launcher) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(condition) 
+message_handler(xml_collection_loader) 
+**** ADVERTENCIA: Cargando producto sw_addon_google_maps desde ubicación alternativa C:\Projects\Tudela\Tudela430\..\sw_addon_google_maps111
+Verificando : C:\Projects\Tudela\Smallworld\product\sw_core\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\soms430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\fme430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\dxf430\source por parches para rev : 4.3.0 
+Añadiendo producto desde C:\Projects\Tudela\Tudela430\..\sw_addon_google_maps111
+Cargando definiciones de módulo para producto'sw_addon_google_maps' desde C:\Projects\Tudela\sw_addon_google_maps111
+Añadiendo producto desde C:\Projects\Tudela\sw_addon_google_maps111\config (como un subproducto de sw_addon_google_maps)
+Cargando definiciones de módulo para producto'sw_addon_google_maps_config' desde C:\Projects\Tudela\sw_addon_google_maps111\config
+Cargando definición de módulo para sw_addon_google_maps_magik_images.1
+Cargando definición de módulo para google_address_search.1
+Cargando definición de módulo para map_tile_plugin.1
+Cargando definición de módulo para streetview_addon.1
+Cargando definición de módulo para swaf_address_search_gui.1
+Cargando definición de módulo para tiled_dataset_acp.1
+Cargando definición de módulo para tiled_dataset_magik_on_java.1
+Cargando definición de módulo para tiled_dataset_som.1
+Añadiendo producto desde C:\Projects\Tudela\sw_addon_google_maps111\sw_addon_google_maps_lp (como un subproducto de sw_addon_google_maps)
+Cargando producto de personalización 'sw_addon_google_maps_lp' desde C:\Projects\Tudela\sw_addon_google_maps111\sw_addon_google_maps_lp
+message_handler(google_address_search_plugin) 
+message_handler(map_tile_plugin) 
+message_handler(http_proxy_login_dialog) 
+message_handler(condition) 
+message_handler(streetview_addon_component) 
+message_handler(streetview_addon) 
+message_handler(swaf_address_search_plugin) 
+Cargando producto de personalización 'sw_addon_google_maps_lp' desde C:\Projects\Tudela\sw_addon_google_maps111\sw_addon_google_maps_lp
+message_handler(google_address_search_plugin) 
+message_handler(map_tile_plugin) 
+message_handler(http_proxy_login_dialog) 
+message_handler(condition) 
+message_handler(streetview_addon_component) 
+message_handler(streetview_addon) 
+message_handler(swaf_address_search_plugin) 
+Módulo model.1 ya está cargado
+Módulo value_managers.1 ya está cargado
+Módulo widgets.1 ya está cargado
+Módulo document_list_views.1 ya está cargado
+Módulo actions.1 ya está cargado
+Módulo progress_manager.1 ya está cargado
+Módulo component_framework.1 ya está cargado
+Módulo base_dialogs.1 ya está cargado
+Módulo dialogs.1 ya está cargado
+Módulo formats.1 ya está cargado
+Módulo tree.24 ya está cargado
+Módulo units_core.1 ya está cargado
+Módulo units_definitions.1 ya está cargado
+Módulo tree_item.24 ya está cargado
+Módulo module_management_magik_gui.1 ya está cargado
+Módulo pane_manager.1 ya está cargado
+Módulo mgr_src.1 ya está cargado
+Módulo interaction_handler.1 ya está cargado
+Módulo geometry_set_factory.1 ya está cargado
+Módulo map_support.1 ya está cargado
+Módulo rotate_view_dialog.1 ya está cargado
+Módulo acpt.1 ya está cargado
+Módulo xml_output.1 ya está cargado
+Módulo options_plugin.1 ya está cargado
+Módulo display_grid.1 ya está cargado
+Módulo command_design_pattern.1 ya está cargado
+Módulo history_manager.1 ya está cargado
+Módulo map_trail.1 ya está cargado
+Módulo rwo_actions_plugin.1 ya está cargado
+Módulo document_manager.1 ya está cargado
+Módulo multiple_deletion_dialog.1 ya está cargado
+Módulo map_plugin.1 ya está cargado
+Módulo data_representation.1 ya está cargado
+Módulo geometry_editors.1 ya está cargado
+Módulo editor_plugin.1 ya está cargado
+Módulo dynamic_plugin_handler.1 ya está cargado
+Módulo cached_record_collection.1 ya está cargado
+Módulo lazy_record_collection.1 ya está cargado
+Módulo recordset_gui_component.1 ya está cargado
+Módulo integrity.2 ya está cargado
+Módulo integrity_magik_gui.1 ya está cargado
+Módulo version_management_plugin.1 ya está cargado
+Módulo themes_base.1 ya está cargado
+Módulo themes_magik_gui.1 ya está cargado
+Módulo object_control_plugin.1 ya está cargado
+Módulo rwo_sets.1 ya está cargado
+Módulo sw_automation_client.1 ya está cargado
+Módulo collection_export_engine.1 ya está cargado
+Módulo urn_manager.1 ya está cargado
+Módulo output_collection_descriptor.1 ya está cargado
+Módulo xml_output_collection.1 ya está cargado
+Módulo explorer_plugin.1 ya está cargado
+Módulo progress_bar.1 ya está cargado
+Módulo dynamic_transform_manager.1 ya está cargado
+Módulo application.1 ya está cargado
+Cargando módulo dxf_db_core.1
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\conditions.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\create_database.magikc
+**** Advertencia: Cambiando la naturaleza de create_dxf_dataset
+     global_changing_nature(name=:create_dxf_dataset)
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\create_dxf_styles.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\dxf_input_translation_exemplars.magikc
+Definiendo global sw:h
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\dxf_input_translation_model.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\dxf_output_translation_exemplars.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\dxf_output_application_exemplars.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\dxf_output_translation_model.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\generic_dxf_rwo_model.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\generic_dxf_exemplars.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\dxf_application_dumper.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_db_core\source\message_usages.magikc
+dxf_db_core.1 ha sido cargado
+message_handler(condition) 
+message_handler(dxf_create_database) 
+Cargando módulo dxf_input_engine.1
+cargando C:\Projects\Tudela\dxf430\modules\dxf_input_engine\source\rwo_insert_activity.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_input_engine\source\dxf_rec.magikc
+**** Advertencia: Cambiando la naturaleza de dxf_block_rec
+     global_changing_nature(name=:dxf_block_rec)
+cargando C:\Projects\Tudela\dxf430\modules\dxf_input_engine\source\dxf_ellipse_rec.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_input_engine\source\dxf_nurb_rec.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_input_engine\source\dxf_parse_acp.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\dxf_input_engine\source\dxf_in_stream.magikc
+Definiendo global sw:translation_error
+cargando C:\Projects\Tudela\dxf430\modules\dxf_input_engine\source\dxf_translator.magikc
+**** Advertencia: Cambiando la naturaleza de dxf_translator
+     global_changing_nature(name=:dxf_translator)
+Definiendo global sw:file_translation_error
+cargando C:\Projects\Tudela\dxf430\modules\dxf_input_engine\source\message_usages.magikc
+dxf_input_engine.1 ha sido cargado
+message_handler(dxf_input_translator) 
+Cargando módulo dxf_output_engine.1
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\dxf_output_acp.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\dxf_out_stream.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\top_level_geom_extension.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\chain_dxf_mixin.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\area_dxf_mixin.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\text_dxf_mixin.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\point_dxf_mixin.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\dimension_dxf_mixin.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\dxf_clipped_geom.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\dxf_geom_section.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\dxf_clipped_area.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\dxf_output_translator.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\rwo_record_mixin_extras.magikc
+cargando C:\Projects\Tudela\dxf430\modules\dxf_output_engine\source\message_usages.magikc
+dxf_output_engine.1 ha sido cargado
+message_handler(dxf_output_translator) 
+Cargando módulo swaf_dxf_common_gui.1
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_common_gui\source\dxf_gui_framework.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_common_gui\source\dxf_translation_control_dialog.magikc
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_common_gui\source\message_usages.magikc
+swaf_dxf_common_gui.1 ha sido cargado
+message_handler(dxf_gui_framework) 
+Cargando módulo swaf_dxf_import_gui.1
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_import_gui\source\dxf_load_history_editor_plugin.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_import_gui\source\dxf_rwo_editor_plugin.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_import_gui\source\generic_dxf_exemplars_extra.magikc
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_import_gui\source\swaf_dxf_options_editor.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_import_gui\source\dxf_import_translation_control_dialog.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_import_gui\source\dxf_import_gui_framework.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_import_gui\source\message_usages.magikc
+swaf_dxf_import_gui.1 ha sido cargado
+message_handler(dxf_rwo_editor_plugin) 
+message_handler(dxf_load_history_editor_plugin) 
+message_handler(dxf_load_history_editor) 
+message_handler(swaf_dxf_options_editor) 
+message_handler(dxf_import_gui_framework) 
+Cargando módulo swaf_dxf_export_gui.1
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_export_gui\source\swaf_dxf_export_options_editor.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_export_gui\source\dxf_export_translation_control_dialog.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_export_gui\source\dxf_export_gui_framework.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_export_gui\source\message_usages.magikc
+swaf_dxf_export_gui.1 ha sido cargado
+message_handler(swaf_dxf_export_options_editor) 
+message_handler(dxf_export_gui_framework) 
+Cargando módulo swaf_dxf_mapping_gui.1
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_mapping_gui\source\swaf_dxf_application_editor.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_mapping_gui\source\swaf_dxf_transform_editor.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_mapping_gui\source\dxf_mapping_plugin.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_mapping_gui\source\dxf_translation_table_editor_plugin.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_mapping_gui\source\dxf_out_translation_table_editor_plugin.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_mapping_gui\source\dxf_input_translation_exemplars_extras.magikc
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_mapping_gui\source\dxf_output_translation_exemplars_extras.magikc
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_mapping_gui\source\message_usages.magikc
+swaf_dxf_mapping_gui.1 ha sido cargado
+message_handler(dxf_out_translation_table_editor_plugin) 
+message_handler(dxf_import_translation_control_dialog) 
+message_handler(swaf_dxf_transform_editor) 
+message_handler(swaf_dxf_application_editor) 
+message_handler(dxf_mapping_plugin) 
+message_handler(dxf_translation_table_editor_plugin) 
+message_handler(dxf_translation_control_dialog) 
+message_handler(dxf_export_translation_control_dialog) 
+message_handler(swaf_professional_application) 
+Cargando módulo swaf_dxf_application.1
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_application\source\register.magikc
+cargando C:\Projects\Tudela\dxf430\modules\swaf_dxf_application\source\message_usages.magikc
+swaf_dxf_application.1 ha sido cargado
+message_handler(swaf_dxf_application) 
+message_handler(object_editor) 
+Módulo model.1 ya está cargado
+Módulo value_managers.1 ya está cargado
+Módulo widgets.1 ya está cargado
+Módulo document_list_views.1 ya está cargado
+Módulo actions.1 ya está cargado
+Módulo progress_manager.1 ya está cargado
+Módulo component_framework.1 ya está cargado
+Módulo base_dialogs.1 ya está cargado
+Módulo dialogs.1 ya está cargado
+Módulo formats.1 ya está cargado
+Módulo tree.24 ya está cargado
+Módulo units_core.1 ya está cargado
+Módulo units_definitions.1 ya está cargado
+Módulo tree_item.24 ya está cargado
+Módulo module_management_magik_gui.1 ya está cargado
+Módulo mgr_src.1 ya está cargado
+Módulo interaction_handler.1 ya está cargado
+Módulo geometry_set_factory.1 ya está cargado
+Módulo map_support.1 ya está cargado
+Módulo rotate_view_dialog.1 ya está cargado
+Módulo acpt.1 ya está cargado
+Módulo xml_output.1 ya está cargado
+Módulo options_plugin.1 ya está cargado
+Módulo display_grid.1 ya está cargado
+Módulo command_design_pattern.1 ya está cargado
+Módulo history_manager.1 ya está cargado
+Módulo map_trail.1 ya está cargado
+Módulo rwo_actions_plugin.1 ya está cargado
+Módulo document_manager.1 ya está cargado
+Módulo multiple_deletion_dialog.1 ya está cargado
+Módulo map_plugin.1 ya está cargado
+Módulo data_representation.1 ya está cargado
+Módulo geometry_editors.1 ya está cargado
+Módulo editor_plugin.1 ya está cargado
+Módulo dynamic_plugin_handler.1 ya está cargado
+Módulo cached_record_collection.1 ya está cargado
+Módulo lazy_record_collection.1 ya está cargado
+Módulo recordset_gui_component.1 ya está cargado
+Módulo integrity.2 ya está cargado
+Módulo integrity_magik_gui.1 ya está cargado
+Módulo version_management_plugin.1 ya está cargado
+Módulo themes_base.1 ya está cargado
+Módulo themes_magik_gui.1 ya está cargado
+Módulo object_control_plugin.1 ya está cargado
+Módulo rwo_sets.1 ya está cargado
+Módulo sw_automation_client.1 ya está cargado
+Módulo collection_export_engine.1 ya está cargado
+Módulo urn_manager.1 ya está cargado
+Módulo output_collection_descriptor.1 ya está cargado
+Módulo xml_output_collection.1 ya está cargado
+Módulo explorer_plugin.1 ya está cargado
+Módulo application.1 ya está cargado
+Cargando módulo fme_engine.2
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\conditions.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\remex.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_alpha_field.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_geom_field.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_feature.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_output_set.magikc
+Definiendo global sw:fme_connection_service
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_schema.magikc
+Definiendo global sw:p
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_processor.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_connection_mixin.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_tcpip_connection.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_tcpip_server.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_connection_service.magikc
+**** Advertencia: Cambiando la naturaleza de fme_connection_service
+     global_changing_nature(name=:fme_connection_service)
+Definiendo global sw:fme_import_set
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_pseudo_field_factory.magikc
+cargando C:\Projects\Tudela\fme430\modules\fme_engine\source\fme_import_set.magikc
+**** Advertencia: Cambiando la naturaleza de fme_import_set
+     global_changing_nature(name=:fme_import_set)
+fme_engine.2 ha sido cargado
+message_handler(fme_tics_server) 
+message_handler(fme_create_datamodel) 
+Cargando módulo fme_plugin.1
+cargando C:\Projects\Tudela\fme430\modules\fme_plugin\source\fme_plugin.magikc
+fme_plugin.1 ha sido cargado
+message_handler(fme_plugin) 
+Cargando módulo fme_import_plugin.2
+cargando C:\Projects\Tudela\fme430\modules\fme_import_plugin\source\explorer_model_fme_import_plugin.magikc
+fme_import_plugin.2 ha sido cargado
+message_handler(explorer_model_fme_import_plugin) 
+Cargando módulo fme_export_plugin.2
+cargando C:\Projects\Tudela\fme430\modules\fme_export_plugin\source\explorer_model_fme_export_plugin.magikc
+fme_export_plugin.2 ha sido cargado
+message_handler(explorer_model_fme_export_plugin) 
+Cargando módulo swaf_fme_application.1
+cargando C:\Projects\Tudela\fme430\modules\swaf_fme_application\source\register.magikc
+swaf_fme_application.1 ha sido cargado
+message_handler(swaf_fme_application) 
+Módulo universal_rwo.1 ya está cargado
+Cargando módulo sas_core.2
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\misc\sas_globals.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\misc\sas_hexadecimal.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\style_system\style_system_transfer\sas_transfer_colour.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\style_system\style_system_transfer\sas_transfer_font.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\style_system\style_system_transfer\sas_transfer_dash_pattern.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\style_system\style_system_transfer\sas_transfer_areastyle.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\style_system\style_system_transfer\sas_transfer_linestyle.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\style_system\style_system_transfer\sas_transfer_pointstyle.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\style_system\style_system_transfer\sas_transfer_textstyle.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\style_system\style_system_transfer\sas_transfer_styles.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\style_system\sas_style_system.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\dd_transfer\sas_transfer_geom_field_definition.magikc
+Definiendo global sw:sas_geom_field_descriptor
+Definiendo global sw:geom_field_editor
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\dd_transfer\sas_transfer_phys_field_definition.magikc
+Definiendo global sw:choice_field_editor
+Definiendo global sw:boolean_field_editor
+Definiendo global sw:sas_field_descriptor
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\dd_transfer\sas_transfer_collection_definition.magikc
+Definiendo global sw:sas_table_descriptor
+Definiendo global sw:sas_collection
+Definiendo global sw:sas_rwo_record
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\dd_transfer\sas_transfer_join_definition.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\dd\sas_field_descriptor.magikc
+**** Advertencia: Cambiando la naturaleza de sas_field_descriptor
+     global_changing_nature(name=:sas_field_descriptor)
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\dd\sas_geom_field_descriptor.magikc
+**** Advertencia: Cambiando la naturaleza de sas_geom_field_descriptor
+     global_changing_nature(name=:sas_geom_field_descriptor)
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\dd\sas_join_field_descriptor.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\dd\sas_table_descriptor.magikc
+**** Advertencia: Cambiando la naturaleza de sas_table_descriptor
+     global_changing_nature(name=:sas_table_descriptor)
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_geometry_set.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_uds_general_raster_tile.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_uds_general_raster_grid.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_uds_general_raster.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_uds_grid_tile.magikc
+**** Advertencia: El ejemplar sas_uds_general_raster ya existe; se debe quitar para poder volverlo a definir
+     exemplar_already_exists(exemplar=:sas_uds_general_raster)
+**** Advertencia: El ejemplar sas_uds_general_raster_grid ya existe; se debe quitar para poder volverlo a definir
+     exemplar_already_exists(exemplar=:sas_uds_general_raster_grid)
+**** Advertencia: El ejemplar sas_uds_general_raster_tile ya existe; se debe quitar para poder volverlo a definir
+     exemplar_already_exists(exemplar=:sas_uds_general_raster_tile)
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_general_raster_tile.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_general_raster_grid.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_general_raster.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_area.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_chain.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_point.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_text.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_stream.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_collection_stream.magikc
+Definiendo global sw:sas_predicate_and
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_rwo_record.magikc
+**** Advertencia: Cambiando la naturaleza de sas_rwo_record
+     global_changing_nature(name=:sas_rwo_record)
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_select_collection.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_collection.magikc
+**** Advertencia: Cambiando la naturaleza de sas_collection
+     global_changing_nature(name=:sas_collection)
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_coordinate_system_info.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_dataset.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_manager.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_int!grid_tile.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\ds\sas_grid_tile.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\predicates\sas_predicate.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\predicates\sas_predicate_or.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\predicates\sas_predicate_and.magikc
+**** Advertencia: Cambiando la naturaleza de sas_predicate_and
+     global_changing_nature(name=:sas_predicate_and)
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\predicates\sas_predicate_leaf.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\datastore\predicates\predicate_additions.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_geometry.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_grid_tile.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_color_grid_tile.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_area.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_chain.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_point.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_text.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_chain_coords_vector.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_area_coords_vector.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_area_with_holes.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_record.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\acp_transfer\sas_transfer_mime_data.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_core\source\acp\sas_acp.magikc
+sas_core.2 ha sido cargado
+message_handler(sas_dataset) 
+Cargando módulo sas_core_magik_gui.2
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\menu\sas_clip_bounds_editor.magikc
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\menu\sas_coordinate_system_editor.magikc
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\menu\sas_config_field_item.magikc
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\menu\sas_config_item.magikc
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\menu\sas_config_menu.magikc
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\menu\sas_hot_transform_engine.magikc
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\menu\sas_map_transform_menu.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\menu\sas_dataset_menu.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Definiendo global sw:sas_filer
+Definiendo global sw:sas_preview_engine
+Definiendo global sw:sas_drop
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\misc\sas_viewer_file_info.magikc
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\misc\sas_viewer.magikc
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\misc\sas_preview_engine.magikc
+**** Advertencia: Cambiando la naturaleza de sas_preview_engine
+     global_changing_nature(name=:sas_preview_engine)
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\misc\sas_drop.magikc
+**** Advertencia: Cambiando la naturaleza de sas_drop
+     global_changing_nature(name=:sas_drop)
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_core_magik_gui\source\misc\sas_filer.magikc
+**** Advertencia: Cambiando la naturaleza de sas_filer
+     global_changing_nature(name=:sas_filer)
+sas_core_magik_gui.2 ha sido cargado
+message_handler(sas_dataset_menu) 
+message_handler(sas_map_transform_menu) 
+Cargando módulo sas_soms_swaf_plugin.1
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_soms_swaf_plugin\source\conditions.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_soms_swaf_plugin\source\sas_configuration.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_soms_swaf_plugin\source\sas_soms_manager_engine.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_soms_swaf_plugin\source\sas_soms_manager.magikc
+Definiendo global sw:sas_password_dialog
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_soms_swaf_plugin\source\sas_soms_management_framework.magikc
+**** Advertencia: No hay firma para el método: refresh()
+     component_no_method_signature(method_name=:|refresh()|)
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_soms_swaf_plugin\source\sas_soms_swaf_plugin.magikc
+Definiendo global sw:sas_soms_management_options_panel
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_soms_swaf_plugin\source\sas_password_dialog.magikc
+**** Advertencia: Cambiando la naturaleza de sas_password_dialog
+     global_changing_nature(name=:sas_password_dialog)
+sas_soms_swaf_plugin.1 ha sido cargado
+message_handler(sas_soms_management_framework) 
+message_handler(sas_password_dialog) 
+message_handler(sas_soms_manager_engine) 
+message_handler(sas_soms_manager) 
+message_handler(sas_soms_swaf_plugin) 
+Módulo universal_rwo.1 ya está cargado
+Módulo sas_core.2 ya está cargado
+Módulo sas_core_magik_gui.2 ya está cargado
+Cargando módulo sas_dwg_dxf.2
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_dwg_dxf\source\datastore\dwg_acp.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_dwg_dxf\source\datastore\dwg_rwo_record.magikc
+Definiendo global sw:button_definition
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_dwg_dxf\source\datastore\dwg_xdata.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_dwg_dxf\source\datastore\dwg_dataset.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_dwg_dxf\source\datastore\dwg_manager.magikc
+sas_dwg_dxf.2 ha sido cargado
+message_handler(sas_dataset_menu) 
+Cargando módulo sas_dwg_dxf_magik_gui.2
+Módulo sas_dwg_dxf_magik_gui.2 no tiene ningún recurso
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_dwg_dxf_magik_gui\source\viewer\dwg_viewer.magikc
+sas_dwg_dxf_magik_gui.2 ha sido cargado
+Módulo universal_rwo.1 ya está cargado
+Módulo sas_core.2 ya está cargado
+Módulo sas_core_magik_gui.2 ya está cargado
+Cargando módulo sas_raster.2
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_raster\source\datastore\sas_raster_acp.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_raster\source\datastore\sas_raster_rwo_record.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_raster\source\datastore\sas_raster_dataset.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_raster\source\datastore\sas_raster_manager.magikc
+sas_raster.2 ha sido cargado
+message_handler(sas_dataset_menu) 
+Cargando módulo sas_raster_magik_gui.2
+Módulo sas_raster_magik_gui.2 no tiene ningún recurso
+cargando C:\Projects\Tudela\soms430\modules\magik_gui\sas_raster_magik_gui\source\viewer\sas_raster_viewer.magikc
+sas_raster_magik_gui.2 ha sido cargado
+Módulo universal_rwo.1 ya está cargado
+Módulo sas_core.2 ya está cargado
+Cargando módulo sas_wms.2
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_wms\source\datastore\wms_client_acp.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_wms\source\datastore\wms_client_rwo_record.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_wms\source\datastore\wms_client_dataset.magikc
+cargando C:\Projects\Tudela\soms430\modules\engines\sas_wms\source\datastore\wms_client_manager.magikc
+sas_wms.2 ha sido cargado
+message_handler(sas_dataset_menu) 
+Módulo sys_acps.1 ya está cargado
+Cargando módulo tiled_dataset_acp.1
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_acp\source\conditions.magikc
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_acp\source\tiled_dataset_comms_mixin.magikc
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_acp\source\tiled_dataset_acp.magikc
+Monitor de Pragma: condition subclass_method
+tiled_dataset_acp.1 ha sido cargado
+Cargando módulo tiled_dataset_som.1
+Módulo tiled_dataset_som.1 no tiene ningún recurso
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_som\source\som_support\grids.magikc
+**** Advertencia: El ejemplar sas_uds_grid_tile ya existe; se debe quitar para poder volverlo a definir
+     exemplar_already_exists(exemplar=:sas_uds_grid_tile)
+**** Advertencia: El ejemplar sas_uds_general_raster ya existe; se debe quitar para poder volverlo a definir
+     exemplar_already_exists(exemplar=:sas_uds_general_raster)
+**** Advertencia: El ejemplar sas_uds_general_raster_grid ya existe; se debe quitar para poder volverlo a definir
+     exemplar_already_exists(exemplar=:sas_uds_general_raster_grid)
+**** Advertencia: El ejemplar sas_uds_general_raster_tile ya existe; se debe quitar para poder volverlo a definir
+     exemplar_already_exists(exemplar=:sas_uds_general_raster_tile)
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_som\source\google_tile_calculator.magikc
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_som\source\google_tile_fetcher.magikc
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_som\source\tiled_geometry_set.magikc
+Monitor de Pragma: condition subclass_method
+Definiendo global sw:map_tile_raster
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_som\source\tiled_dataset.magikc
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_som\source\tiled_dataset_manager.magikc
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_som\source\map_tile.magikc
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_som\source\map_tile_raster.magikc
+**** Advertencia: Cambiando la naturaleza de map_tile_raster
+     global_changing_nature(name=:map_tile_raster)
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\tiled_dataset_som\source\dataset_config.magikc
+tiled_dataset_som.1 ha sido cargado
+Cargando módulo map_tile_plugin.1
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\map_tile_plugin\source\http_proxy_login_dialog.magikc
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\map_tile_plugin\source\map_tile_plugin.magikc
+Definiendo global sw:sw_login_dialog
+map_tile_plugin.1 ha sido cargado
+message_handler(map_tile_plugin) 
+message_handler(http_proxy_login_dialog) 
+Cargando módulo google_address_search.1
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\google_address_search\source\conditions.magikc
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\google_address_search\source\google_address_search_plugin.magikc
+google_address_search.1 ha sido cargado
+message_handler(google_address_search_plugin) 
+Cargando módulo swaf_address_search_gui.1
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\swaf_address_search_gui\source\swaf_address_search_plugin.magikc
+swaf_address_search_gui.1 ha sido cargado
+message_handler(swaf_address_search_plugin) 
+Cargando módulo streetview_addon.1
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\streetview_addon\source\conditions.magikc
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\streetview_addon\source\streetview_addon.magikc
+Definiendo global sw:streetview_addon_component
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\streetview_addon\source\streetview_addon_component.magikc
+**** Advertencia: Cambiando la naturaleza de streetview_addon_component
+     global_changing_nature(name=:streetview_addon_component)
+Definiendo global sw:streetview_acp
+Monitor de Pragma: condition subclass_method
+cargando C:\Projects\Tudela\sw_addon_google_maps111\modules\streetview_addon\source\streetview_acp.magikc
+**** Advertencia: Cambiando la naturaleza de streetview_acp
+     global_changing_nature(name=:streetview_acp)
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+Monitor de Pragma: condition subclass_method
+streetview_addon.1 ha sido cargado
+message_handler(condition) 
+message_handler(streetview_addon_component) 
+message_handler(streetview_addon) 
+Verificando : C:\Projects\Tudela\Smallworld\product\sw_core\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\soms430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\fme430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\dxf430\source por parches para rev : 4.3.0 
+Verificando : C:\Projects\Tudela\sw_addon_google_maps111\source por parches para rev : 4.3.0 
+Cargando parches de C:\Projects\Tudela\Smallworld\product\sw_core\source\release_patches
+cargando C:\Projects\Tudela\Smallworld\product\sw_core\source\release_patches\declare_patches.magik
+--- línea 0
+--- línea 6
+Cargando parches de C:\Projects\Tudela\soms430\source\release_patches
+cargando C:\Projects\Tudela\soms430\source\release_patches\declare_patches.magik
+--- línea 0
+--- línea 6
+Cargando parches de C:\Projects\Tudela\fme430\source\release_patches
+cargando C:\Projects\Tudela\fme430\source\release_patches\declare_patches.magik
+--- línea 0
+--- línea 6
+Cargando parches de C:\Projects\Tudela\dxf430\source\release_patches
+cargando C:\Projects\Tudela\dxf430\source\release_patches\declare_patches.magik
+--- línea 0
+--- línea 6
+Cargando parches de C:\Projects\Tudela\sw_addon_google_maps111\source\release_patches
+cargando C:\Projects\Tudela\sw_addon_google_maps111\source\release_patches\P156564_1.magik
+--- línea 0
+--- línea 84
+cargando C:\Projects\Tudela\sw_addon_google_maps111\source\release_patches\P155016_1.magik
+--- línea 0
+--- línea 125
+cargando C:\Projects\Tudela\sw_addon_google_maps111\source\release_patches\P156789_1.magik
+--- línea 0
+--- línea 75
+Imagen actualizada, Guardar la imagen si es necesario
+
+
+19/01/2024 10:25:16
+
+
+Extension file:              C:\Users\aniba\AppData\Local\Temp\msfext.desktop-9b8efhr10380
+    maximum size:            16384
+    current size:            736
+    pages in use:            488
+    yellow zone size:        4096
+     - triggers at:          12288
+Pages:                       4096
+    requests:                9625407
+    misses:                  7747
+    writes:                  52
+    copies:                  843
+New space pages:             2048
+    occupancy:               390
+Old space pages:             1024
+    cluster rolls:           22
+    object reclaims:         0
+Virtual contexts:            64
+    virtual allocations:     13622576
+    real allocations:        24915
+    victimisations:          72
+    other reifications:      0
+GC cycles:                   13
+    GC space runouts:        10
+    GC object runouts:       0
+    promoted objects:        0
+    promoted pages:          0
+    max survivor pages:      489
+Miscellaneous:
+    weak references:         2663
+    uncles:                  1023
+    post mortemed objects:   6
+    RObject pools in use:    2
+    RObjects per pool:       196624
+    RObjects allocated:      284837
+Disk surrogates:
+    surrogates:              14
+    references:              35
+    max surrogates:          14
+    max references:          35
+
+
+Extension file:              C:\Users\aniba\AppData\Local\Temp\msfext.desktop-9b8efhr10380
+    maximum size:            16384
+    current size:            736
+    pages in use:            488
+    yellow zone size:        4096
+     - triggers at:          12288
+
+
+Guardando imagen Magik C:\Projects\Tudela\Tudela430\images\tudela_closed_1.msf
+a sw:system
+Comando: unset
+simple_vector(1,4):
+1 	:|save_delta()| 
+2 	"C:\Projects\Tudela\Tudela430\images\tudela_closed_1.msf" 
+3 	:redirection_file 
+4 	"C:\Projects\Tudela\Tudela430\images\tudela_closed.msf" 
+method_finder: Done
+hash_table:
+:backup 	sw:magik_image(backup) 
+:appserver 	sw:magik_image(appserver) 
+:swaf_mega 	sw:magik_image(swaf_mega) 
+:tudela_open 	sw:magik_image(tudela_open) 
+:swaf 	sw:magik_image(swaf) 
+:tudela_closed 	sw:magik_image(tudela_closed) 
+MagikSF> El Salida de este proceso de compilación de imágenes es 0
+EXIT CODE from swaf is 0

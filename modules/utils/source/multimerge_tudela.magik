@@ -1,0 +1,426 @@
+##
+## Inicializar la variable logs
+##
+ system.putenv("LOG_MERGE","C:\Logs")
+##
+
+$
+
+def_slotted_exemplar(:multimerge,
+{
+	{:fichero_log,  _unset},
+	{:conflictos, _unset },
+	{:errores_acceso,_unset },
+	{:errores_ejecucion, _unset }
+	
+
+},{})
+$
+multimerge.define_shared_constant(:top_alternative,"|", _false)
+$
+multimerge.define_shared_constant(:exec_post?,_true, _false)
+$
+_method multimerge.merge_gis(_optional initial_alternative,exec_post?)
+	##
+	## Realiza MultiMerge del dataset Gis
+	## 
+
+	dataset_name << :gis
+	_self.merge_dataset(dataset_name,initial_alternative,exec_post?)
+	
+_endmethod
+$
+_method multimerge.merge_ace(_optional goto_top?)
+	##
+	## Realiza MultiMerge de todas las alternativas del ACE
+	## 
+
+	goto_top? << goto_top?.default(_true )
+	_local v_ace << gis_program_manager.ace_view
+
+	
+	_if goto_top? _then
+		#Nos posicionamos en TOP
+		v_ace.goto_top_alternative()
+	_endif
+	
+	_self.merge_vista(v_ace,:ace,_false )
+		
+_endmethod
+$
+_method multimerge.merge_dataset(dataset_name,_optional initial_alternative,exec_post?)
+	##
+	## Realiza un Merge del dataset
+	## 
+
+	_local v << gis_program_manager.cached_dataset(dataset_name)
+	initial_alternative << initial_alternative.default(_self.top_alternative)
+	exec_post? << exec_post?.default(_self.exec_post?)
+	
+	# alternativa inicial
+	v.go_to_alternative(initial_alternative)	
+	_self.merge_vista(v,dataset_name,exec_post?)
+		
+		
+_endmethod
+$
+
+_method multimerge.merge_vista(v_dataset,nombre_dataset,exec_post?)
+	##
+	## Realiza un Merge recursivo de todas las alternativas 
+	## 
+
+	_local hora_inicio,hora_fin
+	_local sufijo_txt_nom
+	_local print_project_name?
+	
+	_protect
+
+	.conflictos << rope.new()
+	.errores_acceso << rope.new()
+	.errores_ejecucion << rope.new()
+		
+
+	_if v_dataset _isnt _unset
+	_then 
+		sufijo_txt_nom << v_dataset.external_name.default("")
+		
+				
+		_local alternativa  << v_dataset.alternative_path_name()
+
+		#Abrir fichero log
+		nom_check << date_time_format.new_with_properties(:date_format_string, "#y_#m_#d_#H_#M_").format(date_time.now()) + "Merge_" + sufijo_txt_nom
+
+		.fichero_log << external_text_output_stream.new(system.getenv("LOG_MERGE").default(system.getenv("TMPDIR")) +
+									"\" + nom_check + ".log")
+
+		hora_inicio << date_time.now()
+
+		#Escribimos en el log cabecera del proceso
+		_self.log("#" * 60)
+		_self.log("#" * 60)
+		_self.log("##")
+		_self.log("##   Inicio Merge " + sufijo_txt_nom)
+		_self.log("##   Hora Inicio: ", hora_inicio)
+		_self.log("##")
+		_self.log("#" * 60)
+		_self.log("#" * 60)
+		_self.log(newline_char * 2)
+		
+		_try _with cond
+
+			ace_view? << nombre_dataset _is :ace
+			
+			_if ace_view?
+			_then
+				_self.merge_recursivo_ace(v_dataset,alternativa)
+			_else
+				_if _not (is_top?<< (v_dataset.alternative_level = 0 )) _then
+					# comprobar si es necesario subir cambios a la alternativa padre
+					(anything_merge?,anything_post?) << v_dataset.anything_to_merge_or_post?()
+
+					_if anything_post? _andif exec_post?
+					_then
+						# hacemos un post a Top
+						(cambios?, escritura?) << v_dataset.switch(:write)
+					
+						_if escritura?
+						_then 
+							v_dataset.post()
+							_self.log("     Realizado el Post a la alternativa padre de: " +alternativa.write_string) 
+							v_dataset.switch(:readonly)
+						_else
+							_self.log("--> ERROR: NO SE HA PODIDO  realizar el Post a la alternativa padre de: " +
+								  alternativa.write_string) 
+						_endif
+					_endif
+				_else
+					anything_merge? << _true 
+				_endif
+
+				_if anything_merge? _then 
+					#merge
+					_self.merge_recursivo(v_dataset, alternativa)
+				_else
+					# No se han subido cambios nuevos
+					_self.log("NO EXISTEN CAMBIOS EN LA ALTERNATIVA "+alternativa.write_string+"  QUE CONSOLIDAR")
+				_endif
+
+				#print_project_name? << _false 
+			_endif
+
+			#Imprimir resumen de errores
+			_self.imprimir_resumen_fallos(ace_view?,print_project_name?)
+			
+		_when error
+			_self.log("**** ERROR: ", cond.report_contents_string)
+			
+		_endtry
+
+		
+	_else
+		write("**** ERROR: No existe el dataset " + nombre_dataset.default(""))
+		 
+	_endif
+
+	_protection
+		_if .fichero_log _isnt _unset 
+		_then
+			_self.log("")
+
+			hora_fin << date_time.now()
+			
+			_self.log("#" * 60)
+			_self.log("#" * 60)
+			_self.log("##")
+			_self.log("##   Fin Merge " + sufijo_txt_nom)
+			_self.log("##   Hora Fin:      ", hora_fin)
+			_self.log("##   Tiempo total:  ", hora_fin - hora_inicio)
+			_self.log("##")
+			_self.log("#" * 60)
+			_self.log("#" * 60)
+		
+			
+			.fichero_log.close()
+		_endif
+	_endprotect
+	
+_endmethod
+$
+_pragma(classify_level=basic, usage={internal})
+_private _method multimerge.log(_gather args)
+	##
+	## Escribe en el fichero de log
+	## 
+
+	.fichero_log.write(_scatter args)
+	.fichero_log.write(newline_char)
+	.fichero_log.flush()
+_endmethod
+$
+
+_method  multimerge.merge_recursivo(vista, alternativa_inicio,_optional goto_top?)
+	##
+	## Realiza un merge recursivo de la vista pasada a partir de la
+	## alternativa pasada tambien por parametro
+	## 
+
+	_local alternativa
+	_local path_alt
+
+	goto_top? << goto_top?.default(_true )
+
+	_if goto_top? _then 
+		vista.go_to_alternative(alternativa_inicio)
+	_endif 
+
+
+
+	_if vista.alternatives.size > 0
+	_then
+		_for alt _over vista.alternatives.fast_elements()
+		_loop
+			
+			_try _with cond
+				
+				vista.go_to_alternative(alternativa_inicio)
+				
+				alternativa << alt.alternative_name
+				vista.go_to_alternative(alternativa)
+				path_alt << vista.alternative_path_name()
+
+				(cambios?, escritura?) << vista.switch(:write)
+
+				_if escritura?
+				_then
+
+					_self.log(" ....Consolidando: "+ path_alt)					
+					vista.checkpoint("Merge_" + date.now().write_string.substitute_string("/",""))
+					(anything_changed?,conflictos_pre,conflictos_post) << vista.merge(_false,_false )
+					vista.switch(:read_only)
+
+					conflictos? << (anything_changed? _is _maybe) _orif
+						       (conflictos_pre _isnt _unset ) _orif
+						       (conflictos_post _isnt _unset )
+					
+					_if conflictos? _then 
+						# no se detectaron cambios pero podría ser por un conflicto
+						# ignorado previamente
+						_self.log("     Detectados conflictos en la alternativa: " + path_alt)
+						.conflictos.add_last(path_alt)
+					_elif anything_changed? _then
+						
+						_self.log("     Realizados cambios: " + anything_changed?.write_string)					
+						#Hacemos la llamada recursiva por si tiene alternativas hijas
+						_self.merge_recursivo(vista, path_alt)
+				        _else 
+						_self.log("     OMITIENDO: "+ path_alt+ " - No hay cambios")
+						
+					_endif 
+					
+				_else
+					_self.log(" *** ERROR: No se puede poner en escritura la alternativa: ", path_alt)							  		   .errores_acceso.add_last(path_alt)
+				_endif
+			
+				
+			_when error				
+				_if path_alt _isnt _unset _then 
+					_self.log(" *** ERROR al actualizar la alternativa ** ",path_alt)
+					_self.log(tab_char+"-"*50)										
+					.errores_ejecucion.add_last(path_alt)
+				_endif 
+				_self.log((tab_char*2)+cond.report_contents_string)
+			_endtry
+		_endloop
+	_endif 
+	
+_endmethod
+$
+
+_method multimerge.merge_recursivo_ace(vista, alternativa_inicio)
+	##
+	## Realiza un merge recursivo del ACE. Es diferente al merge de
+	## los dataset ya que al merge no le pasa parametro ni
+	## comprueba conflictos
+	## 
+
+	_local alternativa
+
+	vista.go_to_alternative(alternativa_inicio)
+
+	_if vista.alternatives.size > 0
+	_then
+		_for alt _over vista.alternatives.fast_elements()
+		_loop
+			_local path_alt << _unset 
+			 
+			_try _with cond
+				
+				vista.go_to_alternative(alternativa_inicio)
+				alternativa << alt.alternative_name
+				vista.go_to_alternative(alternativa)
+
+			#	vista.down(alt.alternative_name)
+				path_alt << vista.alternative_path_name()
+				
+				_if vista.anything_to_merge_or_post?()
+				_then
+					(cambios?, escritura?) << vista.switch(:write)
+
+					_if escritura?
+					_then
+						_self.log(" ....Consolidando: ", path_alt)
+						vista.checkpoint("Merge_" + date.now().write_string.substitute_string("/",""))
+						vista.merge()
+						vista.switch(:read_only)
+						#Hacemos la llamada recursiva por si tiene alternativas hijas
+						_self.merge_recursivo_ace(vista, path_alt)
+					_else
+						_self.log(" *** ERROR: No se puede poner en escritura la alternativa: ", path_alt)			
+						.errores_acceso.add_last(path_alt)
+					_endif
+				_else
+					_self.log(" *** OMITIENDO: ", path_alt, " - No hay cambios")
+				_endif
+				
+			_when error
+				_if path_alt _isnt _unset _then 
+					_self.log(" *** ERROR al actualizar la alternativa ** ",path_alt)
+					_self.log(tab_char+"-"*50)
+				_endif 
+				_self.log(tab_char*2, cond.report_contents_string)
+			_endtry
+			#vista.up(:readonly)
+		_endloop
+	_endif
+
+_endmethod
+$
+_method multimerge.imprimir_resumen_fallos(_optional ace_view?,
+					   print_project_name?)
+
+	_if .fichero_log _is _unset _then _return _endif
+	
+	ace_view? << ace_view?.default(_true)
+	default_print_project << _not ace_view?	
+	print_project_name? << print_project_name?.default(default_print_project )
+
+	
+	_self.log("")
+	_self.log(tab_char+("*" * 60))
+	_self.log("")	
+	_self.log(tab_char+"RESUMEN DE ALTERNATIVAS CON ERRORES")
+	_self.log("")	
+	_self.log(tab_char+("*" * 60))
+	_self.log("")
+
+	listas << {{.errores_ejecucion,"Errores en la Consolidacion: "},
+		   {.errores_acceso,"Errores de acceso a la alternativa: "}}
+	_if _not ace_view? _then
+		listas << listas.new_appending({.conflictos,"Alternativas con Conflictos: "})
+	_endif
+
+	_for a_error_list _over listas.fast_elements()
+	_loop
+		a_list << a_error_list[1]
+		a_title << a_error_list[2]
+		
+		_self.log("")
+		_self.log(tab_char+("-" * 30))
+		_self.log(tab_char+a_title+a_list.size.write_string)							
+		_self.log(tab_char+("-" * 30))
+		_self.log("")
+		
+		_if a_list.size > 0 _then				
+			_for a_alt _over a_list.fast_elements()
+			_loop
+				desc_err << tab_char*2 + a_alt
+				_if print_project_name? _then
+					# recuperar nombre de proyecto
+					desc_err << desc_err +
+						    _self.get_project_name(a_alt).default("")
+				_endif				
+				_self.log(desc_err)
+			_endloop
+			_self.log("")
+			_self.log("")			
+		_endif		
+	_endloop
+	
+_endmethod
+$
+_method multimerge.get_project_name(a_alt_path)
+	##
+	##
+	##
+
+	_if a_alt_path _is _unset _orif
+	    a_alt_path.write_string.index_of_seq("PLAN_") _is _unset _then _return _endif
+
+	_local tab_sch << gis_program_manager.cached_dataset(:design_admin).collections[:swg_dsn_scheme]
+	_local alt_name
+
+	names << a_alt_path.write_string.split_by("|")
+
+	_for a_alt_name _over names.elements_in_reverse()
+	_loop
+		_if a_alt_name.index_of_seq("PLAN_") _isnt _unset _then
+			alt_name << a_alt_name
+			_leave
+		_endif 
+	_endloop 
+
+	_for a_sch _over tab_sch.fast_elements()
+	_loop
+		_if (paths << a_sch.alternative_paths()[:gis]) _isnt _unset _then
+			_for a_path _over paths.fast_elements()
+			_loop
+				_if a_path = alt_name _then
+					_return " --> " + a_sch.inf_project + " -- " + a_sch.status
+				_endif 
+			_endloop  
+		_endif 
+	_endloop 
+	    
+_endmethod
+$

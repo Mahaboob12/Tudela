@@ -1,0 +1,241 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma(classify_level=restricted)
+def_mixin(:documentos_relacionados_actions_mixin)
+$
+
+_pragma(classify_level=restricted)
+documentos_relacionados_actions_mixin.define_shared_constant(
+	:image_for_doc_type,
+	property_list.new_with( :|Winword|, {:image, {"word_doc.ico", :editor_documentos_relacionados}, _unset},
+				:|Excel|,   {:image, {"excel_doc.ico", :editor_documentos_relacionados}, _unset},
+				:|DWG/DXF|, {:image, {"dwg_dxf.ico", :editor_documentos_relacionados}, _unset},
+				:|Bitmap|,  {:image, {"bitmap.ico", :editor_documentos_relacionados}, _unset},
+				:|Imagen|,  {:image, {"img.ico", :editor_documentos_relacionados}, _unset},
+				:|URL|,     {:image, {"url.ico", :editor_documentos_relacionados}, _unset},
+				:|Html|,    {:image, {"url_html.ico", :editor_documentos_relacionados}, _unset},
+				:|Windows|, {:image, {"windows.bmp", :editor_documentos_relacionados}, _unset},
+				:|Wordpad|, {:image, {"wordpad_doc.ico", :editor_documentos_relacionados}, _unset}),
+	:private)
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_actions_mixin.iniciar_acciones_documentos_relacionados()
+	##
+	## Acciones para añadir, editar o eliminar un registro de
+	## documento relacionado, o abrir el documento
+	##
+
+	_self.add_action( sw_action.new( :limpiar_seleccion,
+					 :image,                   {:clear_selection, "ui_resources"},
+					 :engine,                  _self,
+					 :action_message,          :limpiar_seleccion|()|))
+
+	_self.add_action( sw_action.new( :refrescar_lista,
+					 :image,                   {:refresh, "ui_resources"},
+					 :engine,                  _self,
+					 :action_message,          :refrescar_lista|()|))
+
+	_self.add_action( sw_action.new( :abrir_editor_documento,
+					 :image,                   {:edit_object, "ui_resources"},
+					 :engine,                  _self,
+					 :action_message,          :abrir_editor_documento|()|))
+
+	_self.add_action( sw_action.new( :añadir_documento,
+					 :image,                   {:insert, "ui_resources"},
+					 :engine,                  _self,
+					 :action_message,          :añadir_documento|()|))
+
+	_self.add_action( sw_action.new( :eliminar_documento,
+					 :image,                   {:delete, "ui_resources"},
+					 :engine,                  _self,
+					 :action_message,          :eliminar_documento|()|))
+
+	_self.add_action( sw_action.new( :abrir_documento,
+					 :image,                   {:properties, "ui_resources"},
+					 :engine,                  _self,
+					 :action_message,          :abrir_documento|()|))
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_actions_mixin.edit()
+	## 
+	## Will open the appropriate editor for currently selected object.
+	##
+
+	_self.abrir_editor_documento()
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_actions_mixin.limpiar_seleccion()
+	## 
+	##  Limpia la seleccion actual
+	##
+
+	sel << _self.tree_item.selection
+	sel.select_clear()
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_actions_mixin.añadir_documento()
+	##
+	## Abre el editor de documentos relacionados para añadir un
+	## registro nuevo
+	##
+
+	_self.busy? << _true
+	_protect
+		_if (co << _self.current_object) _isnt _unset
+		_then
+			rel_doc_col << co.source_view.collections[:documento_relacionado]
+
+			pam << _self.application.plugin(:editor_manager)
+			ed << pam.activate_editor_for_collection( rel_doc_col )
+			ed.current_object << _unset
+
+			# This is needed in order for the ED to know the owner of the
+			# record it is going to insert.
+			ed.databus.make_data_available( :related_document_owner, {co, _self} )
+		_endif
+	_protection
+		_self.busy? << _false
+	_endprotect
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_actions_mixin.abrir_editor_documento()
+	##
+	## Abre el editor de documentos relacionados para realizar
+	## cambios sobre las propiedades del documento seleccionado
+	##
+
+	_self.busy? << _true
+	_protect
+		ed_manager << _self.application.plugin(:editor_manager)
+		
+		# Activate the editor for related_document, the user then can
+		# place a related document record.
+		ed <<  ed_manager.activate_editor_for_object(_self.selected_item)
+		
+		# This is needed in order for the ED to know the owner of the
+		# record if a user decided to insert instead of update.
+		ed.databus.make_data_available( :related_document_owner,
+						{_self.current_object,
+						_self} )
+	_protection
+		_self.busy? << _false
+	_endprotect
+
+	>> ed
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_actions_mixin.abrir_documento()
+	##
+	## Abre el documento seleccionado con la aplicación determinada
+	## en el registro de documento relacionado
+	##
+
+	_self.busy? << _true
+	_protect
+		(ok?, file) << _self.selected_item.abrir_documento()
+	_protection
+		_if _not ok?
+		_then
+			msg << write_string("El fichero '",file,"' no existe. Por favor, compruebe la ruta y el nombre del fichero")
+			_self.show_alert(msg)
+		_endif
+		
+		_self.busy? << _false
+	_endprotect
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_actions_mixin.eliminar_documento()
+	##
+	## Elimina el registro de documento relacionado
+	##
+
+	_self.busy? << _true
+	_protect
+		a_del_transaction << record_transaction.new_delete(_self.selected_item)
+		a_del_transaction.run()
+	_protection
+		_self.busy? << _false
+	_endprotect
+
+	_self.refrescar_lista()
+_endmethod
+$
+
+########++++++++-------- Context sensitive popups --------++++++++########
+
+_pragma(classify_level=restricted)
+_private _method documentos_relacionados_actions_mixin.get_context_sensitive_popup( context_name )
+	## 
+	## This will return a cached popup_menu for CONTEXT_NAME and
+	## construct one of it had not been cached yet.
+	##
+
+	_if _self.popups[ context_name ] _is _unset
+	_then
+		pm << _self.gui_manager.popup_menu( _self.tree_item, context_name )
+		_self.popups[ context_name ] << pm
+	_endif
+
+	>> _self.popups[ context_name ]
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_private _method documentos_relacionados_actions_mixin.set_context_sensitive_popup()
+	##
+	## This method will set context sensitive popup menu to the
+	## tree list view according to the current selection.
+	##
+	## Note that this needs to be called after .selected_item slot has
+	## been updated.
+
+	selected_item << _self.selected_item
+
+	_if selected_item _is _unset
+	_then
+		context_name << :no_selection
+
+	_elif selected_item.is_kind_of?(documento_relacionado)
+	_then
+		context_name << :documento_relacionado
+
+	_elif selected_item.is_class_of?( ds_collection ) _andif
+	      selected_item.name _is :documento_relacionado
+	_then
+		context_name << :añadir_documento_relacionado
+
+	_else # any other group
+		context_name << :item_category
+	_endif
+
+	context_popup << _self.get_context_sensitive_popup( context_name )
+
+	_if context_popup.size _is 0
+	_then
+		# better no popup than an empty one
+		_self.tree_item.popup_menu << _unset
+	_else
+		_self.tree_item.popup_menu << context_popup
+	_endif
+
+	>> context_popup
+_endmethod
+$

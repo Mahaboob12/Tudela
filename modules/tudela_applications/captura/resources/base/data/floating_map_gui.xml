@@ -1,0 +1,5 @@
+<?xml version="1.0" standalone="yes"?>
+
+<!-- gui configuration for floating map windows in the swaf_professional application -->
+
+<gui base="captura.embedded_map_gui"/>

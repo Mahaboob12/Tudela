@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  config.xml para la aplicacion administracion  -->
+<config base="admin_application.config">
+    <plugins>        
+	<super/>
+  	<plugin name="ds_transfer"                    class_name="ds_transfer_plugin"/> 
+	<plugin name="control_panel" class_name="control_panel_plugin">
+	    <views>
+		<view name = "large_icons" />
+		<view name = "small_icons" />
+		<view name = "details" />
+	    </views>
+	    <actions>
+		<super/>
+                
+		<action action_name  = "ace.start_ace_dialog"
+			caption_id   = "ace_caption" 
+			comment_id   = "ace_comment"
+			image        = "admin_ace_plugin.ace_dialog" 
+			large_image  = "admin_ace_plugin.ace_dialog_32x32" 
+			category     = "main" 
+			sub_category = "configuration" />
+		<action action_name  = "authorisation.start_authorisation"
+			caption_id   = "authorisation_caption" 
+			comment_id   = "authorisation_comment"
+			image        = "authorisation_magik_gui.authorisation"
+			large_image  = "authorisation_magik_gui.authorisation_32x32"
+			category     = "main" 
+			sub_category = "authorisation" />
+		<action action_name  = "coordinate_system_editor.coordinate_system_editor"
+			caption_id   = "coordinate_system_editor_caption" 
+			comment_id   = "coordinate_system_editor_comment"
+			image        = "map_projections_config.coordinate_system_editor"
+			large_image  = "map_projections_config.coordinate_system_editor_32x32"
+			category     = "main" 
+			sub_category = "configuration" />
+		<action action_name  = "extensible_enumerator_dialog.extensible_enumerator_dialog"
+			caption_id   = "extensible_enumerator_dialog_caption" 
+			comment_id   = "extensible_enumerator_dialog_comment"
+  			image        = "extensible_dd_magik_gui.extensible_enumerator_dialog"
+  			large_image  = "extensible_dd_magik_gui.extensible_enumerator_dialog_32x32"
+  			category     = "main" 
+  			sub_category = "dd" />
+		<action action_name  = "soc.start_soc_dialog"
+			caption_id   = "soc_caption" 
+			comment_id   = "soc_comment"
+  			image        = "admin_soc_plugin.soc_dialog"
+  			large_image  = "admin_soc_plugin.soc_dialog_32x32"
+  			category     = "main" 
+  			sub_category = "database" />
+		<action action_name  = "style.start_style_system"
+			caption_id   = "style_caption" 
+  			comment_id   = "style_comment"
+  			image        = "admin_style_plugin.style_system"
+  			large_image  = "admin_style_plugin.style_system_32x32"
+  			category     = "main" 
+  			sub_category = "configuration" />
+		<action action_name  = "system_bookmarks.system_bookmarks"
+			caption_id   = "system_bookmarks_caption" 
+			comment_id   = "system_bookmarks_comment"
+			image        = "document_manager.system_bookmarks"
+			large_image  = "document_manager.system_bookmarks_32x32" 
+			category     = "main" 
+			sub_category = "configuration" />
+		<action action_name  = "system_preferences.system_preferences"
+			caption_id   = "system_preferences_caption" 
+  			comment_id   = "system_preferences_comment"
+  			image        = "options_plugin.system_preferences"
+  			large_image  = "options_plugin.system_preferences_32x32" 
+  			category     = "main" 
+  			sub_category = "configuration" />
+		<action action_name  = "themes_setup.themes_setup"
+			caption_id   = "themes_setup_caption" 
+  			comment_id   = "themes_setup_comment"
+  			image        = "themes_magik_gui.system_themes"
+  			large_image  = "themes_magik_gui.system_themes_32x32"
+  			category     = "main" 
+  			sub_category = "configuration" />
+		<action action_name  = "text_translator_dialog.text_translator_dialog"
+			caption_id   = "text_translator_dialog_caption" 
+			comment_id   = "text_translator_dialog_comment"
+  			image        = "messages_magik_gui.text_translator_dialog"
+  			large_image  = "messages_magik_gui.text_translator_dialog_32x32"
+  			category     = "main" 
+  			sub_category = "localisation" />
+		<action action_name  = "unit_display_group_editor.unit_display_group_editor"
+			caption_id   = "unit_display_group_editor_caption" 
+  			comment_id   = "unit_display_group_editor_comment"
+  			image        = "units_core_magik_gui.unit_display_group_editor"
+  			large_image  = "units_core_magik_gui.unit_display_group_editor_32x32"
+  			category     = "main" 
+  			sub_category = "configuration" />
+		<action action_name  = "versions.activate_version_management"
+			caption_id   = "version_management_caption" 
+			comment_id   = "version_management_comment"
+  			image        = "version_management_plugin.version_manager_remote"
+  			large_image  = "version_management_plugin.version_manager_remote_32x32" 
+  			category     = "main" 
+  			sub_category = "database" />		
+		<action action_name  = "ds_transfer.ds_transfer"
+			caption_id   = "ds_transfer_caption" 
+			comment_id   = "ds_transfer_comment"
+			image        = "ds_transfer_dialog.datastore_transfer"
+			large_image  = "ds_transfer_dialog.datastore_transfer_32x32"
+			category     = "main" 
+			sub_category = "database" />	
+	    </actions>
+	</plugin>
+    </plugins>
+</config>
+

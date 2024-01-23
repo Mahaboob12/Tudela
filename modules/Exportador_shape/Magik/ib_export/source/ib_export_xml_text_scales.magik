@@ -1,0 +1,104 @@
+#% text_encoding = iso8859_1
+##
+## Lee y Guarda el xml que contiene las escalas utilizadas 
+## para obtener los desplazamientos del texto con respecto a su geometria
+##
+_package user
+$
+_pragma(classify_level=advanced, topic={ib_export})
+def_slotted_exemplar(:ib_export_xml_text_shift_scales,
+	{
+		{:shift_scales, _unset },
+		{:full_path_xml,_unset }
+	})
+$
+_pragma(classify_level=basic, topic={ib_export})
+ib_export_xml_text_shift_scales.define_shared_constant(:xml_file_name,"config_default_shift.xml",:public)
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_xml_text_shift_scales.new(directory_xml)
+	##
+	##
+	_return _clone.init(directory_xml)
+_endmethod
+
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_xml_text_shift_scales.init(directory_xml)
+	##
+	##
+
+	.full_path_xml << system.pathname_from_components(_self.xml_file_name,directory_xml)
+	_if system.file_exists?(.full_path_xml) _then
+		.shift_scales << _self.read_text_scales()
+	_endif 
+	
+	_return _self 
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_xml_text_shift_scales.get_shift_scales()
+	##
+	##
+	_return .shift_scales 
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_xml_text_shift_scales.get_shift_scales_by_datasets(a_dataset_name)
+	##
+	##
+
+	_if .shift_scales _is _unset _then _return _endif
+	_return .shift_scales[a_dataset_name.as_symbol()]       
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_xml_text_shift_scales.read_text_scales()
+	##
+	## 
+	##
+	
+	_local xml_text_shift << simple_xml.read_document_file(.full_path_xml)
+	shift_scales << equality_hash_table.new()
+	
+	_for a_param_elem _over xml_text_shift.xml_elements()
+	_loop
+		_for a_datasets_elem _over a_param_elem.xml_elements()
+		_loop
+			_for a_dataset_elem _over a_datasets_elem.xml_elements()
+			_loop
+				_local dataset_name << a_dataset_elem.xml_attributes[:name].as_symbol()
+				_if shift_scales.includes_key?(dataset_name) _then _continue _endif 
+				shift_scales[dataset_name]<< _self.read_dataset_elem(a_dataset_elem)
+			_endloop 
+		_endloop 
+	_endloop
+	
+	_return shift_scales
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_xml_text_shift_scales.read_dataset_elem(a_xml_thing)
+	##
+	## Devuelve una equality_hash_table con la configuración de correspondencias de
+	## elementos entre SW y SHAPE, obtenidas del elemento A_XML_THING
+	##
+	_local eq_scales << equality_hash_table.new()
+	
+	_for a_table_elem _over a_xml_thing.xml_elements()
+	_loop
+		_local table_name << a_table_elem.xml_attributes[:name].as_symbol()
+		_local geom_name << a_table_elem.xml_attributes[:geom].as_symbol()
+		_local scale << a_table_elem.xml_attributes[:scale].as_symbol()
+			
+		_if _not eq_scales.includes_key?(table_name) _then
+			eq_scales[table_name] << equality_hash_table.new()
+		_endif
+
+		_if _not eq_scales[table_name].includes_key?(geom_name) _then
+			eq_scales[table_name][geom_name] << scale
+		_endif
+	_endloop
+	
+	_return eq_scales	
+_endmethod

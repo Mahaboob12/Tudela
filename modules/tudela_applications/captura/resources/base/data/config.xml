@@ -1,0 +1,144 @@
+<config base = "swaf_professional_application.config">
+<framework_data>
+    <!--  specify which ACE to use to view each spatial_context type  -->
+    <spatial_context  
+        name="gis"
+        ace_name="Default"
+        universe_name="gis" />
+    <spatial_context
+        name="internals"
+        ace_name="Substation Internals"
+        universe_name="internals"/>
+    <spatial_context
+        name="drawing"
+        ace_name="drawing"
+        universe_name="drawing"/>
+  </framework_data>
+
+  <plugins>
+        <super/>
+
+	<plugin name="maps" class_name="map_manager">
+	     <!-- requerido por google_maps -->
+	    <ace_gui ace_name="Default" role_names="add_google_maps_role"/>
+	    <!-- fin requerido por google_maps -->
+
+	    <property name="render_priority" value="-30"/>
+	    <property name="initial_interaction_mode" value="select" />
+	    <interaction_modes>
+		<mode name="select" />
+		<mode name="geometry" />
+		<mode name="zoom_in" />
+		<mode name="zoom_out" />
+		<mode name="pan" />
+		<cycle_sequence modes="select,geometry"/>
+	    </interaction_modes>
+	    <keyboard_interaction>
+		<key id="delete_key" modifier="0" mode="select" action="delete_selection_with_confirmation"/>
+		<key id="delete_key" modifier="0" mode="select_pan" action="delete_selection_with_confirmation"/>
+		<key id="delete_key" modifier="0" mode="zoom_in" action="delete_selection_with_confirmation"/>
+		<key id="delete_key" modifier="0" mode="zoom_out" action="delete_selection_with_confirmation"/>
+		<key id="delete_key" modifier="0" mode="pan" action="delete_selection_with_confirmation"/>
+	    </keyboard_interaction>
+	</plugin>
+
+	<plugin name="editor_manager" class_name="editor_manager" >
+	    <properties>
+		<property name="direction_render_priority" value="40"/>
+		<property name="highlight_render_priority" value="85"/>
+		<property name="editor_gui_definition_module_name" value="swaf_professional_application"/>
+		<property name="editor_gui_definition_file_name" value="editor_gui.xml"/>
+		<property name="configuration_file_name" value="captura.collection_config.xml"/>
+	    </properties>
+	</plugin>
+
+	<plugin name="explorer" class_name="explorer_plugin">
+            <properties>
+	        <property name="floating_gui_definition_module_name" value="swaf_professional_application"/>
+	        <property name="floating_gui_definition_file_name"   value="floating_explorer_view_gui.xml"/>
+	        <property name="embedded_gui_definition_module_name" value="swaf_professional_application"/>
+	        <property name="embedded_gui_definition_file_name"   value="embedded_explorer_view_gui.xml"/>
+	        <property name="expose_embedded_selection"           value="true"/>
+	        <property name="expose_floating_selection"           value="true"/>
+		<property name="model_config_definition_file_name"   value="explorer_model_config.xml"/>
+		<property name="model_config_definition_module_name" value="captura"/>
+            <property name="editor_manager_name"                 value="editor_manager"/>
+            </properties>
+            <export>
+	        <toolbar source_name="find"/>
+	        <toolbar source_name="advanced_find"/>
+            </export>
+            <find_engine>
+	        <categories>
+				<category name="fondo_texto" default="yes"/>
+				<category name="callejero" />
+				<category name="drafting_text" />
+	        </categories>
+                <engine plugin_name="search_engine"/>
+                <default_text id ="find_text"/>
+            </find_engine>
+        </plugin>
+   
+    <plugin name="panes" class_name="pane_manager">
+      <properties>
+		<!-- list of role names which, when assigned to elements of the gui, 
+		     will put them under the control of the pane_manager -->
+		<property name="role_names" value="validacion,editor_manager, object_control, themes, modelos_carga, viewers"/>
+      </properties> 
+    </plugin>
+   
+    <!-- paneles de opciones globales -->
+
+    <plugin name = "rwo_specials" class_name = "rwo_specials_plugin"/>
+
+ 
+    <!-- Añadidos plugins de DXF translator -->
+    <plugin name="dxf" class_name="dxf_mapping_plugin">
+	<properties>
+	    <property name="dxf_soc_def_name" value="dxf_soc_def" />
+	</properties>
+    </plugin>    
+	
+    <plugin name="soms" class_name="sas_soms_swaf_plugin">
+	    <properties>
+		<property name="map_manager_name" value="maps"/>
+	    </properties>
+    </plugin>
+	
+    <plugin name="traductor" class_name="traductor_plugin"/>
+    <plugin name="cargador_topo" class_name="cargador_topo_plugin"/>
+
+    <!-- requerido por google_maps -->
+    <!-- <plugin name="map_tiles" class_name="map_tile_plugin">
+	  <properties> -->
+	    <!-- These are required by the GE Signing Server,
+		 and are provided with your license key. -->
+	    <!-- <property name="licence_owner" value="Aguas_Tudela_live"/>
+	    <property name="licence_key" value="dCbqOv76Wm9JLJREU74KGlkb5YX7dLGsYHqNiWNMMd0="/> -->
+	    <!-- configure and uncomment this line
+		 if you require an HTTP proxy to access the Internet
+		 <property name="http_proxy"
+		 value="http://myHttpProxyHostName:myPort"/> -->
+	    <!-- <property name="tile_render_priority" value="-10"/>
+	    <property name="language_mappings" value="es_es,es"/> -->
+	    <!-- uncomment this if on Core 4.0 - doesn't apply to later versions
+		 <property name="map_manager_name" value="xxx"/> -->
+	  <!-- </properties>
+     </plugin>
+
+     <plugin name="swaf_address_search" class_name="swaf_address_search_plugin"/>
+	  
+     <plugin name="address_search" class_name="google_address_search_plugin">
+	  <properties>
+	      <property name="region_code" value="es"/>
+	      <property name="map_tile_plugin_name" value="map_tiles"/>
+	      <property name="bias_search_to_map_bounds?" value="false"/>
+	  </properties>
+    </plugin>
+
+    <plugin name="streetview" class_name="streetview_addon"/> -->
+   <!-- fin requerido por google_maps -->
+   <plugin name="ib_export" class_name="user:ib_export_shape_plugin"/>
+  </plugins>
+
+</config>

@@ -1,0 +1,80 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:edar,{},:rwo_record)
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method edar.profundidad_salida
+	##
+	## Calcula la profundidad con la profundidad inicial de la
+	## tuberia de saneamiento
+
+	prof << 9999
+
+	_for a_node _over _self.contorno.all_nodes()
+	_loop
+		_for a_link _over a_node.links()
+		_loop
+			_for geo _over a_link.top_level_geoms()
+			_loop
+				_if geo.rwo_type _is :tuberia_saneamiento _andif
+				    a_node = geo.first_node 
+				_then 
+					prof << prof.min(geo.rwo.profundidad_inicio.default(9999))
+					_leave
+				_endif
+			_endloop
+		_endloop
+	_endloop
+	
+	_if prof = 9999
+	_then
+		prof << 0.0
+	_endif
+	
+        _return prof
+_endmethod
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+_method edar.cota_fondo
+	##
+        ## Calcula la cota del fondo a partir de la cota de calle y la
+        ## profundidad 
+	## Campo calculado cota_fondo
+	##
+
+	fondo << _self.cota_calle.default(0) - _self.profundidad.default(0.0)
+        _return fondo
+_endmethod
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+_method edar.contorno_trigger(tipo,att_det,geom)
+	##
+	## Inserta la posicion en el centro del area del EDAR
+	
+	_if att_det _is :attach _orif
+	    att_det _is :update
+	_then
+		pos << _self.contorno.sectors.centroide()
+		
+		_if _self.posicion _isnt _unset _then
+			_self.unset_geometry(:posicion)
+		_endif
+		
+		_self.make_geometry(:posicion,pos)
+	_endif 
+_endmethod
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+_method edar.cota_calle_trigger(tipo,att_det,geom)
+	##
+	## Cambia solo si el valor de la cota_calle cambia, si es que
+	## existe el texto
+	
+_endmethod
+$

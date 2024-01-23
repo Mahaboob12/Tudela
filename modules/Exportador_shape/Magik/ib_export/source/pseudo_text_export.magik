@@ -1,0 +1,48 @@
+
+_package user
+$
+def_slotted_exemplar(:pseudo_text_export,
+		     {},
+		     {:pseudo_text,
+		      :pseudo_base_geom_export})
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_text_export.set_rwo(a_rwo)
+	_self.add_source_rwo(a_rwo)	
+	_super.set_rwo_code(a_rwo)
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_text_export.just
+	_return _self.justification
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_text_export.coord_1
+	_return _self.coord
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_text_export.coord_2
+	_return coordinate
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_text_export.new(a_text)
+	>> _clone.init(a_text) 
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_text_export.init(a_text)
+
+	_super(pseudo_text).init(a_text.coord,
+				 a_text.string,
+			          a_text.orientation,
+			          a_text.justification,
+			          a_text.font_orientation,
+			          a_text.height)	
+	_super(pseudo_base_geom_export).init(a_text)
+
+	_return _self 
+_endmethod
+$

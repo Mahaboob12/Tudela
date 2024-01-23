@@ -1,0 +1,31 @@
+$
+_package sw
+$
+_private _method dd_record_mixin.ibtr_full_id
+	##
+	## Devuelve los valores de los campos clave concatenados
+		
+	_local concat_keys
+	_local separador << "/"
+	
+	_for a_key _over _self.key_value().fast_elements()
+	_loop
+		_if concat_keys _is _unset _then
+			concat_keys << a_key.write_string
+		_else 
+			concat_keys << concat_keys + separador + a_key.write_string
+		_endif 
+	_endloop
+
+	_return concat_keys
+_endmethod
+$
+_method dd_record_mixin.ibtr_export_id
+	##
+	## Devuelve un valor que identifica SELF para las exportaciones
+	## por defecto utiliza ibtr_full_id
+	## (sobreescribir para cada tipo de objeto que se quiera personalizar)
+		
+	_return _self.ibtr_full_id
+_endmethod
+$

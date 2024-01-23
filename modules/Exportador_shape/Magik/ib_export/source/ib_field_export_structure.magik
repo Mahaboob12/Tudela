@@ -1,0 +1,569 @@
+#% text_encoding = iso8859_1
+##
+## Genera una estructura a partir de un campo de una
+## tabla, con la informacion necesaria para la exportacion del
+## dato que contiene.(Acpt_type,Is_geometry?,Nullable,Unit,Nombre del
+## atributo en el fichero SHAPE, dato a exportar formateado para un RWO concreto)
+##
+
+_package user
+$
+_pragma(classify_level=advanced, topic={ib_export})
+def_slotted_exemplar(:ib_field_export_structure,
+	{
+		{:owner,_unset },
+		{:sw_field_or_joins,_unset },    # campo a partir del cual se recupera el valor a exportar o lista de joins
+		{:sw_type,_unset },              # tipo de datos sw del valor a exportar		
+		{:format_method,_unset },        # metodo sobre el rwo que formatea el valor a exportar
+		{:format_parameters, _unset},    # parametros que se pasan al metodo de formateo (si necesarios, son siempre simbolos,
+                                                 # se separan por ;)
+		{:sw_unit,_unset },              # unidades en las que se devuelve el dato(si procede)
+		{:acpt_type,_unset },            # acpt_type del valor a exportar
+		{:pseudo_acpt_type,_unset },
+		{:is_geometry?,_unset },         # indica si es un campo geometrico
+		{:nullable,_unset },             # indica si el valor del campo puede ser nulo
+		{:unit,_unset },                 # unidades del campo (si el dato tiene unidades)		
+		{:export_field_name,_unset }     # nombre del atributo en el fichero de exportacion
+	})
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## Tmanyo maximo del nombre de un atributo en un fichero SHAPE
+##
+ib_field_export_structure.define_shared_constant(:max_size_attrib_name,10,:private)
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## Caracter separador de metodos en el fichero de configuracion
+##
+ib_field_export_structure.define_shared_constant(:split_methods_character,".",:private)
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## Caracter separador de parametros en el fichero de configuracion
+##
+ib_field_export_structure.define_shared_constant(:split_parameters_character,";",:private)
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## Nombre del atributo que almacena el identificador del objeto
+##
+ib_field_export_structure.define_shared_constant(:sw_id_attribute,"sw_ids",:private)
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## acpt_type indexado por el tipo de dato SW al que corresponde
+##
+ib_field_export_structure.define_shared_constant(:acpt_type_by_sw_type,
+	property_list.new_with(
+		               # Identificadores
+		               :sys_id,acpt_type.uint32, #unit8,uint16,unit32,uint64
+			       :gis_id,acpt_type.uint32,
+			       # Enteros
+			       :ds_byte,acpt_type.uint8,
+			       :ds_ushort,acpt_type.uint16,
+			       :ds_short,acpt_type.int16,
+			       :ds_uint,acpt_type.uint32,
+			       :ds_int,acpt_type.int32,
+		               :integer,acpt_type.uint32, #acpt_type(<int32>)   acpt_type(<uint64>) =
+			       # Flotantes
+			       :ds_double,acpt_type.float64,
+			       :ds_float,acpt_type.float64,
+			       :float,acpt_type.float64,#float32
+			       # Caracteres
+			       :ds_char16,acpt_type.long_string16,
+		               :char16_vector,acpt_type.long_string16, # short_string8, short_string16
+		               :ds_char16_vector,acpt_type.long_string16,			       
+		               :character,acpt_type.long_string16,#long_string8
+			       # Simbolo
+			       :symbol,acpt_type.long_string16,#short_symbol8,short_symbol16,long_symbol8,long_symbol16
+		               # Fechas
+			       :ds_date,acpt_type.date,
+			       :ds_time, acpt_type.date_time,
+			       # Boolean
+		               :ds_kleene,acpt_type.kleenean,
+			       :maybe, acpt_type.kleenean,
+			       :ds_bool,acpt_type.boolean,
+		               :boolean, acpt_type.boolean,
+			       # Unset
+		               :unset,acpt_type.unset,
+			       # Coordenadas
+		               :ds_coord,acpt_type.coordinate #coordinate2h,coordinate3d
+		      ),:private)
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.new (field_infos, owner)
+     ## 
+     ## Construcctor, OWNER es el objeto padre, FIELD_INFOS, es una
+     ## equality_hash_table que proporciona informacion necesaria
+     ## para poder exportar el valor del campo.(TYPE,FORMAT_METHOD,SW_FIELD,SHAPE_FIELD)
+     ## 
+     >> _clone.init(field_infos,owner) 
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_field_export_structure.init(field_infos,owner) 
+   ## 
+   ## Inicializar
+   ##
+
+	_if field_infos _is _unset _orif
+	   (tam << field_infos.size) = 0 _then
+	      _return
+	_endif
+
+	_if _not field_infos.includes_key?(:sw_field) _then
+		# Error, esta entrada es obligatoria
+		condition.raise(:no_table)
+	_endif
+ 
+
+	.owner << owner
+	a_table << .owner.table
+	
+	_self.init_sw_field_or_joins(field_infos[:sw_field],field_infos[:format_method],field_infos[:format_parameters],
+				     field_infos[:type],field_infos[:sw_unit],field_infos[:sh_unit])
+	_self.init_shape_attribute_name(field_infos[:shape_field])
+
+   >> _self 
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private  _method ib_field_export_structure.init_shape_attribute_name(a_shape_attb_name)
+	##
+	## Inicialiaza el slot .EXPORT_FIELD_NAME con el nombre que ha
+	## de tener el atributo en el fichero SHAPE, si no
+	## se proporciona ningun valor se devuelve el nombre del campo.
+	## El tamanyo maximo del nombre del atributo en un fichero
+	## SHAPE son 10 caracteres, se trunca el nombre si supera este tamanyo
+	##
+
+	_local tam_max << _self.max_size_attrib_name # 10
+	
+	_if a_shape_attb_name _is _unset _orif
+	    (a_shape_attb_name << a_shape_attb_name.write_string.trim_spaces()) ="" _then
+		a_shape_attb_name << .sw_field_or_joins.last.write_string
+	_endif
+
+	_if a_shape_attb_name.size> tam_max _then
+		a_shape_attb_name << a_shape_attb_name.write_string.subseq0(0,tam_max)
+	_endif 
+
+	.export_field_name << a_shape_attb_name.write_string
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_field_export_structure.init_sw_field_or_joins(field_or_joins,
+								  _optional format_method,format_parameters, sw_type,sw_unit,sh_unit)
+	##
+	## Inicializa el slot .SW_FIELD_OR_JOINS, con una secuencia
+	## de los campos/metodos que se invican para obtener el dato
+	## que se va a exportar.
+	##
+	## Ademas se inicializan tambien los slots .ACPT_TYPE(acpt_type
+	## del dato a exportar), .IS_GEOMETRY?(indica si es una
+	## geometria),.NULLABLE(indica si puede ser un valor
+	## nulo),.UNIT(unidades, si procede)
+	##
+	## Ejemplos de formatos del parametro FIELD_OR_JOINS:
+	##   campo
+	##   campo_join.metodo
+	##   campo_join.campo
+	##   metodo1.metodo2 ........
+	##
+	## Opcionalmente se proporciona un
+	## FORMAT_METHOD, metodo que se aplica sobre el objeto devuelto
+	## por la secuencia FIELD_OR_JOINS y que se anyadira al slot .SW_FIELD_OR_JOINS
+	##
+	## Si el dato final no se obtiene a partir del valor de un
+	## campo, o no es posible saber que tipo de dato se va a
+	## devolver sin invocar la secuencia, sera obligatorio
+	## proporcionar tambien SW_TYPE, es el tipo de dato SW devuelto
+	## al invocar toda la secuencia incluido el FORMAT_METHOD si existe.
+	##
+	##
+
+	_local formatear_salida? << (format_method _isnt _unset) _andif
+				    ((format_method << format_method.write_string.trim_spaces()) <> "")
+
+	_local con_parametros? << (format_parameters _isnt _unset) _andif
+				  ((format_parameters << format_parameters.write_string.trim_spaces()) <> "")
+		
+	_local fields_names, symbol_fields_names
+
+	_if field_or_joins _is _unset _then _return _endif
+	
+	# Generar la lista de campos que se llaman secuencialmente
+	# para obtener el dato a exportar
+	fields_names << field_or_joins.write_string.split_by(_self.split_methods_character) # caracter .
+	
+	_if formatear_salida? _then
+		# anyadir metodo que formatea la salida
+		fields_names << fields_names.new_appending(format_method) 
+	_endif
+
+	a_table << _self.table
+	a_dataset << a_table.dataset
+	a_field << _unset
+	num_fields << fields_names.size
+	hay_metodo? << _false #indica si se invoca algun metodo dentro de la secuencia
+	logic_or_physic_field? << _false
+	sw_calculated_type << _unset 
+
+	_if (sw_type _isnt _unset) _andif ((sw_type<< sw_type.trim_spaces()) = "") _then 
+		sw_type << _unset 
+	_endif
+	
+	_for  i _over 1.upto(num_fields)      
+	_loop
+		_local a_field_name << fields_names[i]
+		_local field_or_method << a_field_name.as_symbol()
+				
+		_if symbol_fields_names _is _unset _then
+			symbol_fields_names << rope.new_with(field_or_method)
+		_else
+			symbol_fields_names.add_last(field_or_method)
+		_endif
+
+		#Verificar si se invoca algun metodo dentro de la secuencia,
+		#en cuyo caso ya no es posible obtener el tipo de datos que
+		#devolvera la secuencia, es obligatorio que se haya indicado
+		#en el parametro SW_TYPE
+		
+		_if hay_metodo? _then _continue _endif
+
+		_if logic_or_physic_field? _then
+			hay_metodo? << _true
+			a_table << _unset
+			logic_or_physic_field? << _false
+			sw_calculated_type << _unset 
+			_continue 
+		_endif 
+		
+		_if (a_field << a_table.field(field_or_method)) _isnt _unset _then
+			#es un campo del objeto
+			
+			_if a_field.is_join? _then
+				_if a_field.join_type _is :follow _then
+					a_table << a_dataset.collections[a_field.name]
+				_endif
+			_elif a_field.is_geometry? _then
+				_if i <> num_fields _then
+					# no es el ultimo
+					a_table << a_dataset.collections[("sw_gis!"+a_field.geom_type).as_symbol()]
+				_endif
+			_else
+				# No es un campo join ni geometrico, pero es posible obtener el
+				# tipo de datos devuelto si no se proporciona en
+				# el fichero de configuracion
+				#hay_metodo? << _true
+				logic_or_physic_field? << _true
+				_if (sw_type _isnt _unset) _then _continue _endif
+				
+				_if (a_type_fld << a_field.type) _isnt _unset _then 
+					sw_calculated_type << a_type_fld.class.class_name
+				_endif 
+			_endif
+		_elif a_table.record_exemplar.responds_to?(field_or_method) _then
+			# es un metodo --> es obligatorio proporcionar el tipo de datos
+			# que devuelve el ultimo metodo/campo al que se invoca
+			hay_metodo? << _true
+			a_table << _unset
+		_else
+			# ERROR
+			condition.raise(:no_valid_field_or_method,
+					:field_or_method,field_or_joins.write_string,
+					:table_name,_self.table.name)
+		_endif		
+	_endloop	
+	
+	_if hay_metodo? _then
+		# es obligatorio proporcionar el tipo de datos
+		# que devuelve el ultimo metodo/campo al que se invoca
+		_self.set_acpt_type(sw_type,sw_unit,sh_unit)
+	_else
+		# es un campo
+		ok? << _self.set_acpt_typeof_field(a_field,a_table,sh_unit)
+		_if _not ok? _then
+			sw_type << sw_type.default(sw_calculated_type)
+			_self.set_acpt_type(sw_type,sw_unit,sh_unit)
+		_endif 
+	_endif
+	
+	.sw_field_or_joins << symbol_fields_names
+
+	# verificar si se utilizan parametros al invocar el ultimo
+	# metodo para recuperar el valor (el metodo de formateo) 
+	_if con_parametros? _then
+		sv_parameters << format_parameters.split_by(_self.split_parameters_character) # caracter ;
+		_for index _over 1.upto(sv_parameters.size)
+		_loop
+			sv_parameters[index] << sv_parameters[index].as_symbol()
+		_endloop
+		.format_parameters << sv_parameters
+	_endif
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_field_export_structure.set_acpt_type(sw_type,_optional sw_unit,sh_unit)
+	##
+	## Inicializa los siguientes slots segun el valor del tipo de
+	## datos SW_TYPE:
+	##
+	## .ACPT_TYPE(acpt_type del dato a exportar),
+	## .IS_GEOMETRY?(no es geometrico),
+	## .NULLABLE(puede ser nulo),
+	## .UNIT(no tiene unidades)
+	##
+	
+	_if (sw_type _is _unset) _orif
+	    (acpt_type << _self.acpt_type_by_sw_type[sw_type.as_symbol()]) _is _unset 
+	_then		
+		condition.raise(:no_valid_sw_type,
+			        :sw_type,sw_type.write_string,
+			        :table_name,_self.table.name)
+	_endif
+	
+	.acpt_type << acpt_type
+
+	# Verificar unidades
+	.unit << _self.check_units(sw_unit,sh_unit)
+
+	# Valores por defecto
+	.is_geometry? << _false
+	.nullable << _true
+	
+_endmethod
+$
+_pragma(classify_level=resttricted, topic={ib_export})
+_private _method ib_field_export_structure.set_acpt_typeof_field(a_field,a_table,
+								 _optional sh_unit)
+	##
+	## Inicializa los siguientes slots segun el valor del campo
+	## A_FIELD de la tabla A_TABLE:
+	##
+	## .ACPT_TYPE(acpt_type del dato a exportar),
+	## .IS_GEOMETRY?(indica si es una geometria),
+	## .NULLABLE(indica si puede ser nulo),
+	## .UNIT(unidades destino si procede)
+	##
+
+	_local a_acpt_type
+	
+	_if a_field _is _unset _orif
+	    a_table _is _unset 
+	_then
+		condition.raise(:no_valid_field_info,:table_name,a_table)
+	_endif
+
+	a_field_name << a_field.name
+
+	_if a_table <> _self.table _then
+		table_acpt_types << ib_table_acpt_types.new(a_table)
+	_else
+		table_acpt_types << .owner.table_acpt_types
+	_endif
+	
+	(.acpt_type,.is_geometry?,
+	 .nullable,.unit) << table_acpt_types.get_field_info(a_field_name)
+
+	ok? << (.acpt_type _isnt _unset) 
+
+	_if ok? _then 
+		.unit << _self.check_units(.unit,sh_unit)
+
+		_if .is_geometry? _then
+			.pseudo_acpt_type << table_acpt_types.get_pseudo_geom_acpt_type(.acpt_type)
+		_endif
+	_endif 	
+
+	_return ok?
+_endmethod
+$
+_pragma(classify_level=resttricted, topic={ib_export})
+_private _method ib_field_export_structure.check_units(sw_unit,sh_unit)
+	##
+	## Valida si las unidades origen y destino son correctas,
+	## inicializa los slots de unidades si procede
+	##
+
+	# Verificar si hay una unidad origen
+	_if (sw_unit _is _unset) _orif
+	    (sw_unit << sw_unit.write_string.trim_spaces()) = "" _then
+		_return
+	_endif 
+
+        # Verificar que sw_unit es una unidad valida
+        sw_unit << sw_unit.as_symbol()
+	unit_manager.unit(sw_unit)
+
+	# Verificar si las unidades origen y destino son la misma
+        _if (sh_unit _is _unset ) _orif
+	    (sh_unit << sh_unit.write_string.trim_spaces()) = "" _orif
+            (sh_unit << sh_unit.as_symbol()) = sw_unit _then
+	    _return sw_unit
+	_endif
+
+	# Verificar que sh_unit es una unidad valida
+	unit_manager.unit(sh_unit)
+	
+	.sw_unit << sw_unit
+	
+	_return sh_unit
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_private _method ib_field_export_structure.table
+	##
+	## Tabla origen
+	##
+	_return .owner.table
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.get_attribute_value(a_rwo)
+	##
+	## Devuelve el valor del dato a exportar, para el rwo A_RWO
+	## (no se valida que el rwo sea del tipo adecuado)
+	##
+
+	_local value << a_rwo
+	_local num_fields_joins << .sw_field_or_joins.size
+	
+	_for index _over 1.upto(num_fields_joins) 
+	_loop
+		a_field_name << .sw_field_or_joins[index]
+		_if value _is _unset _then _leave _endif
+
+		_if index = num_fields_joins _andif
+		    .format_parameters _isnt _unset _then
+			#el metodo de formateo utiliza parametros
+			value << value.perform(a_field_name,_scatter .format_parameters)				    
+		_else     
+			value << value.perform(a_field_name)
+		_endif 
+	_endloop
+
+	# Verificar unidades si procede
+	value << _self.transform_units(value)
+
+	_return value
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.get_acpt_type()
+	##
+	## Acpt_type del dato ha exportar
+	##
+	_return .acpt_type
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.attribute_name()
+	##
+	## Nombre del atributo en el fichero SHAPE
+	##
+	_return .export_field_name
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.is_id_attribute?
+	##
+	## Indica si es el atributo identiificador del objeto SW
+	##
+
+	is_id? << .export_field_name = _self.sw_id_attribute
+	_return is_id?
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.modify_sufix_attribute_name(new_sufix)
+	##
+	## Modifica el nombre del atributo sustituyendo  el ultimo
+	## caracter por el sufijo NEW_SUFIX.
+	## (Para evitar que la tabla
+	##  contenga nombres de atributos repetidos)
+	##
+
+	
+	_if new_sufix _is _unset _orif
+	    ((new_sufix << new_sufix.write_string.trim_spaces()) = "") _then _return _endif
+	
+	_local attribute_name << .export_field_name.default("")
+		
+	_local length_sufix << new_sufix.size
+	_local length_new_name << attribute_name.size
+	_local length_max << _self.max_size_attrib_name
+
+	_if length_sufix >= length_new_name _then
+		attribute_name << new_sufix
+	_elif (length_sufix + length_new_name) <= length_max _then 
+	       attribute_name << attribute_name + new_sufix
+	_else 
+	       attribute_name.replace_slice(length_new_name - length_sufix + 1,
+					    length_new_name,new_sufix)
+	_endif
+
+	_if attribute_name.size > length_max _then 
+		attribute_name << attribute_name.write_string.subseq0(0,length_max)
+	_endif
+	
+	.export_field_name << attribute_name
+	
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.is_geometry?
+	##
+	## Indica si el dato a exportar es una geometria
+	##
+	_return .is_geometry?
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.can_be_null?
+	##
+	## Indica si el dato a exportar puede ser nulo
+	##
+	_return .nullable
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.unit
+	##
+	## Unidades del dato a exportar (si procede)
+	##
+	_return .unit
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.transform_units(a_value)
+	##
+	## Transforma las unidades, si procede
+	##
+
+	_if a_value _isnt _unset _andif
+	    .unit _isnt _unset _andif
+	    .sw_unit _isnt _unset 
+	_then
+		a_value << unit_manager.unit(.sw_unit).new_value(a_value).convert_to(.unit)
+	_endif
+	
+	_return a_value
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_field_export_structure.get_pseudo_geom_acpt_type()
+	##
+	## Acpt_type del dato a exportar
+	##
+
+	_if _self.is_geometry? _then
+		_return .pseudo_acpt_type
+	_endif 
+_endmethod
+$

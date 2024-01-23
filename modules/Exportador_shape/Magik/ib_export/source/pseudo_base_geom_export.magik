@@ -1,0 +1,54 @@
+
+_package user
+$
+def_slotted_exemplar(:pseudo_base_geom_export,
+		     {
+			     {:rwo_code,_unset},
+			     {:app_code,_unset}
+		     })
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_base_geom_export.set_rwo(a_rwo)
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_base_geom_export.set_rwo_code(a_rwo)
+	.rwo_code << a_rwo.rwo_code
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_base_geom_export.set_app_code(a_code)
+	.app_code << a_code
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_base_geom_export.initialize_export_values(a_chain)
+
+	
+	_self.set_rwo(a_chain.rwo)
+	_self.set_app_code(a_chain.app_code)
+	
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_base_geom_export.new(a_chain)
+
+	>> _clone.init(a_chain) 
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_base_geom_export.init(a_chain)
+	_self.initialize_export_values(a_chain)	
+	_return _self 
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_base_geom_export.rwo_code
+	_return .rwo_code
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_base_geom_export.app_code
+	_return .app_code
+_endmethod
+$

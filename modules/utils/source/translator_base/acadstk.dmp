@@ -1,0 +1,33 @@
+[Main]
+DumpEntries=1
+[AcadCrashDump1]
+ExeTimeDateStamp=0x378B20EA
+CrashTimeDateStamp=0x3C95CDE8
+acadVer=15.0h (Hardware Lock)
+WinVer=0x5650004
+DumpType=InternalError
+ErrorText=La seguridad del sistema (ya sea llave de protección o licencia de red)
+ContextFlags=0x10007
+SegGs=0x0
+SegFs=0x3B
+SegEs=0x23
+SegDs=0x23
+Edi=0x12F605
+Esi=0x12F604
+Ebx=0xB8BBD8
+Edx=0x0
+Ecx=0x5
+Eax=0x14172F
+Ebp=0x12F5DC
+Eip=0x85F47D
+SegCs=0x1B
+EFlags=0x246
+Esp=0x12E6E4
+SegSs=0x23
+ReferenceAddr=0x92E3A0
+ReferenceName=_WinMain@16
+StackWalk0=859315,45E47D,1,SymExport,GetViewportInfo+370D,\\Teide\apps\acadmap2000\acad.exe
+StackWalk1=859170,458315,1,SymExport,acProfileManagerPtr+3F55,\\Teide\apps\acadmap2000\acad.exe
+StackWalk2=410D0B,458170,1,SymExport,acProfileManagerPtr+3DB0,\\Teide\apps\acadmap2000\acad.exe
+StackWalk3=0,FD0B,1,SymExport,EnableFloatingWindowsHook+99EB,\\Teide\apps\acadmap2000\acad.exe
+no funciona o está instalada incorrectamente

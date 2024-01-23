@@ -1,0 +1,14 @@
+MSGCbt_update_attributeActualizar AtributoyesSIsaveGuardarcontinueContinuarbt_clear_attributesLimpiar Datos Atributochanges_without_saveSe han realizado cambios en la configuracion de exportacion.
+
+- Si desea utilizarlos para la exportacion actual pulse :  #1.
+- Si ademas desea guardarlos en un fichero pulse      :  #2.
+- Si quiere descartarlos pulse                                      :  #3.
+- Para volver a la ventana de configuracion pulsar     :  #4.bt_add_attributeAñadir Atributocorresp_objs_entidadesCorrespondencias: Objetos SW - Entidades SHAPEc_unit_swUnidad SWerr_add_e_existYa existe la correspondencia de Objeto SW - Campo Geometrico - EntidadtitleConfiguracion Avanzada: Mapeos Exportador SHAPEc_format_parametersParametros(;)c_object_swObjeto SWnot_selected_fieldNo hay ningun campo seleccionadoexitSalircorresp_fields_attributesCorrespondencias: Campos SW - Atributos SHAPEquestion_reloadAl recargar los mapeos iniciales se perderan los
+ultimos cambios realizados. ¿Desea continuar?save_changesGuardar en Ficheroerr_update_e_no_selNo hay una entidad seleccionada para actualizar.c_geometryCampo Geometricoc_field_swCampo SWmin_column_width100question_add_continueExiste una correspondencia "Objeto SW - Campo Geometrico"
+asociada a otro nombre de entidad. ¿Desea actualizar el valor de la entidad?err_remove_attributesError al intentar eliminar una correspondencia Sw - Attributotoggle_export_emptyV.changes_with_saveLos cambios realizados en la configuracion de exportacion se han guardado
+en un fichero.
+
+- Si ademas desea utilizarlos para la exportacion actual pulse :  #1.
+- Si quiere descartarlos pulse                                                   :  #2.
+- Para volver a la ventana de configuracion pulsar                  :  #3.err_no_valid_geom#1 No es un valor de geometria valido para el objeto actualerr_no_valid_entityIgnorar correspondencia: #1 - #2 - #3 ,datos no validosc_attribute_shAtributobt_update_entityActualizar Entidaderr_update_e_objLa correspondencia que se quiere actualizar no coincide con el Objeto SW seleccionado.err_update_at_no_selNo hay un atributo seleccionado para actualizar.exit_without_saveDesea ignorar los cambios realizados
+y salir de la ventana de configuracion?not_geometries_fieldsCampos No Geometricoserr_update_e_geomLa correspondencia que se quiere actualizar no coincide con el Campo Geometrico seleccionado.noNOacceptAceptarc_entityEntidadbt_remove_selectedEliminar Seleccionadasignore_changesIgnorar Cambiosc_field_type_swTipo SWsave_changes_and_exitGuardar y SalircancelCancelarc_format_methodMetodo Formateoc_unit_shUnidad SHAPEmin_combo_width120bt_reloadRecargar Valores Inicialesbt_add_entityAñadir Entidad

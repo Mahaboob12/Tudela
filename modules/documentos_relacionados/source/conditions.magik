@@ -1,0 +1,17 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+condition.define_condition(:nombre_fichero_no_valido, :user_error, {}, condition_proc )
+$
+
+condition.define_condition(:no_ruta_unc, :user_error, {:nombre_unidad}, condition_proc )
+$
+
+condition.define_condition(:fichero_no_encontrado, :user_error, {:nombre_fichero}, condition_proc )
+$
+
+condition.define_condition(:no_propietario_doc_rel, :user_error, {}, condition_proc )
+$
+

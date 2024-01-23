@@ -1,0 +1,50 @@
+#% text_encoding = iso8859_1
+_package user
+#
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:final_saneamiento,{},:rwo_record)
+$
+_method final_saneamiento.cota_texto
+	# Metodo de texto del campo texto
+	
+	_return _self.cota_final.default(0).write_string
+_endmethod
+$
+_method final_saneamiento.posicion_trigger(tipo,att_det,geom)
+
+	# Trigger de insercion del campo posicion
+	_if att_det _is :attach
+	_then
+		pos << _self.posicion.coord
+		pos_t <<  coordinate.new(pos.x+200,pos.y+200)
+
+		txt << _self.cota_texto
+		_if _self.texto _isnt _unset
+		_then
+			_self.unset_geometry(:texto)
+		_endif
+
+		texto << _self.make_geometry(:texto,pos_t,txt)
+		texto.orientation << _self.posicion.orientation
+		texto.just << 11
+	_endif 
+_endmethod
+$
+_method final_saneamiento.cota_final_trigger(tipo,att_det,geom, otro)
+	# Cambia solo el valor de la cota_final cambia, si es que existe
+	# el texto,
+
+	pos <<_self.posicion.coord
+	pos_t << coordinate.new(pos.x+200,pos.y+200)
+	_if _self.texto _isnt _unset
+	_then
+		_self.unset_geometry(:texto)
+	_endif
+
+		texto << _self.make_geometry(:texto,pos_t,_self.cota_texto)
+		texto.orientation << _self.posicion.orientation
+		texto.just << 11	
+_endmethod
+$
+

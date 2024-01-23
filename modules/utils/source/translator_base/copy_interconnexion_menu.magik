@@ -1,0 +1,717 @@
+#% text_encoding = iso8859_1
+## Shared Cons/vars:
+##                  copy_interconnexion_menu.dsviews
+##                  copy_interconnexion_menu.objs
+##                  copy_interconnexion_menu.mobiliario
+##                  copy_interconnexion_menu.alt_transp_route
+##                  copy_interconnexion_menu.prop_line
+##                  copy_interconnexion_menu.waterbody
+##                  copy_interconnexion_menu.waterway
+##$$
+## Methods         :
+##                  copy_interconnexion_menu.new(a_grs)
+##                  copy_interconnexion_menu.init(a_grs)
+##                  copy_interconnexion_menu.title()
+##                  copy_interconnexion_menu.activate_in(a_frame)
+##                  copy_interconnexion_menu.get_tables()
+##                  copy_interconnexion_menu.selection(index)
+##                  copy_interconnexion_menu.copy()
+##                  copy_interconnexion_menu.direct_copy(_optional tab_name)
+##                  copy_interconnexion_menu.sw_dwg_map(type)
+##                  graphics_system.activate_copy_interconnexion_menu()
+#@@
+# Procs           :
+#&&
+
+
+
+#####
+##
+#  S.C. 18.03.02
+# This menu copy interconnection elements  form a DWG dataset opened
+# to corresponding  elements cartography in GIS(SCD) dataset
+##
+#####
+
+remex(:copy_interconnexion_menu)
+$
+
+read_message_patch(:copy_interconnexion_menu)
+
+$
+:copy_all_tables :en_gb   Are you sure you wan Convert all Tables???
+:yes :en_gb   Yes
+:no :en_gb    No
+$
+def_slotted_exemplar(:copy_interconnexion_menu,{
+					     {:grs, _unset,:writable},
+					     {:uio, _unset,:writable},
+					     #{:tab_strs, _unset,:writable},
+					     #{:tab_vals, _unset,:writable},
+					     {:selection, _unset,:writable}
+		     },
+                      :model)
+$
+copy_interconnexion_menu.define_shared_constant(:dsviews, {:gis}, _true )
+
+
+$
+
+_pragma(classify_level=restricted, usage={external})
+copy_interconnexion_menu.define_shared_constant(
+	:|objs|,
+	hash_table.new_with(
+		:names, {{:|mobiliario|,:|Mobiliario|},
+			 {:|alt_transp_route|,:|Tansportation|},
+			 {:|prop_line|,:|Prop line|},	 
+			 {:|waterway|,:|Waterway|},
+		         {:|waterbody|,:|Waterbody|}}
+		
+			  ),
+		:public)
+
+
+$
+
+_pragma(classify_level=restricted, usage={external})
+copy_interconnexion_menu.define_shared_constant(
+	:|mobiliario|,
+	hash_table.new_with(
+		:dwg_layers, {:|KM_LOCATION|,
+			      :|SOS_LOCATION|},
+		
+		:dwg_layers_add1,{:|KM_ANNOTATION|,:|SOS_ANNOTATION|},
+		
+		:sw_types,  {:|Km|,
+			     :|SOS|},
+
+		:sw_types_add1,{:|Km|,:|SOS|},
+
+		:geo_field_names, {:location,
+				   :annotation}
+
+		   ),
+		:public)
+
+$
+_pragma(classify_level=restricted, usage={external})
+copy_interconnexion_menu.define_shared_constant(
+	:|alt_transp_route|,
+	hash_table.new_with(
+		:dwg_layers, {:|BIKE_PATH|,
+			      :|FOOTPATH|,
+			      :|OTHER_TRANSPORTATION|,
+			      :|BRIDGE|,
+			      :|RAIL_FERRY|,
+			      :|CARRETERA_RIGE|,
+			      :|ENLACE| ,
+			      :|CURVA_NIVEL|,
+			      :|CURVA_NIVEL_MAESTRA|,
+			      :|TALUD|,
+			      :|ARCEN|,
+			      :|ALLEY|,
+			      :|RAIL_TUNNEL|},
+	    
+		:dwg_layers_add1,{:|CURVA_NIVEL_MAESTRA_ANNOTATION|},
+		
+		:sw_types,  {:|Bike Path|,
+			     :|Footpath|,
+			     :|Other|,
+			     :|Bridge|,
+			     :|Rail Ferry|,
+			     :|Carretera_rige|,
+			     :|Enlace| ,
+			     :|Curva nivel|,
+			     :|Curva nivel maestra|,
+			     :|Talud|,
+			     :|Arcen|,
+			     :|Alley|,
+			     :|Rail Tunnel|},
+		
+		:sw_types_add1,{:|Curva nivel maestra|},
+		
+		:geo_field_names, {:route,
+				   :annotation}
+
+		   ),
+		:public)
+$
+
+_pragma(classify_level=restricted, usage={external})
+copy_interconnexion_menu.define_shared_constant(
+	:|prop_line|,	
+	hash_table.new_with(
+		:dwg_layers,{:|PROP_LINE|},
+		
+		:sw_types,{_unset},
+		
+		:geo_field_names,{:limit}
+
+		),
+		:public)
+
+$
+_pragma(classify_level=restricted, usage={external})
+copy_interconnexion_menu.define_shared_constant(
+	:|waterbody|,	
+	hash_table.new_with(
+		:dwg_layers,{:|OTHER_WATERBODY_BOUNDARY|},
+		
+		:sw_types,{:|Other|},
+		
+		:geo_field_names,{:boundary}
+
+		),
+		:public)
+$
+
+_pragma(classify_level=restricted, usage={external})
+copy_interconnexion_menu.define_shared_constant(
+	:|waterway|,	
+	hash_table.new_with(
+		:dwg_layers,{:|DITCH|,
+			     :|DRAINAGE|,
+			     :|STREAM|,
+			     :|SHORE|,
+			     :|COASTLINE|},
+		      
+		:sw_types,{:|Ditch|,
+			   :|Drainage|,
+			   :|Stream|,
+			   :|Shore|,
+			   :|Other|},
+		:geo_field_names,{:route}
+
+		),
+		:public)
+$
+
+_method copy_interconnexion_menu.new(a_grs)
+	
+	# Author         : 
+	# Date           : 
+	#
+	## Parameters    : 
+	## Returns       : 
+	## Function      : 
+	## Methodology   :
+	>> _clone.init(a_grs)
+_endmethod
+$
+
+_method copy_interconnexion_menu.init(a_grs)
+	# Author         : 
+	# Date           : 
+	#
+	## Parameters    : 
+	## Returns       : 
+	## Function      : 
+	## Methodology   :
+	
+	.message_accessor << message_handler.new( :copy_interconnexion_menu)
+	.grs << a_grs
+	.uio  << hash_table.new()
+	
+	>> _super.init()
+_endmethod
+
+
+_pragma(classify_level=restricted, usage={external})
+_method copy_interconnexion_menu.title()
+	# Author         : 
+	# Date           : 
+	#
+	## Parameters    : 
+	## Returns       : 
+	## Function      : 
+	## Methodology   :
+	>> _self.message(:copy_interconnexion_menu)
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={external})
+_method copy_interconnexion_menu.activate_in(a_frame)
+	# Author         :
+	# Date           : 
+	#
+	## Parameters    : 
+	## Returns       : 
+	## Function      : 
+	## Methodology   :
+	
+	
+	a_panel << panel.new(a_frame)
+	str << rope.new()
+	val << rope.new()
+	_for v _over _self.dsviews.fast_elements()
+	_loop
+		_if gis_program_manager.cached_dataset(v) _isnt _unset 
+		_then
+			write
+			str.add(gis_program_manager.cached_dataset(v).external_name)
+			val.add(v)
+		_endif
+	_endloop
+	.uio[:ds_view] << choice_item.new(a_panel,"Dataset",str,val,
+					  :model,_self,
+					  :display_all?,_true)
+	.uio[:current_dsview] << gis_program_manager.cached_dataset(.uio[:ds_view].value)
+	
+	a_panel.start_row()
+	
+	(tab_strs, tab_vals) << _self.get_tables()
+	
+	.uio[:tables] << choice_item.new(a_panel, "Tables", tab_strs, tab_vals,
+					 :model,_self,
+					 :display_all?, _false,
+					 :change_selector, :|selection()|)
+	
+	
+	.uio[:all_tables] << toggle_item.new(a_panel,"All Tables",
+					     :value, _false)
+					       
+	.uio[:buttom] << button_item.new(a_panel, "Copy", _self  ,:|copy()|)
+
+	.uio[:buttom] << button_item.new(a_panel, "Quit", _self  ,:|quit()|)
+	
+	>>_self
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={external})
+_method copy_interconnexion_menu.quit()
+	# Author         : 
+	# Date           : Mar/2002
+	#
+	## Parameters    : 
+	## Returns       : 
+	## Function      : 
+	## Methodology   :
+
+
+	_super.quit()
+	
+_endmethod
+
+
+
+_pragma(classify_level=restricted, usage={external})
+_method copy_interconnexion_menu.get_tables()
+	# Author         : 
+	# Date           : Mar/2002
+	#
+	## Parameters    : 
+	## Returns       : 
+	## Function      : 
+	## Methodology   :
+
+	tab_strs << rope.new()
+	tab_vals << rope.new()
+	
+	_for tab_name  _over _self.objs[:names].fast_elements()
+	_loop
+			tab_strs.add(tab_name[2].write_string)
+			tab_vals.add(tab_name)
+	_endloop
+	
+	>> tab_strs, tab_vals
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={external})
+_method copy_interconnexion_menu.selection(index)
+	# Author         : 
+	# Date           : Mar/2002
+	#
+	## Parameters    : 
+	## Returns       : 
+	## Function      : 
+	## Methodology   :
+	
+	.selection << index[1]
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={external})
+_method copy_interconnexion_menu.copy()
+
+	# Author         : 
+	# Date           : Mar/2002
+	#
+	## Parameters    : 
+	## Returns       : Table/-s selection
+	## Function      : 
+	## Methodology   :
+
+	
+
+	_if .uio[:all_tables].value _is _true
+	_then
+		_if _self.question_alert(:yes,:no,:copy_all_tables) _is _false
+		_then
+			_return
+		_else
+			
+		_self.direct_copy()
+		_endif 
+	
+		
+	_elif .selection _is  _unset
+	_then
+		_self.show_message("Select One Table or all tables to Copy")
+		
+	_else
+		
+		tab_name << .selection
+		_self.direct_copy(tab_name)
+	_endif
+	
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={external})
+_method copy_interconnexion_menu.direct_copy(_optional tab_name)
+
+	###
+	#
+	# S.C. 27-08-2001.  This method is to copy data from a dwg dataset called carto
+	# made from an autocad cartography file using SAS product to
+	# gis dataset.
+	# Way to use copying method consists in specifying smallworld object to translate as
+	# a symbol argument (E.G. g.direct_copy(:|alt_transp_route|))
+	# _or executing method without arguments to realize a complete copy
+	# Before each translation it is created a control checkpoint
+	#
+	# dd/mm/yy hh:mm:ss. In addition a commit operation is done
+	# when a completed object had been translated (All types and
+	# all geometries in order to complete/continue/repit process if
+	# it fails more easy.
+	# Individual translations should have one of following 11 symbols
+	# as an argument:
+	#       :|mobiliario|,
+	#       :|alt_transp_route|,
+	#       :|prop_line|,
+	#       :|waterway|,
+	#	:|waterbody|,
+	#
+	###
+	
+	_dynamic !current_grs! << gis_program_manager.applications[:gis]
+	_dynamic !current_world!  << !current_grs!.world
+	_dynamic !current_dsview!<< gis_program_manager.cached_dataset(:gis)
+	_dynamic !current_spatial_object_controller!  << !current_grs!.spatial_object_controller
+	_global !maximum_collection_size!
+	
+	
+	vgis << gis_program_manager.databases[:gis]
+	
+	vcarto << gis_program_manager.databases[:capas]
+	
+	_if vgis.mode _isnt :write
+	_then
+		_self.show_message(vgis.name.write_string.uppercase,"  dataset is not writable!!" )
+		_return		   
+	_endif
+        _if vcarto _is _unset
+	_then
+		_self.show_message(vgis,"It is necessary to have opened a dwg dataset called capas to continue this copy proccess!! ")
+		_return		
+	_endif
+	
+	date << date_time_now()
+	dd << date.day_of_month_number.write_string
+	mm << date.month_number.write_string
+	yy << date.year.write_string
+	time <<date.hours.write_string+date.minutes.write_string+date.seconds.write_string
+	file_name <<"CARTO TRANSLATION "+ dd + "-" + mm + "-" + yy +".txt"
+	
+	_if _not system.file_exists?(dir << "c:\sas")
+	_then
+		system.mkdir(dir)
+	_endif
+
+	_if _not system.file_exists?(dir << "c:\sas\report")
+	_then
+		system.mkdir(dir)
+	_endif
+	
+	
+	fich << dir + "\" + file_name
+	str << external_text_output_stream.new ( fich )
+	
+	
+	dwg_layers << hash_table.new()
+	sw_types << hash_table.new()
+	
+       _if tab_name _isnt _unset
+       _then
+		tab_names << {tab_name} 
+		
+       _else
+	       tab_names<<rope.new()
+	       _for tab_name  _over _self.objs[:names].fast_elements()
+	       _loop
+			tab_names.add(tab_name[1])
+			
+	       _endloop
+		
+	_endif	       
+       
+       # ----------
+       #  Loop over tab_names
+       # ----------       
+	_for tab_name  _over tab_names.elements()
+	_loop
+		
+	dbv_dest << vgis.collections[tab_name]
+	write(tab_name.write_string.uppercase)
+        str.write(tab_name.write_string.uppercase, newline_char)
+	
+	geoms << _self.perform(tab_name)[:geo_field_names]
+	dwg_layers[geoms[1]] << _self.perform(tab_name)[:dwg_layers]
+	
+	sw_types[geoms[1]] << _self.perform(tab_name)[:sw_types]
+	_if (layer_add1 << _self.perform(tab_name)[:dwg_layers_add1]) _isnt _unset
+	_then
+		
+		dwg_layers[geoms[2]] << layer_add1
+		sw_types[geoms[2]] << _self.perform(tab_name)[:sw_types_add1]
+	_endif
+	_if (layer_add2 << _self.perform(tab_name)[:dwg_layers_add2]) _isnt _unset
+	_then
+		dwg_layers[geoms[3]] << layer_add2
+		sw_types[geoms[3]] << _self.perform(tab_name)[:sw_types_add2]
+	
+	_endif
+	
+	_if (layer_add3 << _self.perform(tab_name)[:dwg_layers_add3]) _isnt _unset
+	_then
+		dwg_layers[geoms[4]] << layer_add3
+		sw_types[geoms[4]] << _self.perform(tab_name)[:sw_types_add3]
+	_endif
+	
+	ngeo << simple_vector.new_from(geoms)
+	ng<<0
+	#vgis.checkpoint("Pre carto "+date_time.now().write_string)
+	_for go _over ngeo.elements()
+	_loop
+		ng <<ng+1
+		
+		_for dwg_layer _over dwg_layers[go].elements()
+		_loop
+			
+			ly << dwg_layer.write_string.uppercase
+			ttext<<"Processing "+ly+" layer ------>"+tab_name.write_string.uppercase
+			idx << dwg_layers[go].index_of(dwg_layer)
+			_if (sw_type << sw_types[go][idx]) _isnt _unset
+			_then
+				ttext<<ttext+" of type("+sw_type.write_string+")"
+			_endif
+			write(newline_char,tab_char,ttext)
+			str.write(newline_char,tab_char,ttext,newline_char)
+			g_type<<(dbv_dest.field(geoms[ng]).geom_type)
+			dwg_name << _self.sw_dwg_map(g_type)
+			dbv_ori << vcarto.collections[dwg_name].select(predicate.eq(:layer,dwg_layer.write_string))
+			n_ori<<dbv_ori.size
+			n_dest<<0
+			n_fails <<0
+
+			_for el _over dbv_ori.elements()
+		       _loop
+			       #_if dwg_name _is :point
+			       #_then
+			       #       dwg_name << dwg_name.as_symbol()
+			       #_endif
+			       
+			       geo_data<<el.perform(dwg_name)
+			       
+			       
+#			       _if (g_type _is :area _orif g_type _is :simple_area) _andif _not
+#				( geo_data.sectors.closed?) 
+#			       _then
+#				       write(tab_char,"NOT A POLYGON...")
+#				       n_fails+<<1
+#				       _continue
+#			       _endif
+#			       _if (g_type _is :area _orif g_type _is :simple_area) _andif
+#				   geo_data.sectors.area = 0
+#			       _then
+#				       write(tab_char,"ZERO AREA POLYGON ...")
+#				       n_fails+<<1
+#				       _continue
+#			       _endif
+#			       _if (g_type _is :chain _orif g_type _is :simple_chain) _andif
+#				   (geo_data.line_length < 5)
+#			       _then
+#				       write(tab_char,"VERY SMALL LINE LENGTH...")
+#				       n_fails+<<1
+#				       _continue
+#				       
+#			       _endif
+			       
+
+
+
+
+			       _if _not dbv_dest.an_element().inherits_from?(dataless_rwo_record)
+			       _then
+			       
+				       nr<< dbv_dest.new_detached_record()
+				       write(tab_char,n_dest+<<1, " Element(s)" )
+				       _if sw_type _isnt _unset
+				       _then
+					       nr.type << sw_type
+				       
+				       _endif
+			     
+				       rec << dbv_dest.insert(nr)
+
+				       
+
+			       
+				       _try _with fout			
+	
+					    _if g_type _isnt  :text
+					    _then
+						    rec.make_geometry(geoms[ng],geo_data.sectors)
+					    _else
+				
+						    rec.make_geometry(geoms[ng],geo_data.sectors.first.first,geo_data.string)
+					    _endif
+				       _when error
+					     n_dest -<< 1
+					     n_fails +<<1
+					     write(tab_char, "Error on record: ", rec, " Cause: ",fout.report_contents_string)
+					     _continue
+				       _endtry
+			  
+				
+				       _if g_type _is :point _orif g_type _is :simple_point
+				       _then
+					       rec.perform(geoms[ng]).orientation << geo_data.orientation
+					       rec.perform(geoms[ng]).scale << geo_data.scale*0.01
+				
+				       _elif g_type  _is :text
+				       _then
+				
+					       rec.perform(geoms[ng]).orientation <<  geo_data.orientation
+					       rec.perform(geoms[ng]).height << geo_data.height
+					       rec.perform(geoms[ng]).just << geo_data.just
+				
+				       _endif
+
+
+			    _else
+
+
+				    #write(tab_char,"dataless_rwo_record")
+				    # Para objetos con solo geometria dataless_rwo_record
+				    
+				    write(tab_char,n_dest+<<1, " Element(s)" )
+				    _if dbv_dest.name _is :prop_line
+				    _then
+					    fld << :limit
+
+				    _endif
+
+				      _try _with fout
+					   
+					   gex << dbv_dest.field(fld).geom_exemplar
+
+					   current_geo <<  gex.new_with_sectors(
+					      dbv_dest.field(:limit),
+					     geo_data.sectors,
+					     "")
+				      
+					   an_rwo << current_geo.new_dataless_rwo()
+
+				      _when error
+
+					     n_dest -<< 1
+					     n_fails +<<1
+				      _endtry
+
+				       
+		            _endif
+
+
+				       
+		       _endloop
+		  
+
+		       write(tab_char,"------------------------------------")
+	               write(tab_char,n_ori.write_string+" records in layer")
+		       str.write(tab_char,n_ori.write_string+" records in layer",newline_char)
+		       write(tab_char,n_dest.write_string+" records  translated succesfully")
+		       str.write(tab_char,n_dest.write_string+" records  translated succesfully",newline_char)
+		       write(tab_char,n_fails.write_string+" records failed")
+		       str.write(tab_char,n_fails.write_string+" records failed",newline_char)
+		        write(tab_char,"------------------------------------")
+		_endloop
+		
+	_endloop 
+		
+	_endloop
+	# Commit after finish each smallworld element translation
+	#vgis.commit()
+    # File is closed when all translations have been fisnished
+    str.close()
+_endmethod
+$
+
+_method copy_interconnexion_menu.sw_dwg_map(type)
+
+	# Author         : 
+	# Date           : 
+	#
+	## Parameters    : 
+	## Returns       : 
+	## Function      : 
+	## Methodology   :
+	
+	_if type _is :chain _orif
+	    type _is :simple_chain _orif
+	    type _is :area _orif
+	    type _is :simple_area
+	_then
+		_return :line
+		
+	_elif type _is :point _orif type _is :simple_point
+	_then 
+		  _return :point
+									 
+	_else
+		_return :text
+	_endif
+						
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={external})
+_method graphics_system.activate_copy_interconnexion_menu()
+	# Author         : S.C.
+	# Date           : 18.03.2002
+	#
+	## Parameters    : 
+	## Returns       : 
+	## Function      : 
+	## Methodology   :
+	
+	
+
+	(active?, com) << _self.has_sub_menu?(:copy_interconnexion_menu)
+
+	_if _not active?
+	_then
+		_self.activate_sub_menu(:copy_interconnexion_menu)
+	_else
+		com.reactivate()
+
+	_endif
+_endmethod
+$
+
+

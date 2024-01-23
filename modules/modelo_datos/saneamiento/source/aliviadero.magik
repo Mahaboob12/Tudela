@@ -1,0 +1,132 @@
+#% text_encoding = iso8859_1
+_package user
+#
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:aliviadero,{},:rwo_record)
+$
+_method aliviadero.cota_entrada
+	# Calcula la cota de entrada a partir del final de la tuberia
+	# de llegada
+	# Campo calculado cota_entrada
+
+	cota << 0.0
+	nodo << _self.posicion.node
+	_for geo _over _self.posicion.all_connected_geometry().fast_elements()
+	_loop
+		_if geo.rwo_type _is :tuberia_saneamiento _andif
+		    geo.last_node = nodo  _then
+			tuberia << geo.rwo
+			cota << _self.cota_tapa.default(0) - tuberia.profundidad_final.default(0)
+		_endif
+	_endloop
+	_return cota
+_endmethod
+$
+_method aliviadero.cota_salida_fecales
+	# Calcula la cota de entrada a partir del inicio de la tuberia
+	# de fecales
+	# Campo calculado cota_salida_fecales
+	
+	cota << 0.0
+	nodo << _self.posicion.node
+	_for geo _over _self.posicion.all_connected_geometry().fast_elements()
+	_loop
+		_if geo.rwo_type _is :tuberia_saneamiento _andif
+		    geo.first_node = nodo _andif
+		    geo.rwo.clase = "FECALES" _then
+						      		      
+			tuberia << geo.rwo
+			cota << _self.cota_tapa.default(0) - tuberia.profundidad_inicio.default(0)
+		_endif
+	_endloop
+
+	_return cota
+_endmethod
+$
+_method aliviadero.cota_salida_pluviales
+	# Calcula la cota de entrada a partir del inicio de la tuberia
+	# de pluviales
+	# Campo calculado cota_salida_pluviales
+
+	cota << 0.0
+	nodo << _self.posicion.node
+	_for geo _over _self.posicion.all_connected_geometry().fast_elements()
+	_loop
+		_if geo.rwo_type _is :tuberia_saneamiento _andif
+		    geo.first_node = nodo _andif
+		    geo.rwo.clase = "PLUVIALES" _then
+			tuberia << geo.rwo
+			cota << _self.cota_tapa.default(0) - tuberia.profundidad_inicio.default(0)
+		_endif
+	_endloop
+
+	_return cota
+_endmethod
+$
+_method aliviadero.profundidad_text
+	# Metodo de texto del campo geometrico texto
+	ocultar_texto? << _false
+	txt << _self.cota_tapa.default(0).write_string +" (" + _self.profundidad.default(0).write_string + ")"
+
+	_if _self.cota_tapa _is _unset _andif _self.profundidad _is _unset 
+	_then
+		ocultar_texto? << _true
+	_endif
+	
+	
+	_return (txt,ocultar_texto?)
+_endmethod
+$
+_method aliviadero.posicion_trigger(tipo,att_det,geom)
+	#
+	# Trigger de insercion del campo posicion
+	#
+	_if att_det _is :attach
+	_then
+		
+		pos << _self.posicion.coord
+		pos_t << coordinate.new(pos.x+300,pos.y+300)
+
+		(txt,ocultar_texto?) << _self.profundidad_text
+		_if _self.texto _is _unset _then
+		_else
+			_self.unset_geometry(:texto)
+		_endif
+		
+		_if  _not ocultar_texto?
+		_then
+			texto << _self.make_geometry(:texto,pos_t,txt)
+			texto.orientation << _self.posicion.orientation
+			texto.just << 11
+		_endif
+	
+	_endif 
+_endmethod
+$
+_method aliviadero.cota_tapa_trigger(tipo,att_det,geom,otra)
+
+	# Cambia solo el valor de la cota_tapa cambia, si es que existe
+	# el texto, o si la profundidad del aliviadero  cambia
+
+	pos << _self.posicion.coord
+	pos_t << coordinate.new(pos.x+300,pos.y+300)
+
+	(txt,ocultar_texto?)<< _self.profundidad_text
+	
+	_if _self.texto _isnt _unset
+	_then
+		_self.unset_geometry(:texto)
+	_endif
+
+	_if  _not ocultar_texto?
+	_then
+		texto << _self.make_geometry(:texto,pos_t,txt)
+		texto.orientation << _self.posicion.orientation
+		texto.just << 11
+	_endif
+		
+_endmethod
+$
+
+
+

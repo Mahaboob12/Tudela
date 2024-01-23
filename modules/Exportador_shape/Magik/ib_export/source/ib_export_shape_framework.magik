@@ -1,0 +1,1765 @@
+#% text_encoding = iso8859_1
+##
+## Dialogo para la exportación a ficheros SHAPE
+##
+
+_package user
+$
+_pragma(classify_level=advanced, topic={ib_export})
+def_slotted_exemplar(:ib_export_shape_framework,
+	{
+		{:items,_unset },                  # controles del dialogo
+		{:engine,_unset },                 # engine que implementa la ejecución del proceso de exportación en segundo la plano
+		{:xml_config_engine,_unset },      # engine para leer y escribir XML de configuración de la exportación
+		{:current_configuration, _unset }, # configuración de exportación actual
+		{:list_coordinates_system,_unset },# lista de sistemas de coordenadas indexada por el external_root_name
+		{:list_units,_unset },             # lista de unidades indexada por long_description
+		{:result_message,_unset },         # mensaje devuelto por el proceso de exportacion
+		{:run_status,_unset },             # estado de ejecución de la exportación
+		{:paths,_unset },                  # rutas por defecto
+		{:valid_export_datasets, _unset }
+	},
+	{:gui_framework})
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Nombre del XML que almacena la configuración por defecto
+## de los parametros de exportación
+ib_export_shape_framework.def_property( :default_xml_config_export_file_name,
+	:type,	     :string,
+	:readable?, _true,
+	:writable?,_true, 
+	:default_value, "config_default_export_shape.xml")
+
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Directorio dónde se encuentra el XML de configuración por defecto,  si no tiene ningún valor asignado
+## se busca el fichero en la carpeta de resources del módulo
+ib_export_shape_framework.def_property( :default_xml_config_export_file_path,
+	:type,	     :string,
+	:readable?, _true,
+	:writable?,_true, 
+	:default_value, "")
+
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Directorio por defecto dónde se almacenan los XML de
+## configuración generados,  si no tiene ningún valor asignado
+## se utiliza la carpeta de resources del módulo
+ib_export_shape_framework.def_property( :default_xml_save_path,
+	:type,	     :string,
+	:readable?, _true,
+	:writable?,_true, 
+	:default_value, "")
+
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Directorio por defecto dónde se encuentran los XML de
+## configuración,  si no tiene ningún valor asignado
+## se utiliza la carpeta de resources del módulo
+ib_export_shape_framework.def_property( :default_xml_load_path,
+	:type,	     :string,
+	:readable?, _true,
+	:writable?,_true, 
+	:default_value, "")
+
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Datasets configurados para exportacion
+ib_export_shape_framework.def_property( :valid_export_datasets,
+	:type,	     :string,
+	:readable?, _true,
+	:writable?,_true, 
+	:default_value, "")
+
+$
+
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Identificadores de los controles activos durante la
+## ejecución del proceso de exportación
+ib_export_shape_framework.define_shared_constant(:active_controls_during_exec,{:bt_interrupt},:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Valor que se muestra en el combo de sistemas de
+## coordenadas y que se utiliza como indice de la lista que las
+## almacena en el slot :list_coordinates_system
+ib_export_shape_framework.define_shared_constant(:index_coordinates_system,:external_root_name,:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Valor que se muestra en el combo de unidades y que se utiliza como indice de la lista que las
+## almacena en el slot :list_units
+ib_export_shape_framework.define_shared_constant(:index_units,:long_description,:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Prefijo y sufijo necesarios a añadir al bound_limit
+## recuperado del XML para obtener el nombre del método que se invoca
+##
+ib_export_shape_framework.define_shared_constant(:add_texts_bound_limit_method,
+	                                              property_list.new_with(:prefix,"by_",
+								             :sufix, "_bounds()"),
+						      :public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+##Identificador del dialogo de configuracion avanzada
+ib_export_shape_framework.define_shared_constant(:id_advanced_config_dialog,:advanced_config_correspondences,:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+#
+# Se ignoran todas las tablas que contengan alguno de los
+# siguientes texto
+ib_export_shape_framework.define_shared_constant(:ignored_text_in_tables,
+	                                                   {"!","drafting","dxf"},:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+## Valores que han de tenerr la etiquetas del campo
+## identificador, en el fichero XML que contiene las
+## correspondencias de exportacion
+##
+ib_export_shape_framework.define_shared_constant(:xml_export_field_id,property_list.new_with("sw_field","ibtr_export_id",
+								             "type","ds_char16_vector",
+									     "shape_field","sw_ids"),:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.new(a_name, a_framework,_gather properties)
+	##
+	## Crear instancia
+	_return _clone.init(a_name, a_framework,properties)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.init(a_name, a_framework,_optional properties)
+	##
+	## Inicializar slots
+	_super.init(a_name, a_framework, properties)
+
+	.items << property_list.new()
+	.list_coordinates_system << equality_hash_table.new()
+	.list_units << equality_hash_table.new()
+	.paths << equality_hash_table.new()
+	.valid_export_datasets << _self.get_datasets_exportables()
+	
+	# sin botones para redimensionar la ventana
+	_self.minimizable?<<_true
+	_self.maximizable?<<_false
+	
+	>> _self 
+_endmethod
+$ 
+################################################################################################################################
+##
+## ATRIBUTOS DEL DIALOGO
+##
+################################################################################################################################
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.title
+	##
+	## Devuelve el titulo del dialogo
+	##
+	_return _self.message(:title)
+_endmethod
+$
+################################################################################################################################
+##
+## METODOS DE ACCESO AL CURRENT MAP Y SUS PROPIEDADES (sistema
+## de coordenadas...)
+##
+################################################################################################################################
+
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.map_manager	
+	##
+	## Devuelve el map manager de _self (_unset si no está disponible)
+	##
+
+	_if (map_plugin << _self.application.plugin(:maps)) _is _unset
+	_then
+		# compatibilidad con PNI
+		map_plugin << _self.application.plugin(:map_plugin)
+	_endif
+	
+	_return map_plugin
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.current_map
+	##
+	## Devuelve el 'current map' del 'map manager'
+	##
+	_local cmap
+	
+	_if (manager << _self.map_manager) _isnt _unset
+	_then
+	      cmap <<  manager.current_map
+	_endif
+
+	_return cmap
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.current_map_view
+	##
+	## Devuelve 'current map view' del 'map manager'
+	##
+	_local cmapv
+	
+	_if (manager << _self.map_manager) _isnt _unset
+	_then
+	      cmapv <<  manager.current_map_view
+	_endif
+
+	_return cmapv
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_framework.current_view_coordinate_system
+	## 
+	## Devuelve el sistema de coordenadas de la vista seleccionada. 
+	##
+	_local default_coord_sys
+
+	_if  (view << _self.current_map_view) _isnt _unset
+	_then
+	     default_coord_sys << view.current_display_coordinate_system
+	_endif
+	
+	_return default_coord_sys
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_framework.current_coordinate_system
+	## 
+	## Returns the application's current projection (a coordinate_system). 
+	##
+
+	c_proj << _self.application.projection
+	_return c_proj
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.current_view_units_format
+	## 
+	## Devuelve las unidades de la vista seleccionada. 
+	##
+	_local default_units
+
+	_if  (view << _self.current_map_view) _isnt _unset
+	_then
+	     default_units << view.get_length_display_format()
+	_endif
+	
+	_return default_units
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.current_view_units
+	## 
+	## Devuelve las unidades de la vista seleccionada. 
+	##
+	_local default_units << _self.current_view_units_format
+
+	_if default_units _isnt _unset _then
+		default_units << unit_manager.unit(default_units.short_description.as_symbol())
+	_endif 
+	
+	_return default_units
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.database
+	##
+	## Devuelve la base de datos
+
+	_return _self.framework.database
+_endmethod 
+################################################################################################################################
+##
+## METODOS PARA CONSTRUIR EL DIALOGO
+##
+################################################################################################################################
+
+
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.build_gui(a_frame, _optional an_xml_element)
+	##
+	## Contruye el dialogo de exportación
+	##
+
+	a_frame.resizable? << _false
+	.current_gui_manager << _self.gui_manager(:floating)
+
+	# asignar a los botones y a los combos el ancho estandar
+	button_width << _self.get_optional_resource(:min_button_width, :integer)
+	combos_width << _self.get_optional_resource(:combos_width,:integer).default(220)
+	min_label_width << _self.message(:ch_coords).size
+	file_text_width << _self.get_optional_resource(:file_text_width,:integer).default(350)
+
+	outer_rc << rowcol.new( a_frame, _unset ,1, :pixel,
+			  :style, :top_level,
+			  :default_row_alignment, :centre,
+			  :row_spacing,2)
+
+	_self.container << outer_rc
+
+	rc_componentes << rowcol.new( outer_rc, _unset ,1, :pixel,
+			  :style, :nested,
+			  :row, 1, :col, 1,
+			  :default_row_alignment, :centre)
+
+	rc_componentes.row_spacing<< 2
+	rc_componentes.top_spacing<< 12
+	rc_componentes.bottom_spacing<< 4
+	rc_componentes.left_spacing<< 6
+	rc_componentes.right_spacing << 6
+
+	rc_file_coor_un << rowcol.new( rc_componentes, 3 , 3 , :pixel,
+				:style, :nested,
+				:row, 1, :col, 1, :col_alignment, :fill )
+
+	rc_file_coor_un.bottom_spacing<< 8
+	rc_file_coor_un.col_spacing << 10
+	
+	# Ruta fichero destino
+
+	.items[:lb_file] << label_item.new(rc_file_coor_un,_self.get_format_text_label(:file_name,min_label_width),
+					   :model,_self,:row,1,:col,1)
+	.items[:file_name] << text_item.new(rc_file_coor_un,"",
+					    :model,_self,
+					    :width,file_text_width,
+					    :row, 1, :col, 2)
+	.items[:browse]   << button_item.new_safe(rc_file_coor_un,_self.message(:browse),_self,
+						   :browse|()|,:width,button_width,
+					            :row, 1, :col, 3)
+
+	# Coordenadas y Unidades
+
+	.items[:lb_coords] << label_item.new(rc_file_coor_un,_self.get_format_text_label(:ch_coords,min_label_width),:model,_self,:row,2,:col,1)
+	.items[:ch_coords] << text_choice_item.new( rc_file_coor_un, "",
+						   :model,_self,
+						   :items, _self.coordinate_systems_for_list(),
+						   :text_representation_message, _self.index_coordinates_system,
+						   :change_selector,:change_projection|()|,
+					           :width,combos_width,
+					           :row,2,:col,2)
+	
+
+	.items[:lb_units] << label_item.new(rc_file_coor_un,_self.get_format_text_label(:ch_units,min_label_width),:model,_self,:row,3,:col,1)
+	.items[:ch_units] << text_choice_item.new( rc_file_coor_un,"",
+						   :model,_self,
+						   :items, _self.unit_formats_for_selected_coord_sys(),
+						   :text_representation_message, _self.index_units,
+					           :value,_self.current_view_units,
+					           :width,combos_width,
+					           :row,3,:col,2)
+
+
+	# Area
+	gbox_area << group_box.new( rc_componentes, _self.message(:gb_area),
+				    :row, 4, :col, 1, :col_alignment, :fill)
+
+	rc_area << rowcol.new( gbox_area, 2,_unset , :pixel,
+				  :style, :group_box,
+				  :default_row_alignment, :centre)
+
+	rc_area.bottom_spacing<< 8
+	
+	.items[:bounds_source_chooser] << text_choice_item.new( rc_area,_self.message(:bounds_source_chooser),
+								:items,{{:by_window_bounds|()|,_self.message(:window_bounds)},
+							                {:by_trail_bounds|()|,_self.message(:trail_bounds)},
+								        {:by_no_bounds|()|,_self.message(:no_bounds)}},
+								:row, 1, :col, 1,
+								:model, _self,
+							        :value, :by_window_bounds|()|,
+							        :balloon_help_id, :window_bounds_tooltip)
+
+	rc_geom << rowcol.new( rc_area, 1,4, :pixel,
+			   :style, :nested,
+			   :row, 2, :col, 1,
+			   :default_row_alignment, :centre)
+
+	items << { {:overlapping, _self.message(:overlapping)},
+		   {:inside,      _self.message(:inside)} }
+
+	.items[:lb_geom] << label_item.new( rc_geom, _self.message(:geometry),
+					    :row, 1, :col, 1)	
+	.items[:overlapping_or_inside] <<  radio_group_item.new ( rc_geom, "", 
+								  :items, items,
+								  :model, _self,
+								  :groupbox?, _false ,
+								  :display_vertical?, _false ,
+								  :value, :inside,
+								  :row, 1, :col, 2,
+								  :col_alignment, :fill)
+
+	label_item.new( rc_componentes, " "*40,:row, 6, :col, 1)
+	
+	# Correspondencias SW-SH
+	gbox_corresp << group_box.new( rc_componentes, _self.message(:gb_corresp),
+				    :row,7, :col, 1,
+			            :col_alignment, :fill)
+
+	rc_corresp << rowcol.new( gbox_corresp, _unset ,1, :pixel,
+				  :style, :group_box, 
+				  :default_row_alignment, :centre)
+	rc_corresp.bottom_spacing<< 4
+
+	
+
+	rc_buttons_xml << rowcol.new( rc_corresp, 1,5, :pixel,
+			          :style, :nested,
+			          :row, 1, :col, 1,
+			          :default_row_alignment, :centre)
+
+	rc_buttons_xml.bottom_spacing<< 6
+	rc_buttons_xml.top_spacing<< 8
+	#rc_dataset.right_spacing<< 8
+
+	.items[:bt_load_xml]  << button_item.new(rc_buttons_xml,_self.message(:load_xml),
+					      _self, :|load_xml()|, 
+   			                      :row, 1, :col, 1,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+
+	.items[:bt_save_xml]  << button_item.new(rc_buttons_xml,_self.message(:save_xml),
+					      _self, :|save_xml()|, 
+   			                      :row, 1, :col, 2,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+	
+	.items[:bt_default_values]  << button_item.new(rc_buttons_xml,
+					      _self.message(:load_default_values),
+					      _self, :|load_default_values()|, 
+   			                      :row, 1, :col, 3,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+	
+
+	
+	label_item.new(rc_buttons_xml,  " "*40,:row, 1, :col, 4)
+	.items[:bt_all_xml]  << button_item.new(rc_buttons_xml,_self.message(:generate_xml_all),
+					      _self, :|generate_xml_all()|, 
+   			                      :row, 1, :col, 5,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+	
+	.items[:file_xml_loaded] << label_item.new( rc_corresp,"",
+					    :row, 3, :col, 1)
+
+	rc_dataset << rowcol.new( rc_corresp, 2,4 , :pixel,
+			          :style, :nested,
+			          :row, 4, :col, 1,
+			          :default_row_alignment,:centre,
+			          :default_col_alignment,:left)
+
+	rc_dataset.bottom_spacing<< 8
+	rc_dataset.top_spacing<< 15
+	rc_dataset.right_spacing<< 8
+
+	#.items[:lb_dataset] << label_item.new(rc_dataset,_self.message(:dataset_orig),:model,_self,:row,1,:col,1)
+	.items[:dataset_orig] << text_choice_item.new( rc_dataset,_self.message(:dataset_orig),
+							     :items,.valid_export_datasets,
+							     :row, 1, :col, 1,
+							     :model, _self,
+							     :balloon_help_id, :dataset_orig_tooltip,
+							     :change_selector,:change_dataset|()|,
+						             :width,180)
+
+	#label_item.new(rc_dataset,  " "*55,:row, 1, :col, 3)
+	.items[:bt_advanced_config]  << button_item.new(rc_dataset,
+					      _self.message(:advanced_config),
+					      _self, :|open_config_dialog_to_modify()|, 
+   			                      :row, 2, :col, 1,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+
+	#label_item.new(rc_dataset,  " "*10,:row, 2, :col, 3)
+	.items[:bt_new_config]  << button_item.new(rc_dataset,
+					      _self.message(:new_config),
+					      _self, :|open_config_dialog_to_create()|, 
+   			                      :row, 2, :col, 2,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+
+	
+	# Botones
+	rc_botones << rowcol.new( rc_componentes, 1,4, :pixel,
+				  :style, :nested,
+				  :row, 8, :col, 1,
+				  :default_row_alignment, :centre)
+
+	rc_botones.top_spacing<< 8
+	rc_botones.bottom_spacing<< 4
+
+	.items[:bt_export]  << button_item.new(rc_botones,_self.message(:export),
+					      _self, :|export()|, 
+   			                      :row, 1, :col, 1,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+
+	.items[:bt_interrupt]  << button_item.new(rc_botones,_self.message(:interrupt),
+					      _self, :|interrupt()|, 
+   			                      :row, 1, :col, 2,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+	
+	.items[:bt_exit]  << button_item.new(rc_botones,_self.message(:exit),
+					      _self, :|exit()|, 
+   			                      :row, 1, :col, 3,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+	_self.initialize_controls()	
+	_super.build_gui(a_frame)
+	
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.get_format_text_label(id_message, min_size)
+	##
+	## Devuelve el mensaje ID_MESSAGE con un tamaño minimo MIN_SIZE
+	## rellenando con espacios al final si es necesario
+
+	_local a_message << _self.message(id_message)
+
+	_if (tam << a_message.size) < min_size _then
+		a_message << a_message + "".new_fill_with(min_size-tam,% )
+	_endif
+
+	_return a_message
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.initialize_controls()
+	##
+	## Inicializa los controles del dialogo
+	##
+
+	_self.load_default_values()
+
+	# Cambiar estado de los controles
+	_self.update_dialog_status()
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_framework.load_default_values()
+	##
+	## Recupera los valores de configuración por defecto y los
+	## carga en el dialogo
+	## (almacena dicha configuracion como configuración actual)
+
+	_local default_configuration << _self.get_default_configuration_values()
+	_self.set_configuration_values(default_configuration)
+	.items[:file_xml_loaded].value <<_self.get_default_file_full_path()
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.update_controls_by_configuration()
+	##
+	## Actualiza los valores de los controles con la configuración actual(.current_configuration)
+	## si existe
+
+	_local export_parameters
+	
+	_if .current_configuration _is _unset _orif
+	    (export_parameters << .current_configuration[:export_parameters]) _is _unset 
+	_then _return _endif
+
+	# Actualizar controles
+	_for a_parameter,a_value _over export_parameters.fast_keys_and_elements()
+	_loop
+	#	_if a_value _is _unset _then _continue _endif
+		
+		_if a_parameter _is :destination_path _then
+			# ruta destino de los ficheros de exportación
+			_self.update_control_ouput_directory(a_value)
+		_elif a_parameter _is :projection _then
+			# sistema de coordenadas
+			_self.update_control_system_coordinate_value(a_value)
+		_elif a_parameter _is :units _then
+			# unidades
+			_self.update_control_unit_value(a_value)
+		_elif a_parameter _is :bound_limit _then
+			# limites de la zona a exportar
+			_self.update_control_bound_limit(a_value)
+		_elif a_parameter _is :geometry _then
+			# geometrias de los limites
+			_self.update_control_geometry(a_value)
+		_elif a_parameter _is :dataset _then
+			# dataset de exportacion
+			_self.update_control_dataset(a_value)
+		_endif 
+	_endloop 
+	
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.update_control_ouput_directory(a_directory)
+	##
+	## Asigna el valor A_DIRECTORY al control que muestra la ruta
+	## de salida de la extracción.
+	##
+
+	_if a_directory _is _unset _then _return _endif 
+	.items[:file_name].value << a_directory.write_string
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.update_control_system_coordinate_value(a_system_coords_name)
+	##
+	## Asigna el valor de sistema de coordenadas A_SYSTEM_COORDS_NAME (es un
+	## string con el nombre) al control que muestra el listado.
+	##
+
+	_if a_system_coords_name _is _unset _then _return _endif
+	_if .list_coordinates_system.includes_key?(a_system_coords_name) _then
+		.items[:ch_coords].value << .list_coordinates_system[a_system_coords_name]
+	_endif
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.update_control_unit_value(a_unit_name)
+	##
+	## Asigna las unidades A_UNIT_NAME (es un
+	## string con el nombre) al control que muestra el listado
+	##
+
+	_if a_unit_name _is _unset _then _return _endif
+	
+	_if .list_units.includes_key?(a_unit_name) _then
+		.items[:ch_units].value << .list_units[a_unit_name]
+	_endif
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.update_control_bound_limit(a_bound_limit)
+	##
+	## Asigna un valor al control que muestra los tipos de area.El
+	## valor se construye a partir del
+	## parámetro A_BOUND_LIMIT, cuyos valores válidos son (window,trail) 
+	##
+
+	_if a_bound_limit _is _unset _then _return _endif
+
+	# "by_"+a_bound_limit + "_bounds()"
+	_local bound_value << (_self.add_texts_bound_limit_method[:prefix] +
+			       a_bound_limit +
+			       _self.add_texts_bound_limit_method[:sufix]).as_symbol()
+
+	_if _self.is_valid_control_value?(bound_value,.items[:bounds_source_chooser]) _then 
+		.items[:bounds_source_chooser].value << bound_value
+	_endif 
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.is_valid_control_value?(a_value,a_control)
+	##
+	## Comprueba si el valor A_VALUE es un valor valido para el
+	## control A_CONTROL (el control ha de ser algun tipo  de lista
+	## de seleccion --> radio_group_item,text_group_item,...)
+	##
+
+	_local is_valid?
+	_for a_valid_val _over a_control.values_and_representations()
+	_loop
+		_if (is_valid? << (a_valid_val _is a_value))  _then
+			_leave
+		_endif 
+	_endloop
+
+	_return is_valid?.default(_false )
+_endmethod
+$ 
+_pragma(classify_level=restricted, topic={ib_export}) 
+_method ib_export_shape_framework.update_control_geometry(a_geom_limit)
+	##
+	## Asigna el valor A_GEOM_LIMIT al control que indica el tipo de recorte en
+	## los limites del area de extraccion. Los valores validos son 
+	## (:overlapping,:inside)
+
+	_if a_geom_limit _is _unset _then _return _endif	
+
+	a_geom_limit << a_geom_limit.as_symbol()
+	_if _self.is_valid_control_value?(a_geom_limit,.items[:overlapping_or_inside]) _then 
+		.items[:overlapping_or_inside].value << a_geom_limit
+	_endif 
+	
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export}) 
+_method ib_export_shape_framework.update_control_dataset(a_dataset_name)
+	##
+	## Asigna el valor A_DATASET_NAME al control que muestra el
+	## listado de datasets exportables
+	##
+
+	_if a_dataset_name _is _unset _then _return _endif	
+
+	a_dataset_name << a_dataset_name.lowercase.as_symbol()
+	.items[:dataset_orig].value << a_dataset_name 
+	
+_endmethod
+$
+################################################################################################################################
+##
+## METODOS PARA RECUPERAR LOS SISTEMAS DE COORDENADAS Y UNIDADES
+##
+################################################################################################################################
+
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.change_projection()
+	##
+	##
+	##
+
+	old_value << .items[:ch_units].value
+	.items[:ch_units].items << _self.unit_formats_for_selected_coord_sys()
+
+	## Mantener la seleccion si sigue estando en la lista
+	_self.update_control_unit_value(old_value)
+	
+_endmethod 
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.get_coordinate_system_from_list(a_description_index)
+	##
+	## Devuelve el sistema de coordenadas de la lista .list_coordinates_system
+	## cuyo indice es A_DESCRIPTION_INDEX (nombre del sistema de
+	## coordenadas , por ejemplo U.T.M. 29 ....)
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.length_unit_formats_for_list(unit_formats)
+	##
+	## Returns the linear unit formats for coordinate values
+	##
+
+	indexed_list << equality_hash_table.new()
+	
+
+	_for a_unit_format _over unit_formats.fast_elements()
+	_loop
+		indexed_list[a_unit_format.perform(_self.index_units)] << a_unit_format		
+	_endloop
+
+	.list_units << indexed_list
+	_return unit_formats
+
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.unit_formats_for_selected_coord_sys()
+	##
+	## Devuelve las unidades validas para el sistema de coordenadas seleccionado
+	## de no existir ninguno, devuelve las unidades validas para el sistema
+	## de coordenadas de la vista actual
+	##
+
+	_if (current_sel_coord_sys << .items[:ch_coords].value) _is _unset _then
+		#units <<  _self.current_map_view.length_display_formats()
+		unit_name << _self.current_map_view.current_display_coordinate_system.unit_name
+	_else
+		unit_name << current_sel_coord_sys.unit_name		
+	_endif
+
+	units << unit_manager.unit(unit_name).unit_dimensionality.units
+	units << _self.length_unit_formats_for_list(units)
+
+	_return units
+
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.projection_systems_for_list()
+	##
+	## Returns the list of coordinate system 
+	## List also have option for setting "no_projection".
+	##
+
+	coord_rope << rope.new()
+	indexed_list << equality_hash_table.new()
+	
+	_if (mm <<  _self.map_manager ) _isnt _unset 
+	_then
+		p <<  mm.no_projection_list 
+		coord_rope.add_first( p[1])
+	_endif
+
+	_if _self.current_map.labelled? _is _true 
+	_then
+		proj << _self.application.projections()
+
+		_for a_proj _over proj.fast_elements()
+		_loop
+			indexed_list[a_proj.perform(_self.index_coordinates_system)] << a_proj
+			coord_rope.add(a_proj)
+		_endloop
+	_endif
+	_if coord_rope.size <= 1 _andif
+	    _not coord_rope.includes?( _self.current_view_coordinate_system )
+	_then
+		coord_rope.add(_self.current_view_coordinate_system)
+	_endif
+
+	.list_coordinates_system << indexed_list
+	>> coord_rope.as_simple_vector()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.coordinate_systems_for_list()
+	##
+	## Returns the list of coordinate system 
+	## List also have option for setting "no_projection".
+	##
+
+	coord_rope << rope.new()
+	indexed_list << equality_hash_table.new()
+
+	_if .valid_export_datasets _isnt _unset _andif
+	    .valid_export_datasets.size > 0 _then 
+
+		_if (control_dt << .items[:dataset_orig]) _is _unset _orif
+		    (dt_name << control_dt.value) _is _unset 
+		_then
+			# si no hay ningun dataset seleccionado coger el primer dataset valido
+			dt_name << .valid_export_datasets.an_element()[1].as_symbol()
+		_endif
+		
+		dt << gis_program_manager.cached_dataset(dt_name)
+		t_coord << dt.collections[:sw_gis!coordinate_system]
+
+		_for a_coord _over t_coord.fast_elements()
+		_loop
+			_if _not _self.is_valid_shape_coords_sys?(a_coord) _then _continue _endif
+			coord_rope.add_last(a_coord)
+			indexed_list[a_coord.external_cs_name] << a_coord
+		_endloop
+	_endif 
+	
+
+	.list_coordinates_system << indexed_list
+	>> coord_rope.as_simple_vector()
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.change_dataset()
+	##
+	##
+	##
+
+	old_value << .items[:ch_coords].value
+	.items[:ch_coords].items << _self.coordinate_systems_for_list()
+
+	## Mantener la seleccion si sigue estando en la lista
+	#_self.update_control_unit_value(old_value)
+	
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.is_valid_shape_coords_sys?(a_coord_sys)
+	##
+	## Los sistemas de coordenadas de salida han de ser EPSG
+	##
+	_return (a_coord_sys.name.index_of_seq("EPSG") _isnt _unset)
+_endmethod 
+################################################################################################################################
+##
+## METODOS BOTONES
+##
+################################################################################################################################
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.export()
+	##
+	## Ejecuta la exportación a SHAPE en segundo plano
+
+	_if (export_config << .current_configuration.deep_copy()) _is _unset _then
+		_self.show_message(_self.message(:err_sin_configuracion))
+		_return
+	_endif
+	
+	_if .engine _is _unset _then
+		.engine << _self.create_new_engine()
+		.engine.add_dependent( _self, :run_status )
+		.engine.add_dependent( _self, :result_message)
+	_endif
+
+	# Recuperar valores de los controles del dialogo
+	export_config[:export_parameters] << _self.get_current_parameters_values()
+	# Limpiar resultados de la ultima exportacion
+	_self.clear_export_results()
+
+	#Exportar 
+	.engine.start_export(export_config)
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.clear_export_results()
+	##
+	## Borrar la información dela ultima ejecución, si existe
+	##
+
+	.result_message << _unset
+	.run_status << _unset 
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.interrupt()
+	##
+	## Detiene el proceso de exportación
+	_if .engine _isnt _unset _then 
+		.engine.cancel_export()
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.exit()
+	##
+	## Cierra el dialogo
+	_self.close()
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.browse()
+	##
+	## Abre un explorador para indicar una ruta dónde almacenar los ficheros
+	## resultado de la exportación
+
+	_if (fd << _self.get_dialog(:path_export_shapes)) _is _unset
+	_then
+		fd << file_dialog.new( _self, :update_control_ouput_directory|()|, _unset ,
+		    :title,_self.message(:path_export_shapes),
+			  :operation,:select_directory)
+	_endif
+	
+	fd.activate()
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.save_xml()
+	##
+	## Abre un explorador para determinar la  ruta dónde almacenar
+	## un fichero XML con la configuración actual de exportación
+	
+	_if (fd << _self.get_dialog(:save_xml_config_export_file)) _is _unset
+	_then
+		fd << file_dialog.new(_self,:|save_xml_config_file()|,_unset,
+				      :operation,:save,
+				      :title,_self.message(:save_xml_config_file),
+				      :directory,_self.get_default_save_path())
+	_endif
+
+	fd.activate()
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.save_correspondences_xml(framework_correspondences)
+	##
+	## Abre un explorador para determinar la  ruta dónde almacenar
+	## un fichero XML con la configuración actual de exportación
+	
+	_if (fd << _self.get_dialog(:save_xml_config_export_file)) _is _unset
+	_then
+		fd << file_dialog.new(framework_correspondences,:|save_xml_correspondences_file()|,_unset,
+				      :operation,:save,
+				      :title,_self.message(:save_xml_config_file),
+				      :directory,_self.get_default_save_path())
+	_endif
+
+	fd.activate()
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.load_xml()
+	##
+	## Cargar XML, abre explorador
+
+	_if (fd << _self.get_dialog(:load_xml_config_export_file)) _is _unset
+	_then
+		fd << file_dialog.new(_self,:|load_xml_config_file()|,_unset,
+				      :operation,:open,
+				      :filter,{_self.message(:xml_files),_self.message(:filter_xml_files)},
+				      :title,_self.message(:sel_xml_config_file),
+				      :directory,_self.get_default_load_path())
+	_endif
+
+	fd.activate()
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.generate_xml_all()
+	##
+	## Genera un XML con la configuracion de todos las tablas del
+	## dataset seleccionado, abre explorador
+
+	_if (fd << _self.get_dialog(:generate_all_xml_config_file)) _is _unset
+	_then
+			fd << file_dialog.new(_self,:|generate_all_xml_config_file()|,_unset,
+				      :operation,:save,
+				      :title,_self.message(:generate_xml_config_all),
+				      :directory,_self.get_default_save_path())
+	
+	_endif
+
+	fd.activate()
+_endmethod
+$
+################################################################################################################################
+##
+## METODOS PARA LEER Y GUARDAR XML DE CONFIGURACIÓN
+##
+################################################################################################################################
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.get_xml_engine()
+	##
+	## Devuelve el engine encargado de leer/guardar los XML de
+	## configuración de la exportación
+
+	_if .xml_config_engine _is _unset _then
+		.xml_config_engine << _self.create_new_xml_engine()
+	_endif
+	
+	_return .xml_config_engine
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.create_new_xml_engine()
+	##
+	## Crea un XML engine con los valores del fichero de
+	## configuración por defecto
+
+	_return ib_export_shape_xml_correspondence.new(:config_export_shape,_self ,
+						       :default_file_full_path,_self.get_default_file_full_path())
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.get_default_load_path()
+	##
+	## Devuelve la ruta por defecto desde donde cargar los XML de configuración.
+	##
+	_return _self.get_path(:load)
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.get_default_save_path()
+	##
+	## Devuelve la ruta por defecto donde guardar los XML de configuración.
+	##
+	_return _self.get_path(:save)
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.get_path(save_or_load)
+	##
+	## Devuelve la ruta por defecto desde donde cargar los XML de configuración.
+	##
+
+	_if (_not .paths.includes_key?(save_or_load)) _orif
+	    ((path << .paths[save_or_load]) _is _unset) _then
+		 id << ("default_xml_" + save_or_load + "_path").as_symbol()
+		.paths[save_or_load] << _self.get_path_in_property(id)		 
+	_endif
+
+	_return .paths[save_or_load]
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.get_default_file_full_path()
+	##
+	## Devuelve la ruta completa del XML de configuración por defecto.
+	##
+
+	_if (_not .paths.includes_key?(:file_full)) _orif
+	    ((path << .paths[:file_full]) _is _unset) _then
+		_local default_file_name << _self.default_xml_config_export_file_name
+		_local default_file_directory << _self.get_path_in_property(:default_xml_config_export_file_path)
+		.paths[:file_full] << system.pathname_from_components(default_file_name,default_file_directory)
+		 
+	_endif
+
+	_return .paths[:file_full]
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.get_path_in_property(a_property)
+	##
+	## Devuelve la ruta almacenada en la property A_PROPERTY.
+	## Si no hay definido un directorio se utiliza la carpeta de
+	## resources del modulo
+	##
+	_local default_full_path
+	_local default_file_directory << _self.perform(a_property)
+	
+	_if default_file_directory = "" _orif default_file_directory _is _unset _then
+	    default_file_directory << sw_module_manager.module(_self.resource_module_name).resource_list_for(:data).an_element()	
+	_endif
+
+	_return default_file_directory 
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_method ib_export_shape_framework.load_xml_config_file(a_path_file)
+	##
+	## Carga los valores de configuración leidos del fichero A_PATH_FILE
+	## en el dialogo de exportación
+	
+	
+	_if a_path_file _is _unset _then _return _endif
+	
+	file_configuration << _self.get_configuration_values_from_file(a_path_file)
+	_self.set_configuration_values(file_configuration)
+	.items[:file_xml_loaded].value << a_path_file
+_endmethod
+$
+_pragma(classify_level=basic)
+_method ib_export_shape_framework.save_xml_config_file(a_path_file)
+	##
+	## Guardar los valores de configuración del diálogo en el fichero
+	## A_PATH_FILE.
+	##
+
+	_local xml_engine, file_configuration
+			
+	_try _with cond
+	        _self.save_xml_file(a_path_file)
+		# guardar el nombre del a_path_file como fichero actual cargado
+		.items[:file_xml_loaded].value << a_path_file
+	_when error
+		write(cond)
+		_self.show_message(cond.report_contents_string)
+	_endtry
+	
+_endmethod
+$
+_pragma(classify_level=basic)
+_method ib_export_shape_framework.save_xml_correspondences_file(a_path_file,dataset_name,new_correspondences)
+	##
+	## Guardar los valores de configuración del diálogo en el fichero
+	## A_PATH_FILE.Y las correspondencias NEW_CORRESPONDENCES del
+	## dataset DATASET_NAME
+	## Devuelve TRUE si se realiza correctamente FALSE  en caso contrario
+	##
+
+	_local ok?
+			
+	_try _with cond
+	       ok? << _self.save_xml_file(a_path_file,dataset_name,new_correspondences)
+	_when error
+		_self.show_message(cond.report_contents_string)
+	_endtry
+
+	_return ok?.default(_false )
+_endmethod
+$
+_pragma(classify_level=basic)
+_method ib_export_shape_framework.save_xml_file(a_path_file, _optional dataset_name,new_correspondences)
+	##
+	## Guardar los valores de configuración del diálogo en el fichero
+	## A_PATH_FILE.Y las correspondencias NEW_CORRESPONDENCES del
+	## dataset DATASET_NAME si
+	## tienen valor si no almacena las del diálogo.
+	##
+
+	_local xml_engine, file_configuration
+	
+	export_configuration << equality_hash_table.new()
+	export_configuration[:export_parameters] << _self.get_xml_parameters_values_to_save()
+
+	_if new_correspondences _isnt _unset _then
+	    export_configuration << export_configuration.deep_copy()
+	    _if _not export_configuration.includes_key?(:correspondences) _then
+		    export_configuration[:correspondences] << equality_hash_table.new()
+            _endif 
+	    export_configuration[:correspondences][dataset_name] << new_correspondences
+	_endif
+	
+	xml_engine << _self.get_xml_engine()
+	xml_engine.write_export_configuration(a_path_file,export_configuration)
+
+	_return _true 
+	
+_endmethod
+$
+_pragma(classify_level=basic)
+_method ib_export_shape_framework.generate_all_xml_config_file(a_path_file)
+	##
+	## Genera un XML con la configuracion de todas las tablas del
+	## dataset seleccionado en la ruta A_PATH_FILE
+	##
+
+	_local xml_engine, file_configuration
+			
+	_try _with cond
+	        export_configuration << equality_hash_table.new()
+		export_configuration[:export_parameters] << _self.get_xml_parameters_values_to_save()
+		export_configuration[:correspondences] << _self.generate_all_correspondences(.items[:dataset_orig].value.as_symbol())
+		
+		xml_engine << _self.get_xml_engine()
+		xml_engine.write_export_configuration(a_path_file,export_configuration)
+	_when error
+		write(cond)
+		_self.show_message(cond.report_contents_string)
+	_endtry
+	
+_endmethod
+$
+_pragma(classify_level=restricted)
+_private _method ib_export_shape_framework.generate_all_correspondences(a_dataset_name)
+	##
+	## Genera la estructura de correspondencias para todas las
+	## tablas del dataset de nombre A_DATASET_NAME
+	##
+
+	dt << gis_program_manager.cached_dataset(a_dataset_name)
+	all_dt_structs << equality_hash_table.new()
+	tables_structs << equality_hash_table.new()
+	# Valor por defecto
+	export_empties << ib_export_shape_xml_correspondence.default_export_empties.write_string
+
+	_for a_collection _over dt.collections.fast_elements()
+	_loop
+		_if _not _self.is_valid_table_name?(a_collection.name) _then _continue _endif
+			
+		attributes_generated? << _false
+		attributes_struct << _unset	
+		geoms_fields << a_collection.visible_geometry_fields.all_elements_not_satisfying(
+						predicate_or.new(predicate.eq(:geom_type,:raster),
+							 predicate.eq(:geom_type,:dimension) ))
+		
+		_if geoms_fields.size =0 _then _continue _endif
+
+			# Nodo para la geometria
+			geoms_structs << equality_hash_table.new()
+			_for a_geom _over geoms_fields.fast_elements()
+			_loop
+				_if _not attributes_generated? _then
+					corrp_structs << equality_hash_table.new()
+					corrp_structs[:shape_entity] << ""
+					corrp_structs[:export_empties] << export_empties
+
+					#Crear nodo de la geometria
+					_for a_fld_name _over a_collection.all_field_names.fast_elements()
+					_loop
+						_if a_fld_name.index_of_seq("!") _isnt _unset _orif
+						    a_fld_name.index_of_seq("meatball") _isnt _unset _orif
+						    a_fld_name.index_of_seq("rwo_id") _isnt _unset 
+						_then _continue _endif
+
+						a_fld << a_collection.field(a_fld_name)
+
+						_if a_fld.is_join? _orif a_fld.is_geometry? _then _continue _endif
+
+						a_fld_type << a_fld.type
+						_if a_fld_type.name _is :rwo_id _then
+							_continue 
+						_elif a_fld_type.class.is_kind_of?(_true ) _then
+							atb_type << :boolean
+						_elif (a_enum_type << a_fld_type.enumerator) _isnt _unset _then
+							# Es un enumerador
+							_if a_enum_type.type _is :mapped_class _then
+								atb_type << :char16_vector #a_enum_type.domain_class.as_charvec().class_name
+							_else
+								# :mapped
+								atb_type << a_enum_type.sorted_values.an_element().class_name
+							_endif 
+						_else 
+							atb_type << a_fld_type.class.class_name
+						_endif
+
+						atb_struct << property_list.new_with("sw_field",a_fld.name.write_string,
+								             "type",atb_type,
+									     "shape_field","",
+									     "sw_unit","",
+                                                                             "sh_unit","", 
+								             "format_method","")
+						_if attributes_struct _is _unset _then
+							attributes_struct << rope.new()
+						_endif
+					
+						attributes_struct.add_last(atb_struct)
+					_endloop
+
+					# Anyadir lista de identificadores
+					_if attributes_struct _is _unset _then
+						attributes_struct << rope.new()
+					_endif
+					atb_struct << _self.xml_export_field_id
+					
+					attributes_struct.add_last(atb_struct)
+					#_if attributes_struct _isnt _unset _then
+					corrp_structs[:fields_correspondences] << attributes_struct
+					#_endif
+					attributes_generated? << _true
+				_endif
+
+				geoms_structs[a_geom.name.write_string] << corrp_structs.deep_copy()				
+
+				_if a_geom.geom_type _is :text _then
+					fields_corr_text << geoms_structs[a_geom.name.write_string][:fields_correspondences].deep_copy()
+					fields_corr_text.add_all_last(_self.get_info_position_text(a_geom))
+					geoms_structs[a_geom.name.write_string][:fields_correspondences] << fields_corr_text
+				_endif 				 
+			_endloop
+		tables_structs[a_collection.name] << geoms_structs
+	_endloop 
+
+	all_dt_structs[dt.name] << tables_structs
+
+	_return all_dt_structs
+_endmethod
+$
+_pragma(classify_level=restricted)
+_private _method ib_export_shape_framework.get_info_position_text(a_geom_text, _optional a_scale)
+	##
+	##
+	##
+
+	unidades_sistema << :mm.write_string#sw:float.unit_system.internal_units.name.write_string
+	#Orientation
+	fld_geom_name << a_geom_text.name.write_string
+	fld_orientation << fld_geom_name+".orientation"
+	
+	atb_struct_or << property_list.new_with("sw_field",fld_orientation,
+					        "type","float",
+					        "shape_field","orientation",
+				                "format_method","radians_to_degrees")
+	#Desplazamiento horizontal
+	fld_shift_h << fld_geom_name+".shift_text_from_position_h()"
+	atb_struct_h << property_list.new_with("sw_field",fld_shift_h,
+					        "type","float",
+					        "shape_field","desplaz_h",
+				                "sw_unit",unidades_sistema,
+				                "sh_unit","m")
+	#Desplazamiento vertical
+	fld_shift_v <<fld_geom_name+".shift_text_from_position_v()"
+	atb_struct_v << property_list.new_with("sw_field",fld_shift_v,
+					        "type","float",
+					        "shape_field","desplaz_v",
+				                "sw_unit",unidades_sistema,
+				                "sh_unit","m")
+
+
+	attbs_texto << {atb_struct_or,atb_struct_h,atb_struct_v}
+	
+	_return attbs_texto
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_framework.is_valid_table_name?(a_table_name)
+	##
+	## Indica si el nombre de tabla A_TABLE_NAME corresponde con
+	## una tabla configurable
+	##
+
+	_local ok?
+
+	a_table_name << a_table_name.default("").write_string
+	
+	_for a_wrong_text _over _self.ignored_text_in_tables.fast_elements()
+	_loop
+		ok? << a_table_name.index_of_seq(a_wrong_text) _is _unset
+		_if _not ok? _then _leave _endif 
+	_endloop
+	
+	_return ok?.default(_true) 
+_endmethod
+$
+_pragma(classify_level=basic)
+_method ib_export_shape_framework.set_configuration_values(config_values)
+	##
+	## Carga en el dialogo los valores CONFIG_VALUES
+	## (y almacena dicha configuracion como configuración actual)
+	##
+
+	_if config_values _is _unset _then _return _endif 
+	.current_configuration << config_values
+	_self.update_controls_by_configuration()
+_endmethod
+$
+_pragma(classify_level=basic)
+_method ib_export_shape_framework.get_default_configuration_values()
+	##
+	## Recupera los valores de configuración por defecto
+	## 
+
+	_local default_configuration << _self.get_configuration_values_from_file()
+	_return default_configuration
+_endmethod
+$
+_pragma(classify_level=basic)
+_method ib_export_shape_framework.get_configuration_values_from_file(_optional a_path_file)
+	##
+	## Recupera los valores de configuración del fichero A_PATH_FILE
+	## Si A_PATH_FILE no tiene valor se recupera la configuración
+	## del fichero por defecto
+	## 
+
+	_local xml_engine, file_configuration
+			
+	_try _with cond
+		xml_engine << _self.get_xml_engine()
+		_if a_path_file _is _unset _then
+			# recuperar configuración por defecto
+			file_configuration << xml_engine.get_default_export_configuration()
+		_else
+			# recuperar configuracion del fichero
+			file_configuration << xml_engine.get_export_configuration_from_file(a_path_file)
+		_endif 
+	_when error
+		write(cond)		
+		_self.show_message(cond.report_contents_string)
+	_endtry
+
+	_return file_configuration
+_endmethod
+$
+_pragma(classify_level=basic)
+_method ib_export_shape_framework.get_datasets_exportables()
+	##
+	## Devuelve los datasets que se pueden exportar
+	_local datasets
+
+	# Leer datasets de la propiedad
+	_if (prop_datasets_names << _self.valid_export_datasets) _is _unset _orif
+	    (datasets_names << prop_datasets_names.split_by(";")).size = 0 
+	_then _return _endif
+
+	#Poner en mayusculas los nombres
+	num_valid_dt << datasets_names.size
+	_for i _over 1.upto(datasets_names.size)
+	_loop
+		a_valid_dt << datasets_names[i]
+		datasets_names[i] << a_valid_dt.uppercase		
+	_endloop 
+	
+	_for un_dataset _over gis_program_manager.cached_datasets()
+	_loop
+		a_dt_name << un_dataset.name
+		_if datasets_names.includes_by_equality?(a_dt_name.write_string.uppercase)
+		_then
+			_local a_dat_val << {a_dt_name,un_dataset.external_name}
+			_if datasets _is _unset _then
+				datasets << simple_vector.new(1)
+				datasets[1] << a_dat_val
+			_else
+				datasets << datasets.new_appending(a_dat_val)
+			_endif 
+		_endif
+	_endloop
+
+	_return datasets
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.create_new_engine()
+	##
+	## Crear una instancia de la clase
+
+	
+	eng << ib_export_shape_engine.new(_self )
+	_return eng
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.process_framework_data( an_xml_element )
+
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.note_change( who, aspect, _gather data )
+        ##
+        ## Responds to changes from thread_engine
+        ##
+
+        _if who _is .engine
+        _then
+                _if aspect _is :run_status
+                _then
+                        .run_status << data[1]
+                        _self.update_dialog_status()
+
+		_elif aspect _is :result_message _then
+			# Almacenar mensaje informativo de resultados
+			.result_message << data[1]
+                _endif
+        _endif
+
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.update_dialog_status()
+	##
+	##
+ 
+	_local is_running? << .run_status _is :running
+
+	# Cambiar estado de los controles
+	_self.change_controls_state(is_running?)
+
+	_if (_not is_running?) _andif
+	    (.result_message _isnt _unset )_then
+		# mostrar mensaje de resultados, si existe
+		# y borrarlo
+		_self.show_message(.result_message)
+		.result_message << _unset 
+	_endif
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.change_controls_state(is_running?)
+	##
+	## Modifica los controles dependiendo del estado de ejecución
+	## IS_RUNNING? (boolean)
+
+	_if is_running? _is _unset _then _return _endif  
+
+	_for a_key, a_control _over .items.fast_keys_and_elements()
+	_loop
+		_if _self.active_controls_during_exec.includes_by_equality?(a_key) _then
+			a_control.enabled? << is_running?
+		_else
+			a_control.enabled? << _not is_running?
+		_endif 
+	_endloop 
+	
+_endmethod
+$
+################################################################################################################################
+##
+## METODOS PARA OBTENER DATOS A EXPORTAR
+##
+################################################################################################################################
+
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.get_current_parameters_values()
+	##
+	## Recoge los valores de los parametros de exportación,
+	## seleccionados en los controles del dialogo
+
+	_local export_parameters << equality_hash_table.new()
+
+	export_parameters[:destination_path] << .items[:file_name].value
+	export_parameters[:destination_projection] << .items[:ch_coords].value
+	export_parameters[:destination_units] << .items[:ch_units].value
+	export_parameters[:bound_limit] << .items[:bounds_source_chooser].value
+	export_parameters[:geometry] << .items[:overlapping_or_inside].value
+	export_parameters[:dataset] << .items[:dataset_orig].value
+
+	_return export_parameters
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.get_xml_parameters_values_to_save()
+	##
+	## Recupera los valores de los parametros de exportación,
+	## seleccionados en los controles de dialogo, y transforma el formato
+	## para poder guardarlos en el XML
+	##
+	_local export_parameters << _self.get_current_parameters_values()
+
+	export_parameters[:destination_projection] << export_parameters[:destination_projection].perform(_self.index_coordinates_system)
+	export_parameters[:destination_units] << export_parameters[:destination_units].perform(_self.index_units)
+
+	
+	bound_limit << export_parameters[:bound_limit].write_string
+	start << _self.add_texts_bound_limit_method[:prefix].size + 1
+	length << bound_limit.index_of_seq(_self.add_texts_bound_limit_method[:sufix]) - start
+	
+	export_parameters[:bound_limit] << bound_limit.subseq(start,length)
+
+	_return export_parameters
+_endmethod
+$
+################################################################################################################################
+##
+## METODOS PARA OBTENER EL BOUND
+##
+################################################################################################################################
+
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.by_trail_bounds()
+	##
+	## Devuelve el bound definido por el trazo actual
+	##
+	_if (a_bound << _self.current_map.trail.bounds ) _isnt _unset
+	_then
+		_if a_bound.empty? _then
+			condition.raise(:user_error, :string, _self.message(:invalid_trail_bounds_for_export))
+		_else
+			_return a_bound
+		_endif
+	_else
+		condition.raise(:user_error, :string, _self.message(:no_trail))
+	_endif 
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.by_window_bounds()
+	##
+	## Devuelve el bound definido por la visata actual
+	##
+
+	_return _self.current_map_view.current_view_bounds
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.by_no_bounds()
+	##
+	## Devuelve el bound definido por la visata actual
+	##
+
+	_return _unset 
+_endmethod 
+$
+################################################################################################################################
+##
+## DIALOGO DE CONFIGURACIONES AVANZADAS (MAPEO)
+##
+################################################################################################################################
+
+
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.open_config_dialog_to_create()
+	##
+	## Abrir dialogo para configurar para crear un nuevo mapeo entre objetos Sw y SHAPE
+	## para el dataset actualmente seleccionado
+	##
+
+	create_new_config? << _true 
+	dlg << _self.open_advanced_config_dialog(create_new_config?)
+	
+	_return dlg
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.open_config_dialog_to_modify()	
+	##
+	## Abrir dialogo para modificar el mapeo entre objetos Sw y SHAPE
+	## para el dataset actualmente seleccionado
+	##
+
+	create_new_config? << _false
+	dlg << _self.open_advanced_config_dialog(create_new_config?)
+	
+	_return dlg
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_framework.open_advanced_config_dialog(create_new_config?)
+	##
+	## Abrir dialogo para modificar/crear(segun el valor de CREATE_NEW_CONFIG?)
+	## el mapeo entre objetos Sw y SHAPE
+	## para el dataset actualmente seleccionado
+	##
+
+	dlg << _self.get_advanced_config_dialog(create_new_config?)
+
+	_if dlg _is _unset _then _return _endif
+
+	
+				
+	_if _self.top_frame _isnt _unset _then 
+		dlg.activate_relative_to(_self.top_frame, dlg.title,
+				_self.top_frame)
+	_else
+		dlg.activate()
+	_endif 
+	
+	_return dlg
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.get_advanced_config_dialog(_optional create_new_config?)
+	##
+	## Devuelve el dialogo de configuracion avanzada y si aún no existe lo crea
+	## Si CREATE_NEW_CONFIG? es FALSE se
+	## cargan en el dialogo las actuales correspondencias para ser modificadas.
+	## En caso contrario se abre el dialogo vacio para crear nuevas
+	## correspondencias para el dataset seleccionado en este dialogo.
+	##
+
+	_local name << _self.id_advanced_config_dialog
+	_local dlg
+
+	_if ( dlg << _self.get_dialog( name ) ) _is _unset
+	_then
+		dlg << _self.create_new_config_dialog(create_new_config?)
+		_self.cache_dialog( name, dlg )
+	_else
+		#Inicializar valores de mapeo
+		dlg.set_config_parameters(_scatter _self.get_dataset_correspondences(create_new_config?))
+	_endif
+
+	_return dlg
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.create_new_config_dialog(create_new_config?)
+	##
+	## Crear instancia del framework. Si CREATE_NEW_CONFIG? es FALSE se
+	## cargan en el dialogo las actuales correspondencias para ser modificadas.
+	## 
+
+	_return ib_export_shape_config_framework.new( _self.id_advanced_config_dialog, _self,
+						      _scatter _self.get_dataset_correspondences(create_new_config?))
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.get_dataset_correspondences(create_new_config?)
+	##
+	## Devuelve el dataset actual y el mapeo configurado
+	## para el mismo.Si CREATE_NEW_CONFIG? es FALSE se
+	## cargan en el dialogo las actuales correspondencias para ser modificadas.
+	##
+
+	dataset_name << .items[:dataset_orig].value
+	
+
+	_if (_not create_new_config?) _andif .current_configuration _isnt _unset _andif
+	    ((c_corresp << .current_configuration[:correspondences]) _isnt _unset ) _then  
+		correspondences << c_corresp[dataset_name]
+	_endif 
+
+	_return {dataset_name,correspondences.default(equality_hash_table.new())}
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_framework.set_dataset_correspondences(dataset_name,new_correspondences)
+	##
+	## Asigna nuevas correspondencias NEW_CORRESPONDENCES para el
+	## dataset DATASET_NAME en el slot .CURRENT_CONFIGURATION
+	##
+
+	_if .current_configuration _isnt _unset _andif
+	    .current_configuration[:correspondences] _isnt _unset _then 
+	    .current_configuration[:correspondences][dataset_name] << new_correspondences
+	_endif
+_endmethod 
+$

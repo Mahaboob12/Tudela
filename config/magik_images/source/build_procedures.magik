@@ -1,0 +1,58 @@
+$
+_global startup_with_cli <<
+_proc@startup_with_cli()
+	                startup()
+			
+			#Start CLI
+			_return _true
+		_endproc
+$
+_global tudela_pre_build_proc <<
+_proc @tudela_pre_build_proc(mi)
+	##
+	##
+	##
+
+	smallworld_product.clear_application_definitions()
+	
+	# This will ensure that a method finder file will be saved
+	# along with the image.
+	method_finder.lazy_start?
+
+
+
+	
+	_endproc
+$
+_global open_tudela_database_proc <<
+		_proc@open_tudela_database_proc(mi)
+
+			#Desactivar autorizaciones
+			smallworld_product.set_startup_option(:authorisation, :none)
+			#Desactivar login interactivo
+			smallworld_product.set_startup_option(:interactive?, _false)
+			
+			_if auth_view.alternative_control_enabled? _is _maybe 
+			_then 
+				auth_view.alternative_control_enabled? << _true
+			_endif
+
+			date_time_environ.dst_rules_name << "localtime"
+			ace_dir << mi.open_database()
+			
+			write(date_time_now())
+			write("Base de datos Aguas de Tudela abierta: ", ace_dir)
+
+			gis_program_manager.open_authorisation({ace_dir})
+			smallworld_product.set_startup_option(:authorisation, :singleuser)
+			# Para evitar que se dispare el warning
+			# alternative_control_not_initialised, se le asigna el valor _false
+			gis_program_manager.authorisation_view.alternative_control_enabled? << _false
+			#Activar login interactivo
+			smallworld_product.set_startup_option(:interactive?, _true)
+			
+			write(date_time_now())
+			write("Autorizaciones abiertas")
+			
+		_endproc
+$

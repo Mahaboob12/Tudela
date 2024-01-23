@@ -1,0 +1,96 @@
+#% text_encoding = iso8859_1
+# ************************************************************ 
+#							       
+# (c) 2005-2012 General Electric Company. All Rights Reserved. 
+#							       
+# ************************************************************ 
+_package sw
+$
+
+!global_auto_declare?! << _true
+$
+
+_block
+		_local tudela_startup_options <<
+		{
+			# :save_open_image is only applicable if we were saving a
+			# closed image and wanted it to created an open image the first
+			# time time it was started.
+			:save_open_image?, _false,
+			# :ds_environment_options can be used to specify options to be
+			# passed to ds_environment.init(), we shall set it to an empty vector
+			:ds_environment_options, {:nslots, 2000},
+			# Set the soc definition to use
+			:soc, :gis,
+			# :ace_top_alternative can specifies the alternative in the ACE
+			# used as a parent for users' alternatives.
+			:ace_top_alternative, _unset,
+			# :style_top_alternative is like :ace_top_alternative but for
+			# the style system
+			:style_top_alternative, "|",
+			# We want the application manager to start by default, so we'll
+			# set :application to unset
+			:application, _unset,
+			# We'll set the interactive option to true so the user can log in
+			:interactive?, _true
+		}
+
+
+		
+	_local image_date_stamp_proc <<
+		_proc@image_date_stamp_proc(mi)
+			# Set the image date_stamp
+			smallworld_product.sw!release_spin_date << date_time.now()
+		_endproc
+		
+
+	magik_image.register_new(
+		"tudela_closed",
+
+		:image_file_name, "tudela_closed",	
+		:package, :user,
+		:add_products, {:soms,:fme,:sw_dxf,:localisation,:sw_addon_google_maps},
+
+		
+		#		
+		#Procedure to run before loading code and after products have been added.
+		:pre_build_proc,tudela_pre_build_proc,
+		
+		:load_modules, {:swaf_dxf_application,:swaf_fme_application, :sas_soms_swaf_plugin,
+				:sas_dwg_dxf_magik_gui,:sas_raster_magik_gui, :sas_wms,
+		                :google_address_search,:swaf_address_search_gui,:streetview_addon},
+		#with redirector image in the same path
+		:save_image_dir_format,:same,
+
+		:post_build_proc, image_date_stamp_proc)
+
+
+	magik_image.register_new(
+		"tudela_open",
+
+		:image_file_name, "tudela_open",
+		:add_products, {:aguas_tudela},
+		:load_modules, {:tudela_image_open},
+		
+		:post_build_proc, image_date_stamp_proc,
+		
+		#with redirector image in the same path
+		:save_image_dir_format,:same,
+		:save_arguments,
+		{
+			:cache_pages, :calculate,
+			:join, _unset,
+			:startup_proc,startup_with_cli 
+		},
+			
+		:package, :user,
+		
+		:startup_options,
+		{ :authorisation, :singleuser,
+		  _scatter tudela_startup_options
+		},
+		:open_database_proc,open_tudela_database_proc)
+
+
+_endblock
+$

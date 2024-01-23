@@ -1,0 +1,157 @@
+$
+_pragma(classify_level=basic)
+def_slotted_exemplar(:traductor_framework,
+{
+	{:plugin, _unset,:writable},
+	{:menu_items, _unset,:writable},
+	{:sub_menus, _unset,:writable},
+	{:engine,_unset,:writable}
+
+},
+:model)
+$
+_pragma(classify_level=basic)
+_method traductor_framework.title
+
+	_return _self.message(:title)
+
+_endmethod
+$
+_pragma(classify_level=basic)
+_method traductor_framework.new(a_plugin)
+
+	>> _clone.init(a_plugin)
+
+_endmethod
+$
+_pragma(classify_level=basic)
+_method traductor_framework.init(a_plugin)
+	.plugin << a_plugin
+	.engine << traductor_engine.new(_self)
+	.sub_menus << hash_table.new()
+	>> _super.init()
+_endmethod
+$
+_pragma(classify_level=basic)
+_method traductor_framework.activate_in(a_frame)
+
+	
+	a_frame.resizable? << _true
+	
+	.menu_items << hash_table.new()
+
+	rc << rowcol.new(a_frame,4 , unset, :pixel, :style,:top_level)
+	
+	rc1 << rowcol.new(rc, 2, unset, :pixel, :style, :top_level,:default_row_alignment, :centre,:row,1,:col,1)
+
+	.menu_items[:t_catastro]            << toggle_item.new(rc1, "CATASTRO",:value,_false,:row,1,:col,1 )
+	.menu_items[:t_cartografia]           << toggle_item.new(rc1, "CARTOGRAFIA",   :value,_false,:row,1,:col,2 )
+	.menu_items[:t_mobiliario]          << toggle_item.new(rc1, "MOBILIARIO ",:value,_false,:row,2,:col,1 )
+	.menu_items[:t_tapas]               << toggle_item.new(rc1, "TAPAS",      :value,_false,:row,2,:col,2 )
+
+	#.menu_items[:t_cartografia].active? << .menu_items[:t_mobiliario].active? << .menu_items[:t_tapas].active? << _false
+
+	rc3 << rowcol.new(rc, 3, 2, :pixel, :style, :top_level,:default_row_alignment, :centre)
+	
+	.menu_items[:t_fichero]  <<  text_item.new(rc3,"",:row,1,:col,1)
+	.menu_items[:b_explorar] << button_item.new_safe(rc3, "Explorar", _self, :explorar|()|,:row,1,:col,2,:width,70)
+	
+	
+	
+	rc4 << rowcol.new(rc,3,3, :pixel, :style, :top_level,:default_row_alignment,
+			   :centre,:row,2,:col,1)
+	
+	.menu_items[:b_copiar]   << button_item.new(rc4, "Copiar", _self  ,:|copiar()|,:row,1,:col,1,:width,70)
+	.menu_items[:b_importar] << button_item.new(rc4, "Importar", _self  ,:|importar()|,:row,1,:col,2,:width,70)
+	.menu_items[:b_quit]     << button_item.new(rc4, "Salir" , _self  ,:|quit()|,:row,1,:col,3,:width,70)
+	
+_endmethod
+$
+_pragma(classify_level=basic)
+_method traductor_framework.copiar()
+	_if (.menu_items[:t_catastro].value)
+	_then
+		write("Cartografía Catastral")
+		.engine.copiar_elementos_catastro()
+	_endif
+	_if (.menu_items[:t_cartografía].value)
+	_then
+		write("Cartografia")
+	_endif
+	_if (.menu_items[:t_mobiliario].value)
+	_then
+		write("Mobiliario urbano")
+	_endif
+	_if (.menu_items[:t_tapas].value)
+	_then
+		write("Tapas")
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_method traductor_framework.importar()
+	write("Importar")
+	
+	.engine.cargar_datos_de_fichero(.menu_items[:t_fichero].value)
+_endmethod
+
+
+$
+_pragma(classify_level=basic)
+_method traductor_framework.explorar(_optional filename)
+
+
+	_self.get_filename(_self, _unset, :escribe_valor|()|, _self.message( :select_infile ))
+	
+_endmethod
+$
+_pragma(classify_level=restricted)
+_method traductor_framework.get_filename(frame, filetype, ok_method, title)
+        ##
+        ## Add a directory to the product path
+	## Open a file_dialog to find the directory
+        ##
+
+	tudela_dir << system.pathname_up(system.getenv("TUDELA_DB_DIR"),1)
+	_if  system.os_name _is :windows
+	_then
+		workdir << tudela_dir + "datos"
+
+	_endif
+
+	df1 << date_time_format.new_with_properties(:date_format_string,"#Y#m#d#k#M")
+	fecha << df1.format(date_time.now())
+	_if filetype _isnt _unset 
+	_then 
+		filename << system.host_name + %@ + filetype + fecha +".xml"
+	_endif 
+
+
+        .sub_menus[:fichero] << fd << file_dialog.new( frame,
+			       :escribe_nombre_fichero|()|,
+			       _unset,
+			       :filter, {"Txt files (*.txt)", "*.txt", "All files (*.*)", "*.*"},
+			       #:selection, filename,
+			       :title, title,
+			       :directory, workdir)
+	fd.activate()
+
+	
+	#.sub_menus[:fichero] << fs << file_selection.new(_self,
+	#				   _self.message(:select_file),
+	#				   :escribe_nombre_fichero|()|)	
+	#.sub_menus[:fichero].activate()
+
+	
+
+_endmethod
+$
+_pragma(classify_level=restricted)
+_method traductor_framework.escribe_nombre_fichero(a_name)
+
+	.menu_items[:t_fichero].value <<  a_name
+_endmethod
+
+
+

@@ -1,0 +1,14 @@
+<config>  
+     <framework_data>
+		<property name="default_xml_config_export_file_name" value="config_default_export_shape.xml"/>
+		<!--Directorios dónde se encuentra:
+                         default_xml_config_export_file_path ... el XML de configuración por defecto
+                         default_xml_save_path               ... ruta por defecto para salvar los XML
+			 default_xml_load_path               ... ruta por defecto desde dónde se cargan los XML
+                    Si no tienen ningún valor asignado se utiliza la carpeta de resources del módulo  -->
+		<property name="default_xml_config_export_file_path" value=""/>
+		<property name="default_xml_save_path" value=""/>   
+		<property name="default_xml_load_path" value=""/>   
+		<property name="valid_export_datasets" value="Cartografia;Gas_Distribution"/>
+    </framework_data>   
+</config>

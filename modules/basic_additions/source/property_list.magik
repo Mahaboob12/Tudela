@@ -1,0 +1,15 @@
+#% text_encoding = iso8859_1
+_package user
+$
+_pragma(classify_level=restricted)
+_method property_list.numero_elementos
+	##
+	##
+	num << 0
+	_for col _over _self.fast_elements()
+	_loop
+		num +<< col.size
+	_endloop
+	>> num
+_endmethod
+$

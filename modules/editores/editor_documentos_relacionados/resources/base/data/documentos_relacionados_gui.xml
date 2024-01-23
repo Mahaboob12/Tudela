@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<gui>
+	<menu name="documento_relacionado" type="popup">
+		<action name="abrir_editor_documento"/>
+		<action name="eliminar_documento"/>
+		<action name="abrir_documento"/>
+		<separator/>
+		<action name="limpiar_seleccion"/>
+		<action name="refrescar_lista"/>
+	</menu>
+	<menu name="añadir_documento_relacionado" type="popup">
+		<action name="añadir_documento"/>
+		<separator/>
+		<action name="limpiar_seleccion"/>
+		<action name="refrescar_lista"/>
+	</menu>
+	<menu name="no_selection" type="popup" role="rme_specials">
+		<action name="refrescar_lista"/>
+	</menu>
+	<menu name="item_category" type="popup">
+		<action name="clear_selection"/>
+		<action name="refresh"/>
+	</menu>
+
+	<work_area>
+		<self/>
+	</work_area>
+</gui>

@@ -1,0 +1,9 @@
+$
+_pragma(classify_level=advanced)
+_method recordset_descriptor.fields_descriptors
+	##
+	## Devuelve el slot FIELD_LIST, (nombres de los campos)
+	##
+	_return .field_list
+_endmethod 
+$

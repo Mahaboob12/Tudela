@@ -1,0 +1,114 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:cota_profundidad,{},:rwo_record)
+$
+_method cota_profundidad.profundidad_text
+	#
+	# Metodo de texto del campo texto_prof
+	#
+	_return _self.profundidad.default(0).as_decimal(2)
+_endmethod
+$
+_method cota_profundidad.cota_text
+	#
+	#  Metodo de texto del campo texto_cota
+	#
+        _return _self.cota.default(0).as_decimal(2).trim_ceros
+_endmethod
+$
+_method cota_profundidad.trazado_trigger(tipo,att_det,geom)
+	
+	# trigger de insercion del campo geometrico trazo
+
+	_if att_det _is :attach
+	_then
+		
+		(dummy,ang) << _self.trazo.sectors.last_mid_point()
+		coord << _self.trazo.sectors.last_coord
+		just << 11
+		_if ang < -90.degrees_to_radians _then
+			ang << ang + 180.degrees_to_radians
+		_elif ang > 90.degrees_to_radians _then
+			ang << ang - 180.degrees_to_radians
+		_else
+			just << 15
+		_endif
+		
+		# TEXTO COTA
+
+		txt << _self.cota.default(0).as_decimal(2).trim_ceros
+		
+		_if _self.texto_cota _isnt _unset
+		_then
+			_self.unset_geometry(:texto_cota)
+		_endif
+
+		texto_cota << _self.make_geometry(:texto_cota,coord,txt)
+		texto_cota.orientation << ang
+		texto_cota.just << just
+	
+		_if   just = 11 _then just << 51
+		_elif just = 15 _then just << 55
+		_endif
+
+		# TEXTO PROFUNDIDAD
+
+		txt << _self.profundidad.default(0).as_decimal(2)
+		
+		_if _self.texto_prof _is _unset
+		_then
+			texto << _self.unset_geometry(:texto_prof)
+		_endif
+
+		texto_prof << _self.make_geometry(:texto_prof,coord,txt)
+		texto_prof.orientation << ang
+		texto_prof.just << just
+	_endif 
+_endmethod
+$	
+_method cota_profundidad.profundidad_trigger()
+	# Cambia solo el texto de la profundidad, si es que existe
+
+	coord << _self.texto_prof.coord
+	ang  <<  _self.text_prof.orientation
+	just <<  _self.text_prof.just
+	
+	txt << _self.profundidad.default(0).as_decimal(2)
+
+	_if _self.texto_prof _isnt _unset
+	_then
+		_self.unset_geometry(:texto_prof)
+	_endif
+
+	texto_prof <<_self.make_geometry(:texto_prof,coord,txt)
+	texto_prof.orientation << ang
+	texto_prof.just << just
+	
+_endmethod
+$
+_method cota_profundidad.cota_trigger()
+	# Cambia solo el texto de la profundidad, si es que existe
+
+
+	coord << _self.texto_cota.coord
+	ang  <<  _self.text_cota.orientation
+	just <<  _self.text_cota.just
+	
+	txt << _self.cota.default(0).as_decimal(2).trim_ceros
+
+	_if _self.texto_cota _isnt _unset
+	_then
+		_self.unset_geometry(:texto_cota)
+	 
+	_endif
+	
+	texto_cota << _self.make_geometry(:texto_cota,coord,txt)
+	texto_cota.orientation << ang
+	texto_cota.just << just
+	
+_endmethod
+$

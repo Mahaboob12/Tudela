@@ -1,0 +1,27 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:etap,{},:rwo_record)
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+_method etap.contorno_trigger(tipo,att_det,geom)
+	##
+	## Inserta la posicion en el centro del area del ETAP
+	
+	_if att_det _is :attach _orif
+	    att_det _is :update
+	_then
+		pos << _self.contorno.sectors.centroide()
+		
+		_if _self.posicion _isnt _unset _then
+			_self.unset_geometry(:posicion)
+		_endif
+		
+		_self.make_geometry(:posicion,pos)
+	_endif 
+_endmethod
+$

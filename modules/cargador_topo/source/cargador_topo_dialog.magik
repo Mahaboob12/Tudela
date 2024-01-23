@@ -1,0 +1,427 @@
+#% text_encoding = iso8859_1
+_package user
+$
+#remex(:cargador_topo_dialog)
+$
+_pragma(classify_level=restricted, usage={redefinable})
+## Dialogo el Cargador de Topografia
+##
+## Convierte en punto y en objetos de abastecimiento y saneamiento 
+## las coordenadas definidas en el fichero de topografía
+def_slotted_exemplar(:cargador_topo_dialog,
+		    {
+	{:plugin, _unset},
+	{:menu_items, _unset},
+	{:sub_menus, _unset},
+	{:engine,_unset},
+	{:tree_item, _unset },
+	{:list, _unset },
+	{:sel, _unset },
+	{:puntos, _unset },
+	{:objetos, _unset },
+	{:fd_archivo, _unset},
+	{:file_name, _unset},
+	{:directorio, _unset }
+},
+:engine_model)
+$
+cargador_topo_dialog.define_slot_access(:plugin, :write, :public)
+$
+cargador_topo_dialog.define_slot_access(:menu_items, :write, :public)
+$
+cargador_topo_dialog.define_slot_access(:sub_menus, :write, :public)
+$
+cargador_topo_dialog.define_slot_access(:engine, :write, :public)
+$
+cargador_topo_dialog.define_slot_access(:tree_item, :write, :public)
+$
+cargador_topo_dialog.define_slot_access(:list, :write, :public)
+$
+cargador_topo_dialog.define_slot_access(:fd_archivo, :read, :public)
+$
+cargador_topo_dialog.define_slot_access(:directorio, :read, :public)
+$
+cargador_topo_dialog.define_slot_access(:file_name, :read, :public)
+$
+cargador_topo_dialog.define_slot_access(:objetos, :read, :public)
+$
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.title
+
+	val << _self.message(:title)
+	_return val
+
+_endmethod
+$
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.new(a_plugin)
+
+	>> _clone.init(a_plugin)
+
+_endmethod
+$
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.init(a_plugin)
+	.plugin << a_plugin
+	.engine << cargador_topo_engine.new(_self)
+	.sub_menus << hash_table.new()
+	.directorio << system.getenv("TUDELA")
+	.puntos << property_list.new()
+	.objetos << rope.new()
+	>> _super.init()
+_endmethod
+$
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.activate_in(a_frame)
+
+	a_frame.title << _self.message(:title)
+	a_frame.resizable? << _true
+	
+	.menu_items << hash_table.new()
+
+	rc << rowcol.new(a_frame,3 , unset, :pixel, :style,:top_level)
+	rc1 << rowcol.new(rc, 3, 2, :pixel, :style, :top_level,:default_row_alignment, :centre)
+	
+	.menu_items[:t_fichero]  <<  text_item.new(rc1,"",:row,1,:col,1)
+	.menu_items[:b_explorar] << button_item.new_safe(rc1, "Explorar", _self, :explorar|()|,:row,1,:col,2,:width,70)
+
+	v << .engine.view
+	css << rope.new()
+	_for a_cs _over v.user_visible_coordinate_systems()
+	_loop
+		css.add({a_cs, a_cs.write_string})
+	_endloop
+	
+	.menu_items[:t_cs]  <<  text_choice_item.new(rc1,"S.Coord. Origen:",:row,2,:col,1,
+						 :items, css )
+	# ----------
+	# Create style holder with reusable image schemes
+	# ----------	
+	_local l_style_holder << string_styles_holder.new_with()
+	# define image scheme :selected_scheme with closed/open folder icons
+	# for selected/unselected elements
+	l_style_holder.add_image_scheme(:selected_scheme, :default, :closed_folder, :selected, :open_folder)
+	# define image scheme :my_scheme with bitmap resources given as image locators
+	# specified by {<bitmap_name>, <module_name>}
+	l_style_holder.add_image_scheme(:my_scheme, :default, {"search_world", :tree_item}, 
+	                                            :selected, {"last", :ui_resources})
+	.tree_item <<tree_item.new(rc,
+			      :col_alignment,          :fill,
+			      :row_alignment,          :fill,
+			      :model,                  _self,
+			      :style_holder,   l_style_holder,
+			      # :aspect property is used as default for :data_selector property 
+			      :aspect,                 :tab_list,
+			      # ensure that only the last column is resized
+			      :mode,                   :one,
+			      :select_notifier,        :|selected()|)
+	
+	rc3 << rowcol.new(rc,1,6, :pixel, :style, :top_level,:default_row_alignment,
+			   :centre,:row,2,:col,1)
+	
+	.menu_items[:b_leer]   << button_item.new(rc3, "Leer", _self  ,:|leer()|,:row,1,:col,1,:width,55)
+	.menu_items[:b_cargar] << button_item.new(rc3, "Cargar", _self  ,:|cargar()|,:row,1,:col,2,:width,55)
+	.menu_items[:b_scrapbook] << button_item.new(rc3, "Scrapbook", _self  ,:|scrapbook()|,:row,1,:col,3,:width,65)
+	.menu_items[:b_commit] << button_item.new(rc3, "Commit", _self  ,:|commit()|,:row,1,:col,4,:width,55)
+	.menu_items[:b_rollback] << button_item.new(rc3, "Rollback", _self  ,:|rollback()|,:row,1,:col,5,:width,60)
+	.menu_items[:b_quit]     << button_item.new(rc3, "Salir" , _self  ,:|quit()|,:row,1,:col,6,:width,55)
+
+	pm << .tree_item.popup_menu
+
+	separator_item.new(pm)
+	button_item.new_safe(pm, _self.message(:ir_a),   _self, :ir_a|()|)
+	
+	.tree_item.add_dependent(_self )
+_endmethod
+$
+_pragma(classify_level=restricted, usage={redefinable})
+_method cargador_topo_dialog.tab_list
+	## 
+	##
+	_if .list _is _unset _orif
+	    .list.empty?
+	_then
+	       _return .list << _self.int!tree_list()
+	_else
+		_return .list
+	_endif 
+	
+_endmethod
+$
+_pragma(classify_level=restricted, usage={redefinable})
+_method cargador_topo_dialog.int!tree_list()
+	## 
+	##
+
+	_local l_list << rope.new()
+	_for code, name_coords _over .puntos.fast_keys_and_elements()
+	_loop
+		key << write_string(name_coords.size, "  ",code.write_string.uppercase)
+		l_display_tree << display_tree.new(
+					  key,
+					  code)
+		l_display_tree.styled_string << {:image, :default, key}
+		
+		l_list.add(l_display_tree)
+		l_display_tree.set_children_method(_self  , :llena_puntos|()|, name_coords)
+	
+		l_display_tree.children? << _true
+	_endloop 
+	>> l_list
+	
+_endmethod
+$
+_pragma(classify_level=basic, topic={tree_item}, usage={subclassable})
+_method cargador_topo_dialog.llena_puntos(name_coords)
+	## 
+	##
+	trees << rope.new()
+	_for name_coord _over name_coords.fast_elements()
+	_loop
+		name << name_coord[1]
+		name_str << name.ib_last_to_end(10)
+		coord << name_coord[2]
+		key << write_string(name_str,"  ",coord.as_string(0, _true ))
+		l_display_tree << display_tree.new(key, coord)
+		l_display_tree.styled_string << {:image, :default, key }
+		trees.add(l_display_tree)
+	_endloop
+
+	>> trees
+	
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.leer()
+	##
+	##
+	_self.busy? << _true
+	
+	.engine.empty()
+	
+	.list.empty()
+	.puntos.empty()
+	.objetos.empty()
+	.engine.transform << _self.define_transformacion()
+	
+	.puntos << .engine.leer_puntos(.menu_items[:t_fichero].value)
+
+	_self.tab_list
+	
+	.tree_item.refresh()
+	
+	_self.busy? << _false
+_endmethod
+$
+_pragma(classify_level=restricted, usage={redefinable})
+_method cargador_topo_dialog.define_transformacion()
+	## 
+	## Devuelve la transformacion a realizar del sistema de coordenadas de
+	## la aplicacion al sistema del mundo del dataset.
+	## Con el fin de convertir las coordenadas del fichero topo al
+	## mundo del gis 
+	
+	_handling user_error _with .plugin.application.user_error_handler
+
+
+	_if (app << .plugin.application) _is _unset 
+	_then
+		condition.raise(:user_error, :string, _self.message(:no_hay_aplicacion))
+	_elif app.coordinate_system _is _unset
+	_then 
+	       condition.raise(:user_error, :string, _self.message(:no_hay_sistema_coordenado))
+	_endif
+
+	cs1 << app.database.dataset(:gis).world.coordinate_system
+	#cs2 << app.plugin(:maps).current_map_view.current_display_coordinate_system
+	cs2 << .menu_items[:t_cs].value
+		
+	>> transform.new_converting_cs_to_cs(cs2,cs1)
+	
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.cargar()
+	##
+	##
+	_self.busy? << _true
+	.engine.transform << _self.define_transformacion()
+	.objetos << .engine.cargar_puntos()
+	_self.show_message("Cargados ", .objetos.numero_elementos,
+			   " objetos de ", .puntos.numero_elementos,
+			   " puntos")
+	_self.busy? << _false
+_endmethod
+$
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.scrapbook()
+	##
+	## Guarda los objetos cargados en un scrapbook con el mismo
+	## nombre que el fichero 
+	sb << gis_program_manager.scrapbook()
+	sb_view << sb.scrapbook_view
+	_if sb.result_names().includes?(.file_name.as_symbol())
+	_then 
+	    _if _not _self.show_question("SI","NO",
+				write_string("Scrapbook ",.file_name.as_symbol(),
+					" ya existe.",%newline,
+					"Esta seguro que desea sobreescribirlo?"))
+	    _then 
+			_return
+	    _endif
+	_elif _not _self.show_question("SI","NO",
+				write_string("Esta seguro que desea guardar el Scrapbook ",
+					     .file_name.as_symbol(),"?"))
+	_then
+		_return
+	_endif 
+
+	#sb_list << sb_view.create_scrapbook_list(.file_name, .objetos, _false,_true, "gis")
+	sb.set_clipboard(.file_name, .objetos, "Topografia")
+	sb.store(.file_name, _false)
+_endmethod
+$
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.commit()
+	##
+	## Pregunta si se desea hacer< commit y hace commit
+	_if _self.show_question("SI","NO", "Esta seguro de guardar esta información?")
+	_then
+		# Se hace commit
+		.engine.save_data()
+	_endif
+_endmethod
+$
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.rollback()
+	##
+	## Pregunta si se desea hacer< commit y hace commit
+	_if _self.show_question("SI","NO", "Esta seguro de cancelar los cambios?")
+	_then
+		# Se hace rollback
+		.engine.view.rollback()
+		.plugin.application.plugin(:maps).current_map_view.render()
+		sb << gis_program_manager.scrapbook()
+		sb_view << sb.scrapbook_view
+		.objetos.empty()
+		_if sb.result_names().includes?(.file_name.as_symbol())
+		_then
+			sb.delete(.file_name.as_symbol())
+			#sb_result << sb.get_result(.file_name.as_symbol())
+			#sb_result.delete()
+		_endif 
+	_endif
+_endmethod
+$
+_pragma(classify_level=basic)
+_method cargador_topo_dialog.explorar(_optional filename)
+
+
+	_self.get_filename(_self, _unset, :escribe_valor|()|, _self.message( :select_infile ))
+	
+_endmethod
+$
+_pragma(classify_level=restricted)
+_method cargador_topo_dialog.get_filename(frame, filetype, ok_method, title)
+        ##
+        ## Add a directory to the product path
+	## Open a file_dialog to find the directory
+        ##
+
+	tudela_dir << system.pathname_up(system.getenv("TUDELA_DB_DIR"),1)
+	_if  system.os_name _is :windows
+	_then
+		workdir << tudela_dir + "datos"
+
+	_endif
+
+	df1 << date_time_format.new_with_properties(:date_format_string,"#Y#m#d#k#M")
+	fecha << df1.format(date_time.now())
+	_if filetype _isnt _unset 
+	_then 
+		filename << system.host_name + %@ + filetype + fecha +".xml"
+	_endif 
+
+
+        .sub_menus[:fichero] << fd << file_dialog.new( frame,
+			       :escribe_nombre_fichero|()|,
+			       _unset,
+			       :filter, {"Txt files (*.txt)", "*.txt", "All files (*.*)", "*.*"},
+			       #:selection, filename,
+			       :title, title,
+			       :directory, .directorio)
+	fd.activate()
+
+_endmethod
+$
+_pragma(classify_level=restricted)
+_method cargador_topo_dialog.escribe_nombre_fichero(a_name)
+	##
+	##
+	.fd_archivo << a_name
+	(.file_name , .directorio) << system.pathname_components(.fd_archivo)
+	.file_name << system.split_filename(.file_name)
+	.menu_items[:t_fichero].value <<  a_name
+_endmethod
+$
+_pragma(classify_level=basic, topic={tree_item}, usage={subclassable})
+_method cargador_topo_dialog.selected(p_selection)
+	## 
+	## 
+
+	_if p_selection _isnt _unset 
+	_then
+		_for i_display_tree _over p_selection.fast_elements()
+		_loop
+			.sel << i_display_tree
+			_leave 
+		_endloop
+	_endif
+	
+_endmethod
+$
+_pragma(classify_level=basic, topic={tree_item}, usage={subclassable})
+_method cargador_topo_dialog.ir_a()
+	## 
+	##
+	_if .sel _isnt _unset 
+	_then
+		bounds << _self.obtener_extension(.sel)
+	_else 
+		_self.show_messge(_self.message(:seleccion_vacia))
+	_endif
+	
+	_if bounds _isnt _unset 
+	_then
+		.plugin.application.plugin(:maps).current_map_view.goto_bounds(bounds)
+	_endif
+_endmethod
+$
+_pragma(classify_level=basic, topic={tree_item}, usage={subclassable})
+_method cargador_topo_dialog.obtener_extension(valor)
+	## 
+	## Devuele los bounds de la selection VALOR del tree_item
+	## Si es de varias coordenadas devuelve la union de ellas
+	## Los bounds 
+	bb  << _unset 
+	_if valor.children?
+	_then
+		_for pnt _over valor.children.fast_elements()
+		_loop
+			coord << pnt.value
+			_if bb _is _unset
+			_then
+				bb << coord.bounds
+				_continue
+			_endif 
+			bb.union(coord.bounds)
+		_endloop
+	_else
+		bb << valor.value.bounds
+	_endif
+	>> bb.transformed(.engine.transform)
+_endmethod
+$
+

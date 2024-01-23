@@ -1,0 +1,127 @@
+
+#% text_encoding = iso8859_1
+_package user
+#
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:pozo_saneamiento,{},:rwo_record)
+$
+_method pozo_saneamiento.profundidad
+	
+	# Calcula la profundidad -->  la profundidad inicial de las tuberias
+	# que salen del pozo
+	#
+	# Campo calculado profundidad
+	
+	prof << 0.0
+	nodo << _self.posicion.node
+	_for geo _over _self.posicion.all_connected_geometry().fast_elements()
+	_loop
+		_if geo.rwo_type _is :tuberia_saneamiento _andif
+		    geo.first_node = nodo  _then
+			tuberia << geo.rwo
+			_if (prof < tuberia.profundidad_inicio.default(0))
+			_then
+				prof << tuberia.profundidad_inicio.default(0)
+			_endif
+		_endif
+	_endloop
+        _return prof
+_endmethod
+$
+_method pozo_saneamiento.cota_fondo
+	
+        # Calcula la cota del fondo a partir de la cota de la tapa y la profundidad
+	# Campo calculado cota_fondo
+	#
+	
+	fondo << _self.cota_tapa.default(0) - _self.profundidad
+        _return fondo
+_endmethod
+$
+_method pozo_saneamiento.profundidad_text
+
+	ocultar_texto? << _false
+        # Posiciona un label de la profundidad del pozo
+        txt << _self.cota_tapa.default(0).write_string + " (" + _self.profundidad.write_string + ")"
+	_if _self.cota_tapa _is _unset _andif _self.profundidad = 0.000
+	_then
+		ocultar_texto? << _true
+	_endif
+
+
+	_return (txt,ocultar_texto?)
+_endmethod
+$
+_method pozo_saneamiento.posicion_trigger(tipo,att_det,geom)
+
+	# Trigger de insercion del campo posicion
+	
+	_if att_det _is :attach
+	_then
+		pos << _self.posicion.coord
+		pos_t <<  coordinate.new(pos.x+300,pos.y+300)
+		(txt, ocultar_texto?) << _self.profundidad_text
+		
+		_if _self.texto _isnt _unset _then
+			_self.unset_geometry(:texto)
+		_endif
+
+		_if _not ocultar_texto? _then
+			
+			texto << _self.make_geometry(:texto,pos_t,txt)
+			texto.orientation << _self.posicion.orientation
+			texto.just << 51
+		_endif
+	_endif 
+_endmethod
+$
+_method pozo_saneamiento.cota_tapa_trigger(tipo,att_det,geom)
+
+	# Cambia solo el valor de la cota_tapa cambia, si es que existe
+	# el texto, o si la profundidad del pozo cambia (se dispara por
+	# la tuberia.profundidad_inicio
+
+	_if _self.posicion _is _unset
+	_then
+		_return
+	_endif 
+	pos << _self.posicion.coord
+	
+	pos_t << coordinate.new(pos.x+300,pos.y+300)
+	(txt,ocultar_texto?) << _self.profundidad_text
+	
+	
+	_if _self.texto _isnt _unset
+	_then
+		_self.unset_geometry(:texto)
+	_endif
+	_if _not ocultar_texto? _then
+		texto << _self.make_geometry(:texto,pos_t,txt)
+		texto.orientation << _self.posicion.orientation
+		texto.just << 51
+	_endif
+	
+_endmethod
+$
+_method pozo_saneamiento.cota_final_trigger(tipo,att_det,geom)
+
+	# Cambia solo el valor de la cota_tapa cambia, si es que existe
+	# el texto, o si la profundidad del pozo cambia (se dispara por
+	# la tuberia.profundidad_inicio
+	
+	
+	_if _self.texto _isnt _unset
+	_then
+		_self.unset_geometry(:texto)
+	_endif
+	
+	texto << _self.make_geometry(:texto,geom.coord,_self.profundidad_text)
+	texto.orientation << _self.posicion.orientation
+	texto.just << 11
+	
+_endmethod
+
+
+
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<gui base="editor_plugin.gui.xml">
+    <toolbar name="transaction" plugin_name="transactions">
+	<action name="insert"/>
+	<action name="update"/>
+	<action name="delete"/>
+    </toolbar>
+    <toolbar name="custom" plugin_name="editor_doc_rel">
+	<pulldown mode="simple" caption="specials" style="text">
+	    <action name="editar_objeto_relacionado"/>
+	</pulldown>
+    </toolbar>
+</gui>

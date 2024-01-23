@@ -1,0 +1,286 @@
+#% text_encoding = iso8859_1
+_package user
+#
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:canal,{},:rwo_record)
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+## Define la longitud minima del canal para poner el
+## texto central automaticamente
+canal.define_shared_constant(:longitud_para_texto,2500, :public )
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.longitud
+	##
+	## Calcula la longitud del trazado en metros
+	##
+
+	_dynamic !current_coordinate_system! << _self.source_view.world.coordinate_system
+
+	_if (a_chain << _self.trazado) _is _unset _then
+		_return length_value( 0.0, :m )
+	_endif
+ 
+	len_in_world_units << a_chain.line_length_unit_value()
+	len << len_in_world_units.value_in(unit_value.new(0, :m).unit)
+	
+	_return len
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.pendiente
+	##
+	## Calcula la pendiente de un tramo del canal
+	#
+	_if _self.cota_inicio _isnt _unset _andif
+	    _self.cota_final _isnt _unset
+	_then
+		pendiente << (_self.cota_inicio - _self.cota_final)/_self.longitud*100
+	_else
+		pendiente <<  _unset
+	_endif
+	_return pendiente
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.texto_text
+	##
+	## Asigna el texto en el punto medio del tramo del canal
+	#
+	texto << _self.tipo_cauce.default("")
+	_return texto
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.trazado_trigger(tipo,att_det,geom)
+	##
+	## Crea la flecha, el texto central y el texto de cota final al
+	## insertar el trazado
+	
+	_if att_det _is :attach
+	_then	
+		# Posiciona la flecha
+		_self.posiciona_flecha
+		# Posiciona texto central
+		_self.posiciona_texto
+		# Posiciona texto de la cota inicial (solo el primer tramo)
+		_self.posiciona_cota_inicial		
+		# Posiciona texto de la cota final
+		_self.posiciona_cota_final
+	_endif 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.posiciona_texto
+	##
+	## Posiciona el texto en el centro del tramo
+	_if _self.texto _isnt _unset
+	_then
+		_self.unset_geometry(:texto)
+	_endif
+	#
+	# Si la longitud del trazado es menor de 2.5 m no se pone el
+	# texto
+	_if _self.trazado.line_length > _self.longitud_para_texto
+	_then
+		(coord,ang) << _self.trazado.sectors.find_mid_point()
+		
+		#  Adecua la orientacion del texto entre -90 y 90
+		#  grados.
+		ang << ang.normalise(-float.half_pi,float.half_pi)
+		txt << _self.texto_text
+		
+		texto << _self.make_geometry(:texto,coord,txt)
+
+		texto.orientation << ang
+		texto.just << 13
+	_endif 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.posiciona_flecha
+	##
+	## Ponemos el punto flecha en el punto medio del tramo
+	## Es un simple_point que se dispara por un trigger
+	#
+	(coord,ang) << _self.trazado.sectors.find_mid_point()
+
+	_if _self.flecha _isnt _unset _then
+		_self.unset_geometry(:flecha)
+	_endif
+
+	fl << _self.make_geometry(:flecha,coord)
+	fl.orientation << ang
+	
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.posiciona_cota_final
+	##
+	## Posiciona el texto de la cota final en el tramo
+	# 
+	(dummy,ang2) << _self.trazado.sectors.last_mid_point()
+	coord << _self.trazado.sectors.last_coord
+	ang << ang2.normalise(-float.half_pi,float.half_pi)
+	
+	# Si el angulo ha sido normalizado entre -90 y 90 la
+	# justificacion del texto la ponemos en la esquina izquierda (11)
+	# En caso contrario se deja en la esquina derecha (15)
+	just << 15
+	_if ang2 <> ang
+	_then
+		just << 11
+	_endif 
+	txt << _self.cota_final.default(0).write_string
+	
+	_if _self.texto_cota_final _isnt _unset _then
+		_self.unset_geometry(:texto_cota_final)
+	_endif
+
+	texto << _self.make_geometry(:texto_cota_final,coord,txt)
+	texto.orientation << ang
+	texto.just << just
+	
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.cota_final_trigger()
+	##
+	## Cambia el texto de la cota final si existe
+	_if _self.texto_cota_final _isnt _unset
+	_then
+		txt << _self.texto_cota_final_text
+		texto << _self.texto_cota_final
+		texto.string_buffer << txt
+	_endif
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.texto_trigger()
+	##
+	## Cambia el texto si existe
+	_if _self.texto _isnt _unset
+	_then
+		txt << _self.texto_text
+		texto << _self.texto
+		texto.string_buffer << txt
+	_endif
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.texto_cota_final_text
+	##
+	## String del texto profundidad
+	txt << _self.cota_final.default(0).write_string
+	_return txt
+_endmethod
+$					    
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.dibuja_lineas_paralelas(window,geometry,rwo_style,draw_flag?)
+	##
+	## Dibujamos el trazado del canal con dos lineas paralelas
+	## (solo a grandes escalas)
+
+	# Offset en mm
+	_constant offset_dist_mm << 300
+
+	# Obtenemos la separacion de las lineas en unidades de la
+	# aplicacion
+	offset_dist_app << offset_dist_mm / geometry.world_unit_factor
+
+	# Creamos las lineas
+	linea_izq << geometry.offset_left(offset_dist_app,:square)
+	linea_dch << geometry.offset_right(offset_dist_app,:square)
+
+	# Dibujamos las lineas
+	estilo << rwo_style.actual_gis_style
+	window.paint(draw_flag?,linea_izq,estilo)
+	window.paint(draw_flag?,linea_dch,estilo)
+
+	_return _true 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.posiciona_cota_inicial
+	##
+	## Posiciona el texto de la cota inicial en el primer tramo, el
+	## que parte del tanque de tormentas o de una tuberia de
+	## saneamiento 
+
+	_if _self.objeto_previo _is _unset
+	_then
+		_return
+	_endif
+
+	(dummy,ang2) << _self.trazado.sectors.first_mid_point()
+	coord << _self.trazado.sectors.first_coord
+	ang << ang2.normalise(-float.half_pi,float.half_pi)
+	
+	# Si el angulo ha sido normalizado entre -90 y 90 la
+	# justificacion del texto la ponemos en la esquina derecha (15)
+	# En caso contrario se deja en la esquina izquierda (11)
+	just << 11
+	
+	_if ang2 <> ang
+	_then
+		just << 15
+	_endif
+	
+	txt << _self.cota_inicio.default(0).write_string
+	
+	_if _self.texto_cota_inicio _isnt _unset _then
+		_self.unset_geometry(:texto_cota_inicio)
+	_endif
+
+	texto << _self.make_geometry(:texto_cota_inicio,coord,txt)
+	texto.orientation << ang
+	texto.just << just	
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.objeto_previo
+	##
+	## Obtiene el objeto del que parte el tramo de canal
+
+	obj_previo << _unset
+
+	_if _self.trazado _isnt _unset
+	_then
+		nodo_inicio << _self.trazado.first_node
+
+		_for geo _over nodo_inicio.top_level_geoms()
+		_loop
+			_if geo.rwo_type _is :tanque_tormentas _orif
+			    geo.rwo_type _is :edar _orif
+			    geo.rwo_type _is :tuberia_saneamiento
+			_then
+				obj_previo << geo.rwo
+				_leave
+			_endif
+		_endloop
+	_endif
+
+	_return obj_previo
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.cota_final_trigger()
+	##
+	## Cambia el texto de la cota final si existe
+	_if _self.texto_cota_final _isnt _unset
+	_then
+		txt << _self.texto_cota_final_text
+		texto << _self.texto_cota_final
+		texto.string_buffer << txt
+	_endif
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method canal.texto_cota_inicio_text
+	##
+	## String del texto profundidad
+	txt << _self.cota_inicio.default(0).write_string
+	_return txt
+_endmethod
+$

@@ -1,0 +1,35 @@
+#% text_encoding = iso8859_1
+_package user
+#
+# Modifica la escala de zoom cuando se hace un goto a un
+# puntual o a una geometria pequeña.
+# En el original se toma la nominal_scale_for_view_scale que
+# para escala 500 es 135 lo cual nos vamos a un tamaño de zoom
+# de 73 m de ancho
+# La modificacion que se hace es dividir esto por 3 lo cual nos
+# hace una ventana de 24 m
+#
+_pragma(classify_level=restricted)
+_method map_view.calculate_view_for_goto_bounds( bounds, _optional viewing_coordinate_system )
+	## 
+	## Apply minimum goto scale factor and minimum goto scale to the bounds. 
+	##
+	## EL:06/09/2011 minimum goto scale dividido por 3 
+
+	min_view_scale << _self.map_manager.get_preference( :goto_minimum_scale, _self.ace_name )
+	#MOD: dividimos por 3 
+	#min_scale << _self.nominal_scale_for_view_scale( min_view_scale )
+	min_scale << _self.nominal_scale_for_view_scale( min_view_scale ) / 3
+	#END
+	
+	border_percent_factor << _self.map_manager.get_preference( :goto_border_factor, _self.ace_name ).default(10)
+	border_factor << 1.0 + (border_percent_factor * 0.01 )
+
+	view_def << _self.calculate_view_for_bounds( bounds, viewing_coordinate_system )
+	new_scale << ( view_def.scale * border_factor ).max( min_scale )
+	view_def.scale << new_scale
+
+	>> view_def
+	
+_endmethod
+$

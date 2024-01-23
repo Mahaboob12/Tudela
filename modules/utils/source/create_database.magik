@@ -1,0 +1,16 @@
+_block
+
+
+create_database("c:\smallworld410\tudela_vacio",
+    :universes, 8,
+    :default_universe, {"gis", 1, 8},
+    :default_world, {"gis", "world", 
+            :world_bounds,
+                   bounding_box.new(0, 0, 1000000000, 1000000000),
+            :world_used_bounds,
+                   bounding_box.new(500000000, 500000000,
+                                    700000000, 700000000),
+            :units, :mm})
+
+
+_endblock

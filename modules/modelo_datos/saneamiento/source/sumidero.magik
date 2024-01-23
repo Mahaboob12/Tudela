@@ -1,0 +1,7 @@
+#% text_encoding = iso8859_1
+_package user
+#
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:sumidero,{},:rwo_record)
+$

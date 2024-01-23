@@ -1,0 +1,2369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serial_xml_thing format="1">
+	<export_parameters>
+		<export_parameter name="destination_units">Metre</export_parameter>
+		<export_parameter name="destination_projection">Spain UTM Zone 30 ETRS89 m</export_parameter>
+		<export_parameter name="bound_limit">no</export_parameter>
+		<export_parameter name="dataset">gis</export_parameter>
+		<export_parameter name="geometry">inside</export_parameter>
+		<export_parameter name="destination_path">C:\Proyectos\Temp</export_parameter>
+	</export_parameters>
+	<correspondences>
+		<dataset name="gis">
+			<table sw_internal_name="grupo_bombeo_saneamiento" sw_geom="posicion" sh_entity="">
+				<field sw_field="caudal_nominal" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="potencia_nominal" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="presion_nominal" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="observaciones_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="mobiliario_urbano" sw_geom="punto" sh_entity="">
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida_saneamiento" sw_geom="ramal" sh_entity="">
+				<field sw_field="seccion_tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo_vertido" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimension" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="evacuacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="aliviadero" sw_geom="texto" sh_entity="">
+				<field sw_field="cota_salida_pluviales" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_tapa" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_entrada" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_salida_fecales" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="aliviadero" sw_geom="posicion" sh_entity="">
+				<field sw_field="cota_salida_pluviales" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_tapa" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_entrada" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_salida_fecales" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fuente" sw_geom="ramal" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fuente" sw_geom="posicion" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="valvula_vortex" sw_geom="posicion" sh_entity="">
+				<field sw_field="caudal_max_medido" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="altura" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="caudal" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="canal" sw_geom="flecha" sh_entity="">
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo_cauce" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pendiente" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="canal" sw_geom="texto_cota_inicio" sh_entity="">
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo_cauce" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pendiente" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto_cota_inicio.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto_cota_inicio.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto_cota_inicio.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="canal" sw_geom="texto" sh_entity="">
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo_cauce" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pendiente" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="canal" sw_geom="texto_cota_final" sh_entity="">
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo_cauce" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pendiente" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto_cota_final.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto_cota_final.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto_cota_final.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="canal" sw_geom="trazado" sh_entity="">
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo_cauce" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pendiente" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="construction" sw_geom="line" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="construction" sw_geom="point" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="construction" sw_geom="arc" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="construction" sw_geom="trail" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="construction" sw_geom="circle" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="grupo_bombeo" sw_geom="posicion" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="potencia_nominal" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="presion_nominal" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="caudal_nominal" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="subtramo" sw_geom="texto" sh_entity="">
+				<field sw_field="longitud" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="grosor" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="piso" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="subtramo" sw_geom="trazado" sh_entity="">
+				<field sw_field="longitud" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="grosor" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="piso" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="callejero" sw_geom="texto" sh_entity="">
+				<field sw_field="clave" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="hidrante" sw_geom="ramal" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ubicacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="presion" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="numero" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="hidrante" sw_geom="posicion" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ubicacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="presion" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="numero" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="hidrante" sw_geom="texto" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ubicacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="presion" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="numero" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="etap" sw_geom="texto" sh_entity="">
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="etap" sw_geom="posicion" sh_entity="">
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="etap" sw_geom="contorno" sh_entity="">
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="arqueta_saneamiento" sw_geom="posicion" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tapa" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="cota_profundidad" sw_geom="texto_prof" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto_prof.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto_prof.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto_prof.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="cota_profundidad" sw_geom="trazo" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="cota_profundidad" sw_geom="texto_cota" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto_cota.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto_cota.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto_cota.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="sumidero" sw_geom="area" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="evacuacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="sumidero" sw_geom="ramal" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="evacuacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="sumidero" sw_geom="posicion" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="evacuacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="boquilla" sw_geom="posicion" sh_entity="">
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="dimensioning" sw_geom="dimension_line" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="dimensioning" sw_geom="leader_line" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="dimensioning" sw_geom="text" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="text.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="text.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="text.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="parcela_rustica" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="lineas_decorativas" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="parcela_urbana" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="edificacion_urbana" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="edificacion_rustica" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="parcela_mixta" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="subparcela_rustica" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="limite_municipio" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="vial" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_linea" sw_geom="limite_concejo" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="tuberia_saneamiento" sw_geom="flecha" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion_tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio_medida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final_medida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pendiente" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="longitud" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="tuberia_saneamiento" sw_geom="texto" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion_tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio_medida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final_medida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pendiente" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="longitud" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="tuberia_saneamiento" sw_geom="texto_profundidad" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion_tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio_medida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final_medida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pendiente" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="longitud" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto_profundidad.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto_profundidad.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto_profundidad.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="tuberia_saneamiento" sw_geom="trazado" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion_tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_inicio_medida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final_medida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pendiente" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="longitud" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="desague" sw_geom="flecha" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="vertido" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="desague" sw_geom="ramal" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="vertido" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="desague" sw_geom="texto_profundidad" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="vertido" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto_profundidad.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto_profundidad.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto_profundidad.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="desague" sw_geom="trampillon" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="vertido" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="desague" sw_geom="posicion_valv" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="vertido" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="sw_google_linea" sw_geom="punto" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_id" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_name" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="divisiones" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="text_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="sw_google_linea" sw_geom="anotacion" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_id" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_name" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="divisiones" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="text_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="anotacion.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="anotacion.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="anotacion.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="sw_google_area" sw_geom="punto" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_id" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_name" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="divisiones" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="text_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="sw_google_area" sw_geom="anotacion" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_id" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_name" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="divisiones" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="text_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="anotacion.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="anotacion.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="anotacion.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="riego" sw_geom="ramal" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="funcionamiento" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="riego" sw_geom="valvula" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="funcionamiento" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="cambio_diametro" sw_geom="posicion" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="texto_callejero" sw_geom="texto" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="te_nodo" sw_geom="posicion" sh_entity="">
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="deposito" sw_geom="posicion" sh_entity="">
+				<field sw_field="bombeo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_maxima" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="numero_vasos" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estructura_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_minima" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="anyo_construccion" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo_almacenaje" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="zona_abastecida" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="tapa" sw_geom="punto" sh_entity="">
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="cruce" sw_geom="trazo" sh_entity="">
+				<field sw_field="distancia" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="servicio" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="pozo_saneamiento" sw_geom="texto" sh_entity="">
+				<field sw_field="pates" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion_tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_tapa" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_fondo" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimension" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tapa" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="pozo_saneamiento" sw_geom="posicion" sh_entity="">
+				<field sw_field="pates" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion_tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_tapa" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_fondo" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimension" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tapa" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="pozo_saneamiento" sw_geom="contorno" sh_entity="">
+				<field sw_field="pates" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="seccion_tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_tapa" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_fondo" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimension" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tapa" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="tapon_final" sw_geom="posicion" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="filtro" sw_geom="punto" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="ramal" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="ramal_2" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="flecha_2" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="flecha_3" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="ramal_3" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="llave_2" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="llave_3" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="texto" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="llave" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="acometida" sw_geom="flecha" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="bocas_incendio" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_policia" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="n_vdas_uso" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="instalador" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="accesibilidad_llave" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="situacion" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="valvula" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="poliza" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_punta" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="consumo_medio" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro_contador" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="clase" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="final_saneamiento" sw_geom="texto" sh_entity="">
+				<field sw_field="vertido" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="final_saneamiento" sw_geom="posicion" sh_entity="">
+				<field sw_field="vertido" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_final" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="arqueta" sw_geom="punto" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_tapa" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pates" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tapa" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="arqueta" sw_geom="area" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_tapa" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="comentario_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="pates" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="material" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tapa" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="dimensiones" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="boca_riego" sw_geom="ramal" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="presion" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="boca_riego" sw_geom="posicion" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="presion" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="boca_riego" sw_geom="texto" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="calle" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="presion" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="red_riego" sw_geom="tramo" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="documento_relacionado" sw_geom="anotacion" sh_entity="">
+				<field sw_field="descripcion_objeto" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="descripcion_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre_completo_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo_documento" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre_tabla" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id_objeto" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="anotacion.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="anotacion.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="anotacion.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="documento_relacionado" sw_geom="localizacion" sh_entity="">
+				<field sw_field="descripcion_objeto" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="descripcion_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre_completo_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo_documento" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="nombre_tabla" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id_objeto" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="edar" sw_geom="texto" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_calle" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_salida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_fondo" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="edar" sw_geom="posicion" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_calle" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_salida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_fondo" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="edar" sw_geom="contorno" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_calle" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_salida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_fondo" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="ventosa" sw_geom="posicion" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="valvula_combi" sw_geom="posicion" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="numero_valvulas" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="valvula_combi" sw_geom="texto_profundidad" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="numero_valvulas" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto_profundidad.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto_profundidad.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto_profundidad.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_texto" sw_geom="calle" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="calle.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="calle.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="calle.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_texto" sw_geom="centroide_parcela" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="centroide_parcela.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="centroide_parcela.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="centroide_parcela.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_texto" sw_geom="punto_altimetria" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="punto_altimetria.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="punto_altimetria.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="punto_altimetria.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_texto" sw_geom="varios" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="varios.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="varios.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="varios.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_texto" sw_geom="altura_edificacion" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="altura_edificacion.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="altura_edificacion.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="altura_edificacion.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_texto" sw_geom="toponimia_urbana" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="toponimia_urbana.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="toponimia_urbana.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="toponimia_urbana.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_texto" sw_geom="centroide_manzana" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="centroide_manzana.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="centroide_manzana.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="centroide_manzana.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="fondo_texto" sw_geom="portal" sh_entity="">
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="portal.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="portal.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="portal.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="valvula" sw_geom="posicion" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="valvula" sw_geom="texto_profundidad" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto_profundidad.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto_profundidad.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto_profundidad.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="valvula" sw_geom="trampillon" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="estado" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="modelo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="marca" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="diametro" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="sw_google_point" sw_geom="punto" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_id" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_name" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="divisiones" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="text_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="sw_google_point" sw_geom="anotacion" sh_entity="">
+				<field sw_field="fecha" type="ds_date" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_id" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="user_name" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="divisiones" type="character" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="text_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="anotacion.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="anotacion.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="anotacion.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="function_geometry" sw_geom="area" sh_entity="">
+				<field sw_field="rwo_style_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="func_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="param_name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="app_style_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="geom_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="function_geometry" sw_geom="point" sh_entity="">
+				<field sw_field="rwo_style_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="func_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="param_name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="app_style_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="geom_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="function_geometry" sw_geom="linear" sh_entity="">
+				<field sw_field="rwo_style_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="func_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="param_name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="app_style_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="geom_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="function_geometry" sw_geom="text" sh_entity="">
+				<field sw_field="rwo_style_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="func_id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="param_name" type="ds_char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="app_style_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="geom_code" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="text.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="text.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="text.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="tanque_tormentas" sw_geom="texto" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_calle" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_salida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_fondo" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+				<field sw_field="texto.orientation" type="float" shape_field="orientation" format_method="radians_to_degrees">
+				</field>
+				<field sw_field="texto.shift_text_from_position_h()" type="float" shape_field="desplaz_h" sw_unit="mm" sh_unit="m">
+				</field>
+				<field sw_field="texto.shift_text_from_position_v()" type="float" shape_field="desplaz_v" sw_unit="mm" sh_unit="m">
+				</field>
+			</table>
+			<table sw_internal_name="tanque_tormentas" sw_geom="posicion" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_calle" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_salida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_fondo" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="tanque_tormentas" sw_geom="contorno" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="volumen" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_calle" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="profundidad_salida" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="cota_fondo" type="float" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="sifon" sw_geom="punto" sh_entity="">
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="accesorio" sw_geom="puntual" sh_entity="">
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+			<table sw_internal_name="accesorio" sw_geom="lineal" sh_entity="">
+				<field sw_field="tipo" type="char16_vector" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="id" type="integer" shape_field="" sw_unit="" sh_unit="" format_method="">
+				</field>
+				<field sw_field="ibtr_export_id" type="ds_char16_vector" shape_field="sw_ids">
+				</field>
+			</table>
+		</dataset>
+	</correspondences>
+</serial_xml_thing>

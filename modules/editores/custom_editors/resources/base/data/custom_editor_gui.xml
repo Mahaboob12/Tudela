@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<gui base="editor_plugin.gui.xml">
+
+    
+    <work_area>
+	<paned_window side_by_side="no" dynamic="no">
+	    <self stretch="0"/>
+	    <tab_box>
+		<plugin plugin_name="field_lister" stretch="100"/>
+		<plugin plugin_name="documentos_relacionados"/>
+	    </tab_box>	
+	</paned_window>
+    </work_area>   
+</gui>

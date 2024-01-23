@@ -1,0 +1,6 @@
+fondo_linea
+dibujo_punto
+fondo_texto
+mobiliario_urbano
+tapa
+documento_relacionado

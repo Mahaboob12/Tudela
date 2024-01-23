@@ -1,0 +1,404 @@
+#% text_encoding = iso8859_1
+_package user
+#
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:tuberia_saneamiento,{},:rwo_record)
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+## Define la longitud minima de la tuberia para poner el
+## texto de diametro material automaticamente
+tuberia_saneamiento.define_shared_constant(:longitud_para_texto,2500, :public )
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.cota_inicio_datos_calculados
+	##
+	## Devuelve la cota inicio que se utiliza para realizar los
+	## calculos de longitud o pendiente
+	## Es la Cota_inicio_medida si existe, si no devuelve la cota_inicio
+	##
+
+	_if (cota << _self.cota_inicio_medida) _is _unset _then
+		cota << _self.cota_inicio
+	_endif 
+
+	# Se transforma en string y luego en numerico para evitar
+	# errores de precision entre la cota medida y la calculada
+	_return cota.default(0.0).write_string.as_number()
+	
+_endmethod 
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.cota_final_datos_calculados
+	##
+	## Devuelve la cota de fin que se utiliza para realizar los
+	## calculos de longitud o pendiente
+	## Es la Cota_final_medida si existe, si no devuelve la cota_final
+	##
+
+	_if (cota << _self.cota_final_medida) _is _unset _then
+		cota << _self.cota_final
+	_endif
+
+	# Se transforma en string y luego en numerico para evitar
+	# errores de precision entre la cota medida y la calculada
+
+	_return cota.default(0.0).write_string.as_number()
+	
+_endmethod 
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.longitud
+	##
+	## Calcula la longitud del trazado
+	## MODIF (29/10/2014) -->
+	## Si las cotas medidas están
+	## indicadas se utilizan en lugar de las cotas de inicio y fin
+	## para realizar los calculos
+	## MODIF (06/04/2016) -->  Calculo de longitudes en NV
+
+	
+	_if (a_chain << _self.trazado) _is _unset _then
+		_return length_value( 0.0, :m )
+	_endif
+
+	len_in_world_units << a_chain.line_length_unit_value()
+	len << len_in_world_units.value_in(unit_value.new(0, :m).unit)
+	dif_cota << _self.cota_inicio_datos_calculados - _self.cota_final_datos_calculados
+	long << (dif_cota.squared + len.squared).sqrt
+	
+	_return long
+	
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.pendiente
+	##
+	## Calcula la pendiente de un tramo de fecales o pluviales
+	## MODIF (29/10/2014) -->
+	## Si las cotas medidas están
+	## indicadas se utilizan en lugar de las cotas de inicio y fin
+	## para realizar los calculos
+	
+	_if (cota_inicio << _self.cota_inicio_datos_calculados) _isnt _unset _andif
+	    (cota_final << _self.cota_final_datos_calculados) _isnt _unset
+	_then
+		long << _self.trazado.line_length*0.001
+		pendiente << (cota_inicio - cota_final)/long*100
+	_else
+		pendiente <<  _unset
+	_endif	
+	_return pendiente
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.cota_inicio
+	##
+        ## Calcula la cota al inicio a partir de: cota de la tapa del
+        ## pozo (o aliviadero, o tanque de tormentas) y la profundidad
+        ## al inicio, o de la cota final de un canal, o de la cota de
+        ## una boquilla
+	#
+	cota << 0.0
+	pozo <<  _self.pozo_inicio
+	_if pozo _isnt _unset _then
+		_if pozo.rwo_type _is :pozo_saneamiento _orif
+		    pozo.rwo_type _is :aliviadero
+		_then 
+			cota << pozo.cota_tapa.default(0.0) - _self.profundidad_inicio.default(0.0)
+		_elif pozo.rwo_type _is :tanque_tormentas _orif
+		      pozo.rwo_type _is :edar
+		_then
+			cota << pozo.cota_calle.default(0.0) - _self.profundidad_inicio.default(0.0)
+		_elif pozo.rwo_type _is :canal
+		_then
+			cota << pozo.cota_final.default(0.0)
+		_elif pozo.rwo_tipe _is :boquilla
+		_then
+			cota << pozo.cota.default(0.0)
+		_endif
+	_else
+		cota << _self.cota_inicio_medida.default(0.0)
+	_endif
+        _return cota
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.pozo_inicio
+	##
+	## Obtiene el objeto que hay en el inicio de la tuberia
+	## (pozo saneamiento, aliviadero, tanque de tormentas, canal,
+	## boquilla)
+	#
+	pozo << _unset 
+	_if _self.trazado _isnt _unset
+	_then
+		nodo_inicio << _self.trazado.first_node
+		_for geo _over nodo_inicio.top_level_geoms()
+		_loop
+			# Hay que dar prioridad a los elementos puntuales
+			_if geo.rwo_type _is :pozo_saneamiento _orif
+			    geo.rwo_type _is :aliviadero _orif
+			    geo.rwo_type _is :tanque_tormentas _orif
+			    geo.rwo_type _is :edar _orif
+			    geo.rwo_type _is :boquilla
+			_then 
+				pozo << geo.rwo
+				_leave
+			_elif geo.rwo_type _is :canal
+			_then
+				pozo << geo.rwo
+			_endif
+		_endloop
+	_endif
+        _return pozo
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.cota_final
+        ##
+	## Calcula la cota al final a partir de: cota de la tapa del
+        ## pozo (o aliviadero, o tanque de tormentas) y la profundidad
+        ## al final, o de la cota al inicio de un canal, o de la cota
+        ## de una boquilla
+	cota << 0.0
+	pozo << _self.pozo_final
+
+	_if pozo _isnt _unset _then
+		_if pozo.rwo_type _is :pozo_saneamiento _orif
+		    pozo.rwo_type _is :aliviadero 
+		_then 
+			cota << pozo.cota_tapa.default(0.0) - _self.profundidad_final.default(0.0)
+		_elif pozo.rwo_type _is :tanque_tormentas _orif
+		      pozo.rwo_type _is :edar
+		_then
+			cota << pozo.cota_calle.default(0.0) - _self.profundidad_final.default(0.0)
+		_elif pozo.rwo_type _is :canal
+		_then
+			cota << pozo.cota_final.default(0.0)
+		_elif pozo.rwo_type _is :boquilla
+		_then
+			cota << pozo.cota.default(0.0)
+		_endif
+	_else
+		cota << _self.cota_final_medida.default(0.0)
+	_endif
+        _return cota
+_endmethod
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.pozo_final
+	##
+	## Obtiene el objeto que hay al final de la tuberia
+	## (pozo saneamiento, aliviadero, tanque de tormentas, canal,
+	## boquilla)
+	#
+	pozo << _unset 
+	_if _self.trazado _isnt _unset
+	_then
+		nodo_final << _self.trazado.last_node
+		_for geo _over nodo_final.top_level_geoms()
+		_loop
+			# Hay que dar prioridad a los elementos puntuales
+			_if geo.rwo_type _is :pozo_saneamiento _orif
+			    geo.rwo_type _is :aliviadero _orif
+			    geo.rwo_type _is :tanque_tormentas _orif
+			    geo.rwo_type _is :edar _orif
+			    geo.rwo_type _is :boquilla
+			_then 
+				pozo << geo.rwo
+				_leave
+			_elif geo.rwo_type _is :canal
+			_then
+				pozo << geo.rwo
+			_endif
+		_endloop
+	_endif
+        _return pozo
+_endmethod
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.saneamiento_texto
+	##
+	## Posiciona un texto en el centro con el dimensiones,material
+	#
+	texto << _self.dimensiones.default(" ") + " " +
+		 _self.material.default("DE").write_string
+	_return texto
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.trazado_trigger(tipo,att_det,geom)
+	##
+	## Crea la flecha, el texto de diametro-material y el texto de
+	## profundidad final al insertar el trazado
+	
+	_if att_det _is :attach
+	_then
+		
+		# Posiciona la flecha
+		_self.posiciona_flecha
+		# Posiciona texto de dimensiones y material
+		_self.posiciona_texto
+		# Posiciona texto de la profundidad final
+		_self.posiciona_profundidad_final
+	
+		# Si hay pozo de saneamiento inicial conectado, calcula la profundidad de este
+		_self.profundidad_inicio_trigger()
+	_endif 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.posiciona_texto
+	##
+	## Posiciona el texto (diametro,material) en el centro del tramo
+	_if _self.texto _isnt _unset
+	_then
+		_self.unset_geometry(:texto)
+	_endif
+	#
+	# Si la longitud del trazado es menor de 2.5 m no se pone el
+	# texto de 
+	_if _self.trazado.line_length > _self.longitud_para_texto
+	_then
+		(coord,ang) << _self.trazado.sectors.find_mid_point()
+		
+		#  Adecua la orientacion del texto entre -90 y 90
+		#  grados.
+		ang << ang.normalise(-float.half_pi,float.half_pi)
+		txt << _self.saneamiento_texto
+		
+		texto << _self.make_geometry(:texto,coord,txt)
+		
+		texto.orientation << ang
+		texto.just << 15
+	_endif 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.posiciona_flecha
+	##
+	## Ponemos el punto flecha al final del ramal de acometida
+	## Es un simple_point que se dispara por un trigger
+	#
+	(coord,ang) << _self.trazado.sectors.find_mid_point()
+
+	_if _self.flecha _isnt _unset _then
+		_self.unset_geometry(:flecha)
+	_endif
+
+	fl << _self.make_geometry(:flecha,coord)
+	fl.orientation << ang
+	
+_endmethod
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.posiciona_profundidad_final
+	##
+	## Posiciona el texto de la profundidad final en el tramo
+	# 
+	(dummy,ang2) << _self.trazado.sectors.last_mid_point()
+	coord << _self.trazado.sectors.last_coord
+	ang << ang2.normalise(-float.half_pi,float.half_pi)
+	
+	# Si el angulo hasido normalizado entre -90 y 90 la
+	# justificacion del testo la ponemos en la esquina izquierda (11)
+	# En caso contrario se deja en la esquina derecha (15)
+	just << 15
+	_if ang2 <> ang
+	_then
+		just << 11
+	_endif 
+	txt << _self.profundidad_final.default(0).write_string
+	
+	_if _self.texto_profundidad _isnt _unset _then
+		_self.unset_geometry(:texto_profundidad)
+	_endif
+
+	texto << _self.make_geometry(:texto_profundidad,coord,txt)
+	texto.orientation << ang
+	texto.just << just
+	
+_endmethod
+$	
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.profundidad_final_trigger()
+	##
+	## Cambia solo el texto de la profundidad, si es que existe
+	_if _self.texto_profundidad _isnt _unset
+	_then
+		txt << _self.profundidad_final.default(0).write_string
+		texto << _self.texto_profundidad
+		texto.string_buffer << txt
+	_endif
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.texto_trigger()
+	##
+	## Cambia solo el texto de dimension-material si es que existe
+	_if _self.texto _isnt _unset
+	_then
+		txt << _self.saneamiento_texto
+		texto << _self.texto
+		texto.string_buffer << txt
+	_endif
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.profundidad_inicio_trigger()
+	##
+	## Cambia el texto del pozo al inicio por cambiar la profundidad
+	_if ( pozo << _self.pozo_inicio ) _isnt _unset _andif
+	    pozo.texto _isnt _unset _andif
+	    pozo.rwo_type _is :pozo_saneamiento # Para eliminal el tanque de tormentas 
+	_then
+		pozo.cota_tapa_trigger(pozo.rwo_type,:update,pozo.posicion)
+	_endif
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.profundidad_texto
+	##
+	## String del texto profundidad
+	txt << _self.profundidad_final.default(0).write_string
+	_return txt
+_endmethod
+$					    
+
+_pragma (classify_level=basic,topic=modelo_datos)
+_method tuberia_saneamiento.export_dxf_clase_tuberia(app_code)
+	##
+	## Devuelve la capa, el estilo y el color del objeto que
+	## corresponde en el fichero DXF exportado, segun el valor
+	## del campo clase de la tuberia
+
+	_local capa, estilo, color
+
+	_if _self.clase = "FECALES"
+	_then
+		capa << "SAN_COLECTORFECAL"
+		estilo << "Continuous"
+		color << 140
+		
+	_elif _self.clase = "PLUVIALES"
+	_then
+		capa << "SAN_COLECTORPLUVIAL"
+		estilo << "Continuous"
+		color << 136
+
+	_elif _self.clase = "UNITARIO"
+	_then
+		capa << "SAN_COLECTORUNITARIA"
+		estilo << "Continuous"
+		color << 134
+	_endif 
+
+	_return capa, estilo, color
+_endmethod
+$
+
+

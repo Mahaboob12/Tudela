@@ -1,0 +1,127 @@
+#% text_encoding = iso8859_1
+_package user
+#
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:subtramo,{},:rwo_record)
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+## Define la longitud minima del subtramo para poner el
+## texto de diametro material automaticamente
+subtramo.define_shared_constant(:longitud_para_texto,2500, :public)
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method subtramo.trazado_trigger(tipo,att_det,geom)
+	##
+	## Crea el texto al insertar el trazado
+	##
+	#_self.calcula_grosor
+	_self.posicion_texto(att_det)
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method subtramo.posicion_texto(att_det)
+	##
+	## Crea geometría texto en la mitad del trazado 
+	#
+	_if att_det _is :attach
+	_then
+		# Si el trazado es menor de 2.5 m se borra y no se crea
+		_if _self.texto _isnt _unset _then
+			_self.unset_geometry(:texto)
+		_endif
+		_if _self.trazado.line_length > _self.longitud_para_texto
+		_then
+	
+			(coord,ang) <<  _self.trazado.sectors.find_mid_point()
+			ang << ang.normalise(-float.half_pi,float.half_pi)
+			txt << _self.poner_texto
+	
+			texto << _self.make_geometry(:texto,coord,txt)
+			texto.orientation << ang
+			texto.just << 13
+		_endif 
+	_endif
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method subtramo.longitud
+	##
+	## Return Longitud del subtramo --> Campo Longitud in units :m
+	##
+
+	_if (a_chain << _self.trazado) _is _unset _then
+		_return length_value( 0.0, :m )
+	_endif
+ 
+	len_in_world_units << a_chain.line_length_unit_value()
+	len << len_in_world_units.value_in(unit_value.new(0, :m).unit)
+	
+	_return len
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method subtramo.diametro
+	# Diametro del subtramo --> Campo diametro
+	_return _self.tramo_tuberia.diametro
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method subtramo.calcula_grosor
+	## Asigna el grosor del subtramo en funcion del diametro
+	##  si es menor o mayor de 150 
+	
+	enum_grosor << _self.field(:grosor).type.enumerator
+
+	#valor_diametro <<  _self.tramo_tuberia.diametro.untranslated_string
+	valor_diametro <<  _self.diametro.untranslated_string
+
+	_if valor_diametro.matches?("*''*")
+	_then
+		valor_diametro << valor_diametro.as_integer()*25.4 #(1 pulgada = 25.4 mm)
+	_else
+		valor_diametro << valor_diametro.as_integer()
+	_endif	
+	
+	_if (valor_diametro <= 150)
+	_then
+		_self.dsint!grosor << 1 #  <= 150
+	_else
+		_self.dsint!grosor << 2 #  > 150
+	_endif
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method subtramo.poner_texto
+	##
+	## String del texto con  Diametro+Material
+	
+	txt << _self.diametro.default(0).write_string  + " " +
+	       _self.material.default("PE").write_string
+	_return txt
+_endmethod
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+_method subtramo.export_dxf_piso_subtramo(app_code)
+	##
+	## Devuelve la capa, el estilo y el color del objeto que
+	## corresponde en el fichero DXF exportado, segun el valor
+	## del campo piso del subtramo
+
+	_local capa, estilo, color
+
+	_if _self.piso = "Inferior" _orif
+	    _self.piso = "Medio"
+	_then
+		capa << "MC_TUBERIABAJA"
+		estilo << "CONTINUOUS"
+		color << 144
+	_else
+		capa << "MC_TUBERIAALTAPRESION"
+		estilo << "CONTINUOUS"
+		color << 152
+	_endif 
+
+	_return capa, estilo, color
+_endmethod
+$

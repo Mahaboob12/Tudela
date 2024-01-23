@@ -1,0 +1,78 @@
+#% text_encoding = iso8859_1
+##
+## Plugin para la exportación a ficheros SHAPE
+##
+_package user
+$
+_pragma(classify_level=advanced, topic={ib_export})
+def_slotted_exemplar(:ib_export_shape_plugin,
+	{
+	},
+	{:plugin})
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+##Identificador del dialogo de exportación shape
+ib_export_shape_plugin.define_shared_constant(:id_export_shape_dialog,:export_shape,:public)
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_plugin.init_actions()	 
+	##
+	## Inicializar actions
+		
+	_self.add_action(
+		sw_action.new(
+			:open_export_shape,
+			:caption,         _self.message(:exp_shape),
+ 		        :tooltip           , _self.message(:exp_shape_tt),
+			:engine,          _self,
+			:action_message,  :|open_export_shape_dialog()|
+			  ) )
+
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_plugin.open_export_shape_dialog()
+	##
+	## Abrir dialogo para exportar a formato Shape
+	##
+
+	dlg << _self.get_export_shape_dialog()
+
+	_if _self.top_frame _isnt _unset _then 
+		dlg.activate_relative_to( _unset, dlg.title,
+				_self.top_frame, 50,50 )
+	_else
+		dlg.activate()
+	_endif 
+	
+	_return dlg
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_plugin.get_export_shape_dialog()
+	##
+	## Devuelve el dialogo de exportación y si aún no existe lo crea
+	##
+
+	_local name << _self.id_export_shape_dialog
+	_local dlg
+
+	_if ( dlg << _self.get_dialog( name ) ) _is _unset
+	_then
+		dlg << _self.create_new_dialog_framework()
+		_self.cache_dialog( name, dlg )
+	_endif
+
+	_return dlg
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_plugin.create_new_dialog_framework()
+	##
+	## Crear instancia del framework
+	##
+
+	_return ib_export_shape_framework.new( _self.id_export_shape_dialog, _self)
+_endmethod
+$

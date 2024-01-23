@@ -1,0 +1,3 @@
+conditions
+related_objects_provider
+documento_relacionado_editor_plugin

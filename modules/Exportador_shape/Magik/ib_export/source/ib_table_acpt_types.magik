@@ -1,0 +1,307 @@
+#% text_encoding = iso8859_1
+##
+## Genera informacion relacionada con la descripcion de los campos de una tabla.
+##
+## Para cada campo proporciona:
+##
+##  - ACPT_TYPE
+##  - Indica si es un campo geometrico
+##  - Indica si puede ser nulo
+##  - Unidades en las que se almacena la informacion (siempre
+##                                 que sea un dato con unidades)
+## 
+##
+
+_package user
+$
+_pragma(classify_level=advanced, topic={ib_export})
+def_slotted_exemplar(:ib_table_acpt_types,
+	{
+		{:sw_table, _unset },                 # tabla 
+		{:table_descriptor,_unset },          # lista de nombres de los campos de la tabla
+		{:acpt_fields_types, _unset },        # lista de acpt_types de los campos de la tabla
+		                                      # (ambas listas estan indexadas en el mismo orden)
+		{:acpt_geom_types, _unset }           # acpt_types de los campos geometricos
+	})
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## Tipos de campos geometricos que se utilizan
+ib_table_acpt_types.define_shared_constant(:geom_sw_types,{:point,:simple_point,:chain,
+	                                                   :area,:simple_chain,:simple_area,
+					                   :text},:private)
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## Indices de la informacion de descripcion del campo,
+## indexados por el tipo de informacion que guarda
+ib_table_acpt_types.define_shared_constant(:index_field_info,property_list.new_with(
+	                                                                   :acpt_type,1,
+	                                                                   :unit,2,
+									   :nullable,3),:private)
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_acpt_types.new(a_table)
+     ## 
+     ## 
+     ##
+	
+     >> _clone.init(a_table) 
+_endmethod 
+$
+_pragma(classify_level=basic, topic={ib_export})
+_private _method ib_table_acpt_types.init(a_table) 
+   ## 
+   ## A_TABLE , es un objeto de tipo collection
+   ##
+	_self.initialize_slots(a_table)
+	
+	>> _self
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_acpt_types.initialize_slots(a_table)
+	##
+	## Inicializa los slots 
+	##
+
+	# Inicializar tabla
+	.sw_table << a_table
+
+	# Acpt de geometrias
+	.acpt_geom_types << _self.create_geom_acpt_types(.sw_table.source_view)
+
+	# Table descriptor
+	tab_desc << recordset_descriptor.new(.sw_table)
+	.table_descriptor << tab_desc.fields_descriptors
+
+	# Table acpt_types	
+	.acpt_fields_types << tab_desc.acpt_record_type.fields
+	_self.init_table_acpt_types
+	
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_acpt_types.init_table_acpt_types
+	##
+	## Inicializa el slot .ACPT_FIELDS_TYPES, es una lista que almacena el tipo
+	## de acpt_type que se corresponde con cada campo
+	##
+
+	num_fields << .table_descriptor.size
+
+	_for i _over 1.upto(num_fields)
+	_loop
+		a_field << .sw_table.field(.table_descriptor[i])
+		_if a_field.is_geometry? _then
+			.acpt_fields_types[i][1] << .acpt_geom_types[a_field.geom_type]
+		_endif 
+	_endloop
+
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_acpt_types.create_geom_acpt_types(a_view)
+	##
+	## Genera los acpt_types de las geometrias y pseudo_geometrias
+	##
+
+	acpt_geoms_types <<  acpt_type.make_geometry_types(a_view,
+		   :point,        {:fields, {:rwo_code, :app_code, :coord, :orientation,
+				   :scale, :mirror}},
+		   :simple_point, {:fields, {:rwo_code, :app_code, :coord, :orientation,
+				   :scale, :mirror}},
+		   :chain,        {:fields, {:rwo_code, :app_code}},
+		   :area,         {:fields, {:rwo_code, :app_code}},
+		   :simple_chain, {:fields, {:rwo_code, :app_code}},
+		   :simple_area,  {:fields, {:rwo_code, :app_code}},
+		   :text,         {:fields, {:rwo_code, :app_code, :height, :coord_1,
+					     :coord_2, :orientation, :just}},
+			    :want_transformed_coords?, _true)
+
+	# Crear acpt_types para las pseudo_geometries
+
+	# pseudo_point
+	acpt_pseudo_point << acpt_type.new_slotted_type(pseudo_point_export, {{:rwo_code,acpt_type.uint16},
+								       {:app_code,acpt_type.uint16},
+								       {:coord,acpt_type.coordinate},
+								       {:orientation,acpt_type.float32},
+								       {:scale,acpt_type.float32},
+								       {:mirror,acpt_type.boolean}},
+				 :name, :pseudo_point)
+
+	acpt_geoms_types[:pseudo_point] << acpt_pseudo_point
+	
+	# pseudo_chain
+	acpt_pseudo_chain << acpt_type.new_slotted_type(pseudo_chain_export, {{:rwo_code,acpt_type.uint16},
+									      {:app_code,acpt_type.uint16},
+									      {:sectors, acpt_type.sector_rope}
+							},
+				 :name, :pseudo_chain)
+
+	acpt_geoms_types[:pseudo_chain] << acpt_pseudo_chain
+
+	# pseudo_area
+	acpt_pseudo_polygon << acpt_type.new_slotted_type(pseudo_polygon_export, {{:sectors, acpt_type.sector_rope},
+										  {:holes_sectors,
+										   acpt_type.new_v_vector_type(simple_vector,
+						                                                  acpt_type.sector_rope)}},
+							  :name, :pseudo_polygon)
+
+	acpt_geoms_types[:pseudo_polygon] << acpt_pseudo_polygon
+	acpt_pseudo_area << acpt_type.new_slotted_type(pseudo_area_export, {{:rwo_code,acpt_type.uint16},
+								            {:app_code,acpt_type.uint16},
+                                                                            {:sectors, acpt_type.sector_rope},
+						                            {:adjusted_polygons,
+									     acpt_type.new_v_vector_type(simple_vector,
+						                                                  acpt_pseudo_polygon)}},
+				                                         :name, :pseudo_area)
+
+	acpt_geoms_types[:pseudo_area] << acpt_pseudo_area
+
+	# pseudo_text
+	acpt_pseudo_text << acpt_type.new_slotted_type(pseudo_text_export, {{:rwo_code,acpt_type.uint16},
+								       {:app_code,acpt_type.uint16},
+								       {:height,acpt_type.float32},
+								       {:coord_1,acpt_type.coordinate},						       
+								       {:coord_2,acpt_type.coordinate},
+								       {:orientation,acpt_type.float32},
+								       {:just,acpt_type.uint16},
+								       {:string,acpt_type.long_string16}},
+				 :name, :pseudo_text)
+
+
+	acpt_geoms_types[:pseudo_text] << acpt_pseudo_text
+
+	
+	_return acpt_geoms_types
+	
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_acpt_types.get_record_acpt_type(a_field_name)
+	##
+	## Devuelve el record_acpt_type del campo de nombre A_FIELD_NAME
+	##
+
+	cu_acpt << _unset 
+	a_field_name << a_field_name.as_symbol()
+	_if (index << .table_descriptor.index_of(a_field_name)) _isnt _unset _then
+		cu_acpt<< .acpt_fields_types[index]
+	_endif
+	_return cu_acpt
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_acpt_types.get_info_field_descriptor(a_field_name,index_info)
+	##
+	## Devuelve informacion del descriptor del campo A_FIELD_NAME,
+	## para el indice INDEX_INFO
+	##
+
+	a_acpt_record_type << _self.get_record_acpt_type(a_field_name)
+	info << a_acpt_record_type[index_info]
+
+	_return info
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_acpt_types.can_be_null?(a_field_name)	
+	##
+	## Indica si el campo de nombre A_FIELD_NAME puede ser nulo
+	##
+	can_be_null? << _self.get_info_field_descriptor(a_field_name,3)[:unset?]
+	_return can_be_null?
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_acpt_types.get_acpt_type(a_field_name)
+	##
+	## Devuelve el acpt_type correspondiente al campo de nombre A_FIELD_NAME
+	##
+	
+	acpt_type << _self.get_info_field_descriptor(a_field_name,1)
+	_return acpt_type
+	
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_acpt_types.get_unit(a_field_name)
+	##
+	## Devuelve el tipo de unidades correspondiente al campo de nombre A_FIELD_NAME
+	## (siempre que el dato tenga unidades)
+	##
+	
+
+	_local unit
+	
+	a_field << .sw_table.field(a_field_name.as_symbol())
+	_if (s_unit << a_field.stored_unit) _isnt _unset _then
+		unit << s_unit.base_unit.name
+		#unit << _self.get_info_field_descriptor(a_field_name,2)
+	_endif
+
+	_return unit
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_acpt_types.is_geom_acpt_type?(a_acpt_type)
+	##
+	## Indica si el A_ACPT_TYPE pasado por parametro es geometrico
+	##
+
+	_local is_geom?
+
+	_if a_acpt_type _isnt _unset _andif
+	    a_acpt_type.is_kind_of?(acpt_type) _then
+		is_geom? << (.acpt_geom_types[a_acpt_type.name] _isnt _unset )
+	_endif 
+
+	_return is_geom?.default(_false)
+_endmethod 
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_acpt_types.get_field_info(a_field_name)
+	##
+	## Proporciona para el campo de nombre A_FIELD_NAME la
+	## siguiente informacion:
+	##  ACPT_TYPE     --> acpt_type correspondiente al campo
+	##  IS_GEOMETRY?  --> indica si e sun campo geometrico
+	##  CAN_BE_NULL   --> indica si puede ser nulo
+	##  UNIT          --> unidades en las que se almacena la
+	##                    informacion (si es un dato con unidades)
+	##
+
+	_local a_acpt_type,is_geometry?,can_be_null?,unit
+
+	a_acpt_record_type << _self.get_record_acpt_type(a_field_name)
+
+	_if a_acpt_record_type _is _unset _then _return _unset,_false,_true,_unset  _endif
+	
+	a_acpt_type << a_acpt_record_type[_self.index_field_info[:acpt_type]]
+	is_geometry? << _self.is_geom_acpt_type?(a_acpt_type)
+	can_be_null? << a_acpt_record_type[_self.index_field_info[:nullable]][:unset?]
+
+	# unidades
+	a_field << .sw_table.field(a_field_name.as_symbol())
+	_if (s_unit << a_field.stored_unit) _isnt _unset _then
+		unit << s_unit.base_unit.name
+		#unit << a_acpt_record_type[_self.index_field_info[:unit]]
+	_endif 
+
+	_return a_acpt_type,is_geometry?,can_be_null?,unit
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_acpt_types.get_pseudo_geom_acpt_type(a_geom_acpt_type)
+	##
+	## Devuelve el acpt_type de la pseudo_geometry equivalente
+	##
+
+	acpt_type_name << a_geom_acpt_type.name.write_string.substitute_string("simple_","")
+	acpt_type_pseudo_name << ("pseudo_"+acpt_type_name).as_symbol()
+	acpt_type_pseudo << .acpt_geom_types[acpt_type_pseudo_name]
+
+	_return acpt_type_pseudo
+_endmethod
+$

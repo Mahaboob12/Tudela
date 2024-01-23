@@ -1,0 +1,146 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+_pragma(classify_level=basic)
+def_slotted_exemplar(:documento_relacionado,{},:rwo_record)
+$
+_pragma(classify_level=restricted)
+documento_relacionado.define_shared_constant(
+	:nombre_aplicacion,
+	property_list.new_with( :|Winword|, "winword.exe",
+				:|Excel|,   "excel.exe",
+				:|Bitmap|,  "mspaint.exe",
+				:|Imagen|,  "pictureviewer.exe",
+				:|URL|,     "iexplore.exe",
+				:|Html|,    "iexplore.exe",
+				:|Wordpad|, "wordpad.exe"),
+	:public)
+$
+
+_pragma(classify_level=restricted)
+documento_relacionado.define_shared_constant(
+	:texto_descripcion_objeto,
+	property_list.new_with( :acometida, {:calle,:n_policia},
+				:arqueta, :nombre,
+				:boca_riego, :calle,
+				:hidrante, :calle,
+				:valvula, {:arqueta,:nombre},
+				:ventosa, {:arqueta,:nombre},
+				:valvula_combi, {:arqueta,:nombre},
+				:pozo_saneamiento, :nombre),
+	:public)
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado.insert_trigger()
+	##
+	##
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado.update_trigger()
+	##
+	##
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado.delete_trigger()
+	##
+	##
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado.objeto_relacionado
+	##
+	## Devuelve el objeto relacionado con el documento o _unset si
+	## no existe el objeto
+
+	_local tabla
+
+	_if _self.nombre_tabla _isnt _unset _andif 
+	    (tabla << _self.source_view.collection(_self.nombre_tabla.as_symbol())) _isnt _unset
+	_then
+		_return tabla.at(_self.id_objeto)
+	_else
+		_return _unset
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado.descripcion_objeto
+	##
+	## Descripcion del objeto con el cual esta relacionado el
+	## documento
+
+	_if (obj << _self.objeto_relacionado) _is _unset
+	_then
+		_return ""
+	_endif
+	
+	col << obj.source_collection.name
+
+	_if (arg << _self.texto_descripcion_objeto[col]) _isnt _unset
+	_then
+		_if arg.is_kind_of?(simple_vector)
+		_then
+			_if (fld << obj.field(arg[1])) _isnt _unset _andif
+			    fld.responds_to?(:join_type)
+			_then
+				_if (obj << obj.perform(arg[1])) _isnt _unset
+				_then 
+					texto << write_string(arg[1],": ",obj.perform(arg[2]))
+				_else
+					texto << ""
+				_endif 
+			_else
+				texto << write_string(obj.perform(arg[1]),", ",obj.perform(arg[2]))
+			_endif
+
+			_return texto
+		_else
+			_return obj.perform(arg)
+		_endif 
+	_else
+		_return ""
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado.abrir_documento()
+	##
+	## Abre el documento relacionado
+
+	_local loc_msg
+
+	_if _self.nombre_completo _is _unset _orif 
+	    (system.file_exists?(_self.nombre_completo) _isnt _true _andif
+	     _self.dsint!tipo_documento ~= "URL")
+	_then
+		file << _self.nombre_completo
+                _return _false,file
+	_endif
+
+	ruta << write_string(%",_self.nombre_completo,%")
+
+	_if _self.nombre_aplicacion[_self.tipo_documento.as_symbol()] _isnt _unset
+	_then
+		aplicacion << _self.nombre_aplicacion[_self.tipo_documento.as_symbol()]
+	_else
+		aplicacion << write_string(%","Documento Relacionado",%")
+	_endif
+
+	comando << write_string("start ",aplicacion," ",ruta)
+	system.start_command(comando,system.home)
+	
+	_return _true
+_endmethod
+$

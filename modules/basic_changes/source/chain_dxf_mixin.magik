@@ -1,0 +1,119 @@
+#% text_encoding = iso8859_1
+_package sw
+$
+
+# WRITE_DXF:
+
+_pragma(classify_level=advanced, topic={dxf_translators}, usage={external, subclass})
+_method chain_dxf_mixin.write_dxf(a_dxf_out_stream, _optional layer, linetype, colour)
+
+## Writes, to the DXF output stream A_DXF_OUT_STREAM, a DXF
+## LINE, ARC, CIRCLE or POLYLINE entity, as appropriate, for
+## the chain geometry _SELF
+##
+## The DXF entity will be assigned the layer name, linetype
+## name and colour number attributes LAYER (default = parent
+## RWO name), LINETYPE (default = "BYLAYER") and COLOUR
+## (default = -1, i.e. BYLAYER)
+##
+## Returns _true if _SELF has been written to file, returns
+## _false otherwise
+
+
+	_dynamic !current_coordinate_system!
+
+	my_cs  << _self.world.coordinate_system
+	dxf_cs << !current_coordinate_system!
+
+	non_affine_projection? << dxf_cs _isnt _unset _andif my_cs _isnt _unset _andif dxf_cs <> my_cs
+	
+	layer_name << _if layer _isnt _unset
+		      _then >> layer
+		      _elif (rt << _self.rwo_type) _isnt  _unset
+		      _then >> rt
+		      _else >> "0"  # Default to layer 0
+		      _endif
+
+	linetype   << linetype.default("BYLAYER")
+	colour     << _if colour _is _unset _then >> -1 _else >> colour _endif 
+
+	sr << _self.sectors
+
+	# Inicio Modificacion: FRA (28/08/12)
+	# Convierte geometrias en 3 dimensiones a geometrias en 2
+	# dimensiones para la exportacion a un fichero DXF
+	_if (un_sec << sr.an_element()).is_kind_of?(sector_z)
+	_then
+		new_sr << sector_rope.new()
+		
+		_for a_sec _over sr.fast_elements()
+		_loop
+			new_sec << sector.new()
+				
+			_for a_coord _over a_sec.fast_elements()
+			_loop
+				new_coord << a_coord.as_coord2d()
+				new_sec.add_last(new_coord)
+			_endloop
+
+			new_sr.add_last(new_sec)
+		_endloop
+
+		sr << new_sr
+	_endif
+	# Fin Modificacion
+
+	type << _if sr.size = 1
+		_then >> _if (s << sr[1]).is_class_of?(sector) _andif s.size = 2
+			 _then >> :line
+			 _elif s.is_class_of?(arc) _andif s.circular?()
+			 _then >> :arc
+			 _elif s.is_class_of?(circle)
+			 _then >> :circle
+			 _else >> :polyline
+			 _endif
+		_else >> :polyline
+		_endif 
+
+	_if non_affine_projection?
+	_then
+		_if type _isnt :circle
+		_then 
+		# Flatten the projected arc (tolerance = 0 and min & max recursion = 3 for 8 (2**3) segs per "quadrant")
+			sr << sr.faceted(0.0,3,3)
+		_else
+		# Circle - must first flatten the circle in the database coordinate system and then project the result
+			!current_coordinate_system! << _unset 
+			
+			# Inicio Modificacion: FRA (28/08/12)
+			# Realiza la operacion sobre la sector_rope original o la
+			# obtenida por conversion a 2 dimensiones
+			#raw_sr << _self.sectors.faceted(0.0,3,3)
+			raw_sr << sr.faceted(0.0,3,3)
+			# Fin Modificacion
+
+			sr << raw_sr.transformed(transform.new_converting_cs_to_cs(my_cs, dxf_cs))
+		_endif 
+		type << :polyline
+	_endif
+				
+	_if type _is :line
+	_then
+	# Output LINE entity
+		a_dxf_out_stream.write_line(sr[1], layer_name, linetype, colour)
+	_elif type _is :arc
+	_then 
+	# Output ARC entity
+		a_dxf_out_stream.write_arc(sr[1], layer_name, linetype, colour)
+	_elif type _is :circle
+	_then 
+	# Output CIRCLE entity
+		a_dxf_out_stream.write_circle(sr[1], layer_name, linetype, colour)
+	_else 
+	# Output POLYLINE entity
+		a_dxf_out_stream.write_polyline(sr, layer_name, linetype, colour)
+	_endif
+
+	>> _true 
+_endmethod
+$

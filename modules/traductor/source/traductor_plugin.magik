@@ -1,0 +1,40 @@
+#% text_encoding = iso8859_1
+_package user
+$
+#remex(:traductor_plugin)
+$
+
+_pragma(classify_level=basic)
+def_slotted_exemplar(:traductor_plugin,
+	{
+	            {:traductor_config, _unset}
+},
+:plugin)
+$
+
+_method traductor_plugin.init_actions()
+	## 
+	## 
+	_self.add_action(sw_action.new(:activar_menu_cartografia,
+				       :caption, "Menu Cartografia",
+				       :engine, _self,
+				       :action_message, :activar_menu_cartografia|()|))
+_endmethod
+$
+_pragma(classify_level=basic)
+_method traductor_plugin.activar_menu_cartografia()
+	_if .traductor_config _is _unset 
+	_then
+		.traductor_config << traductor_framework.new(_self)
+		.traductor_config.activate()
+	_endif
+
+	_if _not .traductor_config.frame_active?
+	_then
+		.traductor_config.reactivate()
+	_endif
+
+	
+
+_endmethod
+$

@@ -1,0 +1,1833 @@
+#% text_encoding = iso8859_1
+##
+## Dialogo para configurar el mapeo en la exportación a ficheros SHAPE
+##
+
+_package user
+$
+_pragma(classify_level=advanced, topic={ib_export})
+def_slotted_exemplar(:ib_export_shape_config_framework,
+	{
+		{:items,_unset },                    # lista de controles
+		{:current_correspondences, _unset }, # mapeo actual de la exportación
+		{:dataset_config, _unset },          # dataset para el que se quiere configurar el mapeo
+		{:initial_correspondences, _unset},  # correspondencias iniciales
+		# Listas mostradas en los controles
+		{:list_entities, _unset },
+		{:list_sw_objects, _unset },         # objetos sw
+		# Lista de correspondencias de Sw - Atributos
+		{:list_field_correspondences, _unset },
+		#
+		{:list_not_geom_field,_unset },
+		# Si se han realizado modificaciones de configuracion
+		{:export_config_change?, _false },
+		# Indica si las modificaciones se han guardado en un fichero
+		{:saved_in_file?,_false },
+		# Cerrar tras guardar los cambios
+		{:close_after_save?,_false }
+	},
+	{:gui_framework})
+$
+_pragma(classify_level=basic, topic={ib_export})
+#
+# Valor por defecto para el parametro que india si se exportan
+# registros con la geometria vacía
+ib_export_shape_config_framework.define_shared_constant(:default_export_empties,_true ,:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+#
+# Se ignoran todas las tablas que contengan alguno de los
+# siguientes texto
+ib_export_shape_config_framework.define_shared_constant(:ignored_text_in_tables,
+	                                                   {"!","drafting","dxf","function_geometry","fondo_cells"},:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+#
+# Pares de identificadores que relacionan el id del mensaje que
+# contiene el nombre de la columna con el id que devuelve el
+# valor de la lista
+ib_export_shape_config_framework.define_shared_constant(:relation_ids_attributes,property_list.new_with(
+								   :sw_field,:c_field_sw,
+								   :type,:c_field_type_sw,
+								   :sw_unit,:c_unit_sw,
+								   :shape_field,:c_attribute_sh,
+								   :sh_unit,:c_unit_sh,
+								   :format_method,:c_format_method,
+								   :format_parameters,:c_format_parameters),:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+##
+##
+ib_export_shape_config_framework.define_shared_constant(:column_entity_ids,{:c_object_sw,:c_geometry,:c_entity,:toggle_export_empty},:public)
+$
+_pragma(classify_level=basic, topic={ib_export})
+#
+# Longitud fija de algunos controles (para evitar que se redimensionen) 
+ib_export_shape_config_framework.define_shared_constant(:fixed_heights,property_list.new_with(
+	                                                                                   :tree_objs_sw,180) ,:private)
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_config_framework.new(a_name, a_framework,dataset_name,dataset_correspondences,_gather properties)
+	##
+	## Crear instancia
+	##
+	_return _clone.init(a_name, a_framework,dataset_name,dataset_correspondences,properties)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_config_framework.init(a_name, a_framework,dataset_name,dataset_correspondences,
+						       _optional properties)
+	##
+	## Inicializar slots
+	#
+	_super.init(a_name, a_framework, properties)
+
+	.items << property_list.new()
+	
+	# sin botones para redimensionar la ventana,ni cerrar
+	_self.wm_closable? << _false 
+	_self.minimizable?<<_true
+	_self.maximizable?<<_false
+
+ 
+	_self.set_config_parameters(dataset_name,dataset_correspondences)
+	
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_export_shape_config_framework.set_config_parameters(dataset_name,dataset_correspondences)
+	##
+	## Asigna dataset y mapeos existentes a partir de los cuales se
+	## va a realizar la configuracion
+	##
+
+	# Se trabaja con copias del objeto correspondencias
+	.current_correspondences << dataset_correspondences.deep_copy()
+	.initial_correspondences << .current_correspondences.deep_copy()
+	
+	_if dataset_name _isnt  _unset _then
+		.dataset_config << gis_program_manager.cached_dataset(dataset_name.as_symbol())
+	_endif 
+
+	_if .dataset_config _is _unset _then
+		# falta el dataset
+		err_condition << :no_dataset_config
+	_endif
+
+	_if err_condition _isnt _unset _then
+		condition.raise(err_condition)
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.notify_changes()
+	##
+	## Actualiza los slots que almacenan informacion de actualizacion
+	## cuando se produce una actualizacion de la configuracion
+
+	.export_config_change? << _true 
+	.saved_in_file? << _false
+	.close_after_save? << _false 
+	
+_endmethod 
+$
+################################################################################################################################
+##
+## ATRIBUTOS DEL DIALOGO
+##
+################################################################################################################################
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_config_framework.title
+	##
+	## Devuelve el titulo del dialogo
+	##
+	_return _self.message(:title)
+_endmethod
+$
+################################################################################################################################
+##
+## METODOS PARA CONSTRUIR EL DIALOGO
+##
+################################################################################################################################
+
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_config_framework.build_gui(a_frame, _optional an_xml_element)
+	##
+	## Contruye el dialogo de exportación
+	##
+ 
+	a_frame.resizable? << _true
+	a_frame.min_height << 827
+	a_frame.modality     << :primary_modal
+	a_frame.default_resize?<< _false 
+	
+
+	# asignar a los botones y a los combos el ancho estandar
+	# se definen los valores por defecto en el fichero de mensajes
+	button_width << _self.get_optional_resource(:min_button_width, :integer)
+	combo_width << _self.get_optional_resource(:min_combo_width,:integer).default(320)	
+	column_width << _self.get_optional_resource(:min_column_width,:integer).default(100)
+
+
+	outer_rc << rowcol.new( a_frame, _unset ,1, :pixel,
+			  :style, :top_level,
+			  :default_row_alignment, :centre,
+			  :row_spacing,2)
+
+	_self.container << outer_rc
+
+	rc_componentes << rowcol.new( outer_rc, _unset ,1, :pixel,
+			  :style, :nested,
+			  :row, 1, :col, 1,
+			  :default_row_alignment, :centre)
+
+	rc_componentes.row_spacing<< 8
+	rc_componentes.top_spacing<< 4
+	rc_componentes.bottom_spacing<< 4
+	rc_componentes.left_spacing<< 4
+
+
+	
+	# Correspondencias Objetos - Entidades
+	gbox_entidades << group_box.new( rc_componentes, _self.message(:corresp_objs_entidades),
+			 	         :row, 1, :col, 1, :col_alignment, :fill)
+	
+	rc_obj_ent  << rowcol.new( gbox_entidades, 3 , _unset , :pixel,
+				  :style, :group_box,
+				  :default_row_alignment, :centre)
+
+	rc_obj_ent.top_spacing<< 4
+
+	rc_tree_ent  << rowcol.new( rc_obj_ent, 1 , _unset , :pixel,
+				    :style, :nested,
+				    :row, 1, :col, 1,
+				    :default_row_alignment, :centre)
+
+	rc_tree_ent_b  << rowcol.new( rc_tree_ent, 2,1 , :pixel,
+				    :style, :nested,
+				    :row, 1, :col, 1,
+				    :default_row_alignment, :centre)
+
+	#Crear nombres de ids de columnas
+	nom_columnas << simple_vector.new(0)
+	
+	_for id_msg _over _self.column_entity_ids.fast_elements()
+	_loop
+		nom_columnas << nom_columnas.new_appending(_self.message(id_msg))
+	_endloop
+	
+	
+	.items[:tree_entities] << tree_item.new(rc_tree_ent_b,
+						     :row, 1, :col, 1,
+						     :col_alignment,:fill,:row_alignment,:fill,
+						     :resize_x?,_true,:resize_y?,_true,
+						     :model,_self,
+						     :column_headings,nom_columnas,
+						     :column_headings_ids,_self.column_entity_ids,
+						     :column_allow_group_by_values,{_false,_false,_false,_false },
+						     :column_widths,{column_width,column_width,column_width,20},
+						     #:column_min_widths,{column_width,column_width,column_width},
+						     :mode,:many,					     
+						     :select_notifier,:select_tree_item_entities|()|,
+						     :aspect,:list_entities,
+						     :column_allow_visibility_change?,_false
+#						     ,:width,column_width * nom_columnas.size #Asignar un tamanyo fijo
+#						                                              #para que muestre todas las columnas inicialmente
+#						     ,:distribute_spare_width,:never
+						     #,:width,300,:height,130
+					    )
+
+	label_item.new(rc_tree_ent_b," "*105,:model,_self,:row,2,:col,1)
+	
+	rc_op_ent_buttons << rowcol.new( rc_tree_ent, 4,1, :pixel,
+				  :style, :nested,
+				  :row, 1, :col, 2,
+				  :default_row_alignment, :centre)
+
+	rc_op_ent_buttons.top_spacing<< 2
+	rc_op_ent_buttons.bottom_spacing<< 2
+
+	.items[:bt_add_entity]  << button_item.new(rc_op_ent_buttons,_self.message(:bt_add_entity),
+					      _self, :|add_entity()|, 
+   			                      :row, 2, :col, 1,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill,
+					      :enabled_state_aspect,:enough_entity_info?)
+
+	.items[:bt_update_entity]  << button_item.new(rc_op_ent_buttons,_self.message(:bt_update_entity),
+					      _self, :|update_entity()|, 
+   			                      :row, 3, :col, 1,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill,					      
+					      :enabled_state_aspect,:selected_one_entity?)
+
+	rc_tree_obj << rowcol.new( rc_tree_ent, 2,1, :pixel,
+				  :style, :nested,
+				  :row, 1, :col, 3,
+				  :default_row_alignment, :centre)
+	rc_tree_obj.min_width << 60
+	objs_sw_column_witdh << 100
+	.items[:tree_objs_sw] << tree_item.new(rc_tree_obj,
+					             :row, 1, :col, 1,
+						     :col_alignment,:fill,:row_alignment,:fill,
+						     :resize_x?,_true,
+						     :resize_y?,_true,						     
+						     #:visible_rows,10,
+						     :model,_self,
+						     :column_headings,{_self.message(:c_object_sw)},
+						     :column_headings_ids,{:c_object_sw},
+						     :column_allow_group_by_values,{_false},
+						     :column_widths,{objs_sw_column_witdh},
+						     :min_height,_self.fixed_heights[:tree_objs_sw],
+						     #:column_min_widths,{objs_sw_column_witdh},
+						     :mode,:one,					     
+						     :select_notifier,:select_tree_item_object_sw|()|,
+						     :aspect,:list_sw_objects,
+						     :column_allow_visibility_change?,_false#,
+						     #:width,objs_sw_column_witdh
+						     #,:height,130
+					   )
+
+	label_item.new(rc_tree_obj," "*50,:model,_self,:row,2,:col,1)
+	
+	rc_control_ent << rowcol.new( rc_tree_ent, 4,1, :pixel,
+				  :style, :nested,
+				  :row, 1, :col, 4,
+				  :row_alignment,:top)
+	
+	.items[:lb_field_geom] << label_item.new(rc_control_ent,_self.message(:c_geometry),:model,_self,:row,1,:col,1,
+					     :enabled_state_aspect,:selected_obj_sw?)
+	.items[:geoms_fields] << combo_box_item.new(rc_control_ent,"",						      
+					              :row, 2, :col, 1,
+						      :model,_self,
+						      :options,_self.list_geoms_fields,
+						      #:items,_self.list_geoms_fields,
+						      :change_selector,:change_geom_field|()|,
+						      :min_width,combo_width,
+						      :max_width,combo_width, # si el texto es mayor que el tamanyo no evita que crezca
+						      # no funciona solo aplicable cuando el padre es un panel_form
+						      :width,combo_width,
+						      :incremental_change_selector,:no_edit_geom_fields|()|,
+						      :enabled_state_aspect,:selected_obj_sw?,
+						      :resize?,_false,# no funciona solo aplicable cuando el padre es un panel_form
+						      :allow_input?,_false ) # esto hace algo????????
+						      #:enabled_state_aspect,:visibilidad_zona)
+
+	.items[:lb_entity] << label_item.new(rc_control_ent,_self.message(:c_entity),:model,_self,:row,3,:col,1,
+					 :enabled_state_aspect,:selected_geom_field?)
+	.items[:text_entity] << text_item.new(rc_control_ent,"",:model,_self,:width,combo_width,:row,4,:col,1,
+					 :enabled_state_aspect,:selected_geom_field?)
+						   #:enabled_state_aspect,:visibilidad_log)
+	
+	
+	rc_entity_buttons << rowcol.new( rc_obj_ent, 1,3, :pixel,
+				  :style, :nested,
+				  :row, 2, :col, 1,
+				  :default_row_alignment, :centre)
+
+	rc_entity_buttons.top_spacing<< 0
+	rc_entity_buttons.bottom_spacing<< 8
+
+	.items[:bt_remove_ent]  << button_item.new(rc_entity_buttons,_self.message(:bt_remove_selected),
+					      _self, :|remove_selected_entities()|, 
+   			                      :row, 1, :col, 1,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill,
+					      :enabled_state_aspect,:selected_entities?)
+
+	.items[:bt_reload]  << button_item.new(rc_entity_buttons,_self.message(:bt_reload),
+					      _self, :|reload_init_values()|, 
+   			                      :row, 1, :col, 3,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+
+	# Correspondencias Campos - Atributos
+	gbox_attributes << group_box.new( rc_componentes, _self.message(:corresp_fields_attributes),
+			 	         :row, 2, :col, 1, :col_alignment, :fill)
+	
+	rc_fields_attbs  << rowcol.new( gbox_attributes, 3 , _unset , :pixel,
+				  :style, :group_box,
+				  :default_row_alignment, :centre)
+
+	rc_tree_attb  << rowcol.new( rc_fields_attbs, 2 ,1 , :pixel,
+				    :style, :nested,
+				    :row, 1, :col, 1,
+				    :default_row_alignment, :centre)
+
+	nom_columnas_attb << simple_vector.new(0)
+	ids_columnas_attb << simple_vector.new(0)
+	_for a_id,a_id_msg _over _self.relation_ids_attributes.fast_keys_and_elements()
+	_loop
+		nom_columnas_attb << nom_columnas_attb.new_appending(_self.message(a_id_msg))
+		ids_columnas_attb << ids_columnas_attb.new_appending(a_id)
+	_endloop 
+	
+	.items[:tree_attributes] << tree_item.new(rc_tree_attb,
+						     :row,1,:col,1,
+						     :col_alignment,:fill,:row_alignment,:fill,
+						     :resize_x?,_true,:resize_y?,_true,
+						     :model,_self,
+						     :column_headings,nom_columnas_attb,
+						     :column_headings_ids,ids_columnas_attb,
+						     :column_allow_group_by_values,{_false,_false,_false,
+						                                    _false,_false,_false},
+						     :column_widths,{column_width,column_width,column_width,
+								     column_width,column_width,column_width + 30,column_width},
+						     :mode,:many,					     
+						     :select_notifier,:select_tree_item_attributes|()|,
+						     :aspect,:list_attributes,
+						     :column_allow_visibility_change?,_false
+						     #,:width,300,:height,130
+					    )
+	label_item.new(rc_tree_attb," "*242,:model,_self,:row,2,:col,1)
+	
+	rc_attribute_buttons << rowcol.new( rc_fields_attbs, 1,_unset , :pixel,
+				  :style, :nested,
+				  :row, 2, :col, 1,
+				  :default_row_alignment, :centre)
+
+	rc_attribute_buttons.top_spacing<< 0
+	rc_attribute_buttons.bottom_spacing<< 12
+
+	.items[:bt_remove_atb]  << button_item.new(rc_attribute_buttons,_self.message(:bt_remove_selected),
+					      _self, :|remove_selected_attributes()|,
+					      :row, 1, :col, 1,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill,
+					      :enabled_state_aspect,:selected_attributes?)
+
+	rc_not_geom_fields << rowcol.new( rc_fields_attbs, 1,_unset , :pixel,
+				  :style, :nested,
+				  :row, 3, :col, 1,
+				  :default_row_alignment, :centre)
+
+	.items[:tree_not_geoms_fld] << tree_item.new(rc_not_geom_fields,
+					             :row, 1, :col, 1,
+						     :col_alignment,:fill,:row_alignment,:fill,
+						     :resize_x?,_true,:resize_y?,_true,
+						     :model,_self,
+						     :column_headings,{_self.message(:not_geometries_fields)},
+						     :column_headings_ids,{:not_geometries_fields},
+						     :column_allow_group_by_values,{_false},
+						     :column_widths,{130},
+						     :mode,:one,					     
+						     :select_notifier,:select_tree_not_geoms_fields|()|,
+						     :aspect,:list_not_geoms_fields,
+						     :column_allow_visibility_change?,_false,					      
+						     :enabled_state_aspect,:selected_one_entity?
+						     #,:width,300,:height,130
+						 )
+
+	rc_txt_butt << rowcol.new(rc_not_geom_fields , 2 ,_unset , :pixel,
+				  :style, :nested,
+				  :row, 1, :col, 2,
+				  :row_alignment, :top)
+	
+	rc_text_attbs << rowcol.new(rc_txt_butt, 4 ,5 , :pixel,
+				  :style, :nested,
+				  :row, 1, :col, 1,
+				  :row_alignment, :top)
+
+	rc_text_attbs.left_spacing << 4
+	rc_text_attbs.col_spacing << 10
+	size_label << 85
+	size_text << 120
+
+	.items[:lb_not_geom_fld] << label_item.new(rc_text_attbs,_self.message(:c_field_sw),:model,_self,:width,size_label,:row,1,:col,1,					      						      :enabled_state_aspect,:selected_one_entity?)
+	.items[:text_not_geom_fld] << text_item.new(rc_text_attbs,"",:model,_self,:width,size_text,:row,1,:col,2,					      						      :enabled_state_aspect,:selected_one_entity?)
+
+	.items[:lb_sw_type] << label_item.new(rc_text_attbs,_self.message(:c_field_type_sw),:model,_self,:width,size_label,:row,2,:col,1,					      						      :enabled_state_aspect,:selected_one_entity?)
+	.items[:text_sw_type] << text_item.new(rc_text_attbs,"",:model,_self,:width,size_text,:row,2,:col,2,					      						      :enabled_state_aspect,:selected_one_entity?)
+
+	.items[:lb_sw_unit] << label_item.new(rc_text_attbs,_self.message(:c_unit_sw),:model,_self,:width,size_label,:row,3,:col,1,					      						      :enabled_state_aspect,:selected_one_entity?)
+	.items[:text_sw_unit] << text_item.new(rc_text_attbs,"",:model,_self,:width,size_text,:row,3,:col,2,					      						      :enabled_state_aspect,:selected_one_entity?)
+
+	.items[:lb_format] << label_item.new(rc_text_attbs,_self.message(:c_format_method),:model,_self,:width,size_label,:row,4,:col,1,					      						      :enabled_state_aspect,:selected_one_entity?)
+	.items[:text_format] << text_item.new(rc_text_attbs,"",:model,_self,:width,size_text,:row,4,:col,2,					      						      :enabled_state_aspect,:selected_one_entity?)
+
+	size_label << 72
+	
+	.items[:lb_attribute] << label_item.new(rc_text_attbs,_self.message(:c_attribute_sh),:model,_self,:width,size_label,:row,1,:col,4,					      						      :enabled_state_aspect,:selected_one_entity?)
+	.items[:text_attribute] << text_item.new(rc_text_attbs,"",:model,_self,:width,size_text,:row,1,:col,5,					      						      :enabled_state_aspect,:selected_one_entity?)
+
+	.items[:lb_sh_unit] << label_item.new(rc_text_attbs,_self.message(:c_unit_sh),:model,_self,:width,size_label,:row,3,:col,4,					      						      :enabled_state_aspect,:selected_one_entity?)
+	.items[:text_sh_unit] << text_item.new(rc_text_attbs,"",:model,_self,:width,size_text,:row,3,:col,5,					      						      :enabled_state_aspect,:selected_one_entity?)
+	
+	.items[:lb_parameter] << label_item.new(rc_text_attbs,_self.message(:c_format_parameters),
+						:model,_self,:width,size_label,:row,4,:col,4,					      						      :enabled_state_aspect,:selected_one_entity?)
+	.items[:text_parameters] << text_item.new(rc_text_attbs,"",:model,_self,:width,size_text,:row,4,:col,5,					      						      :enabled_state_aspect,:selected_one_entity?)
+	
+	
+	rc_op_attb_buttons << rowcol.new( rc_txt_butt, 1,7 , :pixel,
+				  :style, :nested,
+				  :row, 2, :col, 1,
+				  :row_alignment, :right)
+
+	rc_op_attb_buttons.left_spacing << 20
+	rc_op_attb_buttons.top_spacing<< 30
+	rc_op_attb_buttons.bottom_spacing<< 4
+	
+
+	.items[:bt_add_attribute]  << button_item.new(rc_op_attb_buttons,_self.message(:bt_add_attribute),
+					      _self, :|add_attribute()|, 
+   			                      :row, 1, :col, 3,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill,
+					      :enabled_state_aspect,:selected_one_entity?)
+
+	.items[:bt_update_attribute]  << button_item.new(rc_op_attb_buttons,_self.message(:bt_update_attribute),
+					      _self, :|update_attribute()|, 
+   			                      :row, 1, :col, 5,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill,
+					      :enabled_state_aspect,:selected_one_attribute?)
+	.items[:bt_clear_attribute]  << button_item.new(rc_op_attb_buttons,_self.message(:bt_clear_attributes),
+					      _self, :|clear_attributes_controls()|, 
+   			                      :row, 1, :col, 7,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill,
+					      :enabled_state_aspect,:selected_one_entity?)
+	# Botones
+	rc_botones << rowcol.new( rc_componentes, 1,4, :pixel,
+				  :style, :nested,
+				  :row, 3, :col, 1,
+				  :default_row_alignment, :centre)
+
+	rc_botones.top_spacing<< 8
+	rc_botones.bottom_spacing<< 4
+
+	.items[:bt_accept]  << button_item.new(rc_botones,_self.message(:accept),
+					      _self, :|accept()|, 
+   			                      :row, 1, :col, 1,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+	.items[:bt_save_changes]  << button_item.new(rc_botones,_self.message(:save_changes),
+					      _self, :|save_changes()|, 
+   			                      :row, 1, :col, 2,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+
+	.items[:bt_cancel]  << button_item.new(rc_botones,_self.message(:cancel),
+					      _self, :|cancel()|, 
+   			                      :row, 1, :col, 3,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+	
+	.items[:bt_exit]  << button_item.new(rc_botones,_self.message(:exit),
+					      _self, :|exit()|, 
+   			                      :row, 1, :col, 4,
+					      :min_width, button_width,
+					      :model, _self,
+					      :col_alignment, :fill)
+	_super.build_gui(a_frame)
+
+
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export}, usage={subclassble})
+_private _method ib_export_shape_config_framework.pre_activation()
+	##
+	## Acciones desencadenadas antes de activar el dialogo
+	##
+	_self.load_default_values()
+	_self.initialize_controls()
+	_super.pre_activation()
+	
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_config_framework.load_default_values()
+	##
+	## Carga en los slots los valores iniciales
+	##
+
+	# Slots que indican si se han producido y guardado cambios
+	.export_config_change? << _false
+	.saved_in_file? << _false 
+
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_config_framework.initialize_controls()
+	##
+	## Inicializa los controles del dialogo
+	##
+	
+	# Cargar valores de entidades en la lista
+	_self.renew_list_entities()
+_endmethod
+$
+################################################################################################################################
+##
+## TREE_ITEM ENTIDADES
+##
+################################################################################################################################
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.renew_list_entities()
+	##
+	## Inicializa la lista de entidades y actualiza los controles
+	## dependientes
+	##
+
+	# Reiniciar lista
+	.items[:tree_entities].renew()
+	_self.select_tree_item_entities()
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.select_tree_item_entities()
+	##
+	## Acciones desencadenadas al cambiar la seleccion de la
+	## correspondencia SW - entidad seleccionada
+	##
+
+	_local entities << _self.get_selected_entities()
+	_local num_entities << entities.size
+	
+	# Acciones segun el numero de entidades seleccionadas
+	selected_only_one? << num_entities = 1
+	activate_remove? << (num_entities >= 1)
+
+	
+	_if selected_only_one? _then
+		# Activar boton Actualizar entidad
+		# Seleccionar objeto (situar para que sea visible)
+		# Cargar campos geometricos en el combo y seleccionar el campo
+		# Cargar nombre de la entidad
+
+		(sw_table,geom_field,entity) << _self.get_entity_values(entities.an_element())
+		
+		_self.select_sw_objects(sw_table)
+		_if selec_geom? << _self.select_geom_field(geom_field) _then 
+			_self.set_text_entity(entity)
+		_endif 
+		
+	_else
+		# Desactivar boton Actualizar entidad
+		# Limpiar seleccion de la lista de objetos 
+		# Eliminar valores del combo y desactivar
+		# limpiar contenido del nombre de la entidad y desactivar
+		_self.selection_object_sw_clear()		
+	_endif
+
+	# Estado de los botones
+	_self.changed(:selected_entities?,activate_remove?)    # Boton Eliminar Seleccionadas
+	#_self.changed(:selected_one_entity?,selected_only_one?)# Boton Actualizar Seleccionada
+ 
+
+	# Actualizar la lista de Campos No Geometricos
+	_self.renew_list_not_geoms_fields()
+	
+	# Cargar correspondencia Campos - Atributos
+	_self.renew_list_attributes()
+
+	
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.get_selected_entity_values()
+	##
+	## Devuelve los valores de la entidad seleccionada en el
+	## control TREE_ENTITIES
+	##(Solo devuelve valor si hay una unica fila de la lista seleccionada)
+
+
+	_local entities << _self.get_selected_entities()
+	selected_only_one? << entities.size = 1
+
+	_if _not selected_only_one? _then _return _endif
+
+	id_list_entities << entities.an_element()
+	(sw_table,geom_field,entity_name,export_empty?) << _self.get_entity_values(id_list_entities)
+
+	_return  sw_table,geom_field,entity_name,export_empty?
+_endmethod 
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.get_entity_values(id_list_entities)
+	##
+	## Devuelve los valores de una entidad del slot .LIST_ENTITIES
+	## que se corresponde con el indice ID_LIST_ENTITIES
+	##
+
+	entity << .list_entities[id_list_entities]
+	_if entity _is _unset _then _return _endif
+
+	sw_table << entity[_self.column_entity_ids[1]]
+	geom_field <<entity[_self.column_entity_ids[2]]
+	entity_name << entity[_self.column_entity_ids[3]]	
+	export_empty? << entity[_self.column_entity_ids[4]]
+
+	_return sw_table,geom_field,entity_name,export_empty?
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.list_entities
+	##
+	## Devuelve una lista de las correspondencias Sw-Entidad configuradas
+	##
+
+	_local lista << rope.new()
+
+	.list_entities << equality_hash_table.new()
+
+	_if .current_correspondences _is _unset _orif
+	    .current_correspondences.size = 0 _then
+		_return lista
+	_endif 
+
+	#Ids de las columnas
+	values_styled_string << simple_vector.new(0)
+	_for a_id _over _self.column_entity_ids.fast_elements()
+	_loop
+		_if a_id.index_of_seq("toggle") _is _unset _then 
+			values_styled_string << values_styled_string.new_appending(:value,a_id,:tab)
+		_else 
+			values_styled_string << values_styled_string.new_appending(:toggle,a_id,:tab)
+		_endif 
+	_endloop	
+	l_styled_string << styled_string.new(_scatter values_styled_string)
+	
+	_for a_table_name,geoms_corresp _over .current_correspondences.fast_keys_and_elements()
+	_loop
+		a_table_n << a_table_name.default("").write_string
+		_for a_geom_name, a_geom_corresp _over geoms_corresp.fast_keys_and_elements()
+		_loop 
+			a_geom_n << a_geom_name.default("").write_string
+			id_entity << a_table_n + "_" + a_geom_n
+			entity_n << a_geom_corresp[:shape_entity]
+			export_empty_n << a_geom_corresp[:export_empties].default(_self.default_export_empties)
+
+			_if entity_n _is _unset _orif entity_n = "" _then
+				entity_n << id_entity
+			_endif 
+
+			# Validar si los datos son correctos
+			_if _not _self.check_entities_values(a_table_n,a_geom_n,entity_n) _then
+				_continue
+			_endif 
+
+			
+			# Crear display_tree
+			l_value << property_list.new_with(_self.column_entity_ids[1],a_table_n,
+							  _self.column_entity_ids[2],a_geom_n,
+							  _self.column_entity_ids[3],entity_n,
+						          _self.column_entity_ids[4],export_empty_n)
+			
+			l_display_tree << display_tree.new(id_entity,l_value)
+			l_display_tree.styled_string << l_styled_string
+			l_display_tree.set_value_method( _self, :|get_entity_value()|, :|set_entity_value()| )
+			lista.add(l_display_tree)
+			.list_entities[id_entity] << l_value
+		_endloop 
+	_endloop 
+	
+	_return lista
+_endmethod
+
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.get_entity_value( column_name, p_tree )
+	## 
+	## Se invoca desde el display_tree de la lista de entidades.
+	## Devuelve el valor para el nombre de COLUMN_NAME y el P_TREE.
+	##
+
+	_if .list_entities _is _unset _then _return _endif 
+	id_entity << p_tree.key
+	a_entity << .list_entities[id_entity]
+	a_value << a_entity[column_name]
+
+	_return a_value
+		   
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.set_entity_value( a_value, index, p_tree ) 
+	##
+	## Calback from in_place_editor in all_fields display_tree.
+	## A value has been changed, update my updated_properties
+	##
+
+	_if .list_entities _is _unset _then _return _endif
+		
+	_if index _is :toggle_export_empty
+	_then
+		# Necesario para modificar el valor en .list_entities y .current_correspondences
+		# cuando se cambia algun check de la columna con checkbox y asi
+		# realizar la actualización automaticamente para los cambios en
+		# esta columna
+		
+		id_entity << p_tree.key
+		(a_sw_table,a_geom_field,name_entity,export_empty?) <<_self.get_entity_values(id_entity)
+
+		_if export_empty? <> a_value _then
+			a_entity << .list_entities[id_entity]
+			a_entity[index] << a_value
+			.current_correspondences[a_sw_table][a_geom_field][:export_empties] << a_value
+			
+			#Actualizar slots con informacion de actualizacion
+			_self.notify_changes()
+		_endif 
+	_endif 
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.check_entities_values(table_name, geom_field, entity_name)
+	##
+	## Valida si los datos de entidad son correctos
+	##
+
+	_if .dataset_config _is _unset _orif
+	    (a_table << .dataset_config.collection(table_name.default("").as_symbol())) _is _unset _orif
+	    (_not a_table.has_field?(geom_field.default("").as_symbol())) _then
+		_self.show_message(_self.message(:err_no_valid_entity,table_name,
+						 geom_field, entity_name))
+		valid?<<_false 
+	_endif
+
+	_return valid?.default(_true )
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_config_framework.get_selected_entities()
+	##
+	## Devuelve una lista con los identificadores de las entidades seleccionadas
+	##
+
+	_local tm << .items[:tree_entities].tree_manager
+	_local entities << rope.new()
+	
+	
+	_for a_entity _over tm.selection.fast_elements()
+	_loop
+		entities.add_last(a_entity.key)
+	_endloop
+
+	_return entities 
+_endmethod 
+$
+################################################################################################################################
+##
+## TREE_ITEM ATRIBUTOS
+##
+################################################################################################################################
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.renew_list_attributes()
+	##
+	## Inicializa la lista de atributos y actualiza los controles
+	## dependientes
+	##
+
+	# Reiniciar lista
+	.items[:tree_attributes].renew()
+	_self.select_tree_item_attributes()
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.select_tree_item_attributes()
+	##
+	## Acciones desencadenadas al cambiar la seleccion de la
+	## correspondencia SW Field - Attribute seleccionada
+	##
+
+	_local attributes << _self.get_selected_attributes()
+	_local num_attributes << attributes.size
+	
+	selected_only_one? << num_attributes = 1
+	activate_remove? << (num_attributes >= 1)
+
+	_if selected_only_one? _then
+		# Una unica correspondencia de atributo seleccionada
+		atb_info << .list_field_correspondences.nth_element(attributes.an_element())
+		
+		# Cargar en la lista si existe
+		# Cargar en la cajas de textos
+		_self.update_attribute_controls(atb_info)
+	_else
+		# Limpiar valores cargados
+		_self.clear_attribute_controls()
+	_endif
+
+	# Estado de los botones
+	_self.changed(:selected_attributes?,activate_remove?)      # Boton Eliminar Seleccionadas
+	_self.changed(:selected_one_attribute?,selected_only_one?) # Boton Actualizar Atributo
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.update_attribute_controls(attb_info)
+	##
+	## Carga en los controles de los atributos los valores del
+	## atributo ATTB_INFO
+	##
+
+	fld_sw << attb_info[:sw_field]
+
+	# Seleccionar campo no geometrico si existe
+	_self.select_not_geom_field(fld_sw)
+		
+	#:sw_field,:type,:sw_unit,:shape_field,:sh_unit,:format_method
+	.items[:text_not_geom_fld].value_with_notify << attb_info[:sw_field]
+	.items[:text_sw_type].value_with_notify << attb_info[:type]
+	.items[:text_sw_unit].value_with_notify << attb_info[:sw_unit]
+	.items[:text_format].value_with_notify << attb_info[:format_method]
+	.items[:text_attribute].value_with_notify << attb_info[:shape_field]
+	.items[:text_sh_unit].value_with_notify << attb_info[:sh_unit]
+	.items[:text_parameters].value_with_notify << attb_info[:parameters]
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.list_attributes
+	##
+	## Devuelve una lista de las correspondencias SW Field - Attributes configuradas
+	## para la entidad seleccionada
+	##
+
+	_local lista << rope.new()
+	.list_field_correspondences << rope.new()
+
+	# Recuperar correspondencias Sw - Atributos de la entidad seleccionada
+	_if (field_corresp<< _self.get_field_correspondences_by_selected_entity()) _is _unset _then _return lista _endif 
+
+	# Construir styled_string
+	values_styled_string << simple_vector.new(0)
+	_for a_id _over _self.relation_ids_attributes.fast_keys()
+	_loop
+		values_styled_string << values_styled_string.new_appending(:value,a_id,:tab)
+	_endloop	
+	l_styled_string << styled_string.new(_scatter values_styled_string)
+
+	
+	pos_atb << 0 # numero de fila
+	_for datos _over field_corresp.fast_elements()
+	_loop
+		id_field << datos[:sw_field]
+		pos_atb +<< 1
+
+		l_tree << equality_hash_table.new()
+		# Crear property_list con los valores de cada columna
+		_for id_value _over _self.relation_ids_attributes.fast_keys()
+		_loop
+			a_value << datos[id_value]
+			l_tree[id_value] << a_value 
+		_endloop
+		p_tree << property_list.new_from(l_tree)
+
+		# Crear display_tree 
+		l_display_tree << display_tree.new(pos_atb,p_tree)
+		l_display_tree.styled_string << l_styled_string
+		lista.add(l_display_tree)
+		
+		.list_field_correspondences.add_nth(p_tree,pos_atb)
+	_endloop
+	
+	_return lista
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.get_field_correspondences_by_selected_entity()
+	##
+	## Devuelve las correspondencias SW- Atributos asociadas a la
+	## entidad seleccionada en el control TREE_ENTITIES
+	##
+
+	
+	(sw_table,geom_field) << _self.get_selected_entity_values()
+
+	_if sw_table _is _unset _orif geom_field _is _unset _then _return _endif
+
+	# Recuperar correspondencias Sw - Atributos de la tabla-geometria
+	field_corresp << .current_correspondences[sw_table][geom_field.write_string][:fields_correspondences]
+
+	_return  field_corresp
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_config_framework.get_selected_attributes()
+	##
+	## Devuelve una lista con los identificadores de los atributos seleccionados
+	##
+
+	_local tm << .items[:tree_attributes].tree_manager
+	_local attributes << rope.new()
+	
+	
+	_for a_attb _over tm.selection.fast_elements()
+	_loop
+		attributes.add_last(a_attb.key)
+	_endloop
+
+	_return attributes
+_endmethod 
+$
+################################################################################################################################
+##
+## CONTROLES ALTA/MODIFICACION ENTIDADES
+##
+################################################################################################################################
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.selection_object_sw_clear()
+	##
+	## Limpiar seleccion de la lista de objetos
+	##
+
+	# Limpiar seleccion 
+	.items[:tree_objs_sw].selection.empty()
+
+	# Acciones desencadenadas al cambiar la seleccion
+	_self.select_tree_item_object_sw()
+	_self.renew_list_attributes()
+	_self.renew_list_not_geoms_fields()
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.select_tree_item_object_sw()
+	##
+	## Acciones desencadenadas al cambiar la seleccion de la
+	## de la lista de objetos SW
+	##
+
+	_self.renew_geom_field_control()
+
+	# Activar/Desactivar combo de campos geometricos
+	# dependiendo de si esta seleccionada una tabla
+	activate? << _self.get_selected_table() _isnt _unset
+	_self.changed(:selected_obj_sw?,activate?)
+	# Activar/Desactivar boton Actualizar entidad
+	_self.changed(:selected_one_entity?,activate?)
+
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.list_sw_objects
+	##
+	## Devuelve una lista de objetos SW que se pueden exportar
+	##
+
+	_local lista << rope.new()
+	.list_sw_objects << equality_hash_table.new()
+	order_objects << sorted_set.new(_unset,_proc (e1,e2)
+						       _return e1[1] _cf e2[1]
+					_endproc )
+
+	nombre_columna << :c_object_sw
+	l_styled_string << styled_string.new(:value,nombre_columna)
+
+	# generar lista ordenada
+	_for a_collection _over .dataset_config.collections.fast_elements()
+	_loop
+		a_name << a_collection.name
+
+		_if _not _self.is_valid_table_name?(a_name) _then _continue _endif
+
+		# Comprobar si la tabla tiene campos geometricos validos
+		geoms_fields << a_collection.visible_geometry_fields.all_elements_not_satisfying(
+						predicate_or.new(predicate.eq(:geom_type,:raster),
+		 			        predicate.eq(:geom_type,:dimension) ))
+		
+		_if geoms_fields.size =0 _then _continue _endif
+		
+		a_ext_name << a_collection.external_name
+		order_objects.add({a_ext_name,a_name})
+	_endloop
+
+	# tree ordenado
+	_for obj_pair _over order_objects.fast_elements()
+	_loop
+		a_name <<obj_pair[2]
+		a_ext_name <<obj_pair[1]
+			
+		l_value << property_list.new_with(nombre_columna,a_ext_name)
+		l_display_tree << display_tree.new(a_name,l_value)
+                l_display_tree.styled_string << l_styled_string
+		lista.add(l_display_tree)
+		.list_sw_objects[a_name] << a_ext_name
+	_endloop
+
+	_return lista
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.select_sw_objects(sw_object)
+	##
+	## Seleccionar Objeto SW SW_OBJECT de la lista TREE_OBJS_SW
+	##
+	
+	_if .list_sw_objects.includes_key?(sw_object) _then
+		.items[:tree_objs_sw].tree_manager[sw_object.as_symbol()].selected? << _true
+	_endif 		      
+
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.get_selected_table()
+	##
+	##
+	##
+
+	tm << .items[:tree_objs_sw].tree_manager
+	a_table_name << tm.selection.an_element()
+
+	_if a_table_name _isnt _unset _then 
+		a_table << .dataset_config.collections[a_table_name.key.as_symbol()]
+	_endif 
+	
+	_return a_table
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_export_shape_config_framework.is_valid_table_name?(a_table_name)
+	##
+	## Indica si el nombre de tabla A_TABLE_NAME corresponde con
+	## una tabla configurable
+	##
+
+	_local ok?
+
+	a_table_name << a_table_name.default("").write_string
+	
+	_for a_wrong_text _over _self.ignored_text_in_tables.fast_elements()
+	_loop
+		ok? << a_table_name.index_of_seq(a_wrong_text) _is _unset
+		_if _not ok? _then _leave _endif 
+	_endloop
+	
+	_return ok?.default(_true) 
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.list_geoms_fields
+	##
+	## Lista de Geometrias visibles del Objeto SW seleccionado
+	##
+	
+	_local lista << rope.new()
+	_local a_table << _self.get_selected_table()
+
+	_if a_table _is _unset _then _return lista _endif 
+	
+	geoms_fields << a_table.visible_geometry_fields.all_elements_not_satisfying(
+					predicate_or.new(predicate.eq(:geom_type,:raster),
+							 predicate.eq(:geom_type,:dimension) ))
+
+	_for a_geom_fld _over  geoms_fields.fast_elements()
+	_loop
+		lista.add(a_geom_fld.name)
+	_endloop 
+
+	
+	_return lista
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.select_geom_field(geom_field)
+	##
+	## Seleccionar el campo geometrico GEOM_FIELD en el control
+	## GEOM_FIELDS. Devuelve TRUE si es un valor valido, FALSE en
+	## caso contrario
+
+	_if (valid? << .items[:geoms_fields].options.includes?(geom_field.as_symbol())) _then 
+		.items[:geoms_fields].value_with_notify << geom_field
+	_else
+		#.items[:geoms_fields].value_with_notify << ""
+		_self.show_message(_self.message(:err_no_valid_geom,geom_field))
+	_endif
+
+	_return valid?
+
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.change_geom_field()
+	##
+	## Acciones desencadenadas al seleccionar otro campo geometrico
+	##
+
+	# Reiniciar :text_entity
+	_self.renew_text_entity_control()
+
+	_local geom_field << .items[:geoms_fields].value
+	activate? << geom_field _isnt _unset _andif geom_field <> ""
+	
+	# Activar/Desactivar boton para anyadir entidad
+	_self.changed(:enough_entity_info?,activate?)
+	# Activar/Desactivar text_entity
+	_self.changed(:selected_geom_field?,activate?)
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.renew_geom_field_control()
+	##
+	## Reinicia el control :geoms_fields.
+	##
+
+	.items[:geoms_fields].value_with_notify << ""
+	.items[:geoms_fields].options << _self.list_geoms_fields
+
+	# Si la lista tiene un unico valor asignar como valor predeterminado
+	# no se activa text_entity hasta que no se seleccione un campo geometrico
+	only_one? << .items[:geoms_fields].options.size = 1
+	_if only_one? _then
+		.items[:geoms_fields].value_with_notify << .items[:geoms_fields].options.an_element()
+	_endif 
+	
+_endmethod
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.no_edit_geom_fields(new_field_value)
+	##
+	## the name of the method sent to the model object when the text in the text item has been edited by the user.
+	## The method is sent a parameter which is the new value of the field, after parsing and converting if relevant.
+	## If the value is invalid, the method is sent unset.
+	##
+
+	_if new_field_value _isnt _unset _andif (new_field_value << new_field_value) <> ""  _andif
+	    (_not .items[:geoms_fields].options.includes_by_equality?(new_field_value.as_symbol())) _then
+													    
+		# No es un valor valido, no permitir editar
+		.items[:geoms_fields].value_with_notify << ""											    
+	_endif 
+
+_endmethod 
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.renew_text_entity_control()
+	##
+	## Reinicia el control :text_entity.
+	## activa o desactiva el control en funcion del valor de ACTIVATE?
+	##
+
+	.items[:text_entity].value_with_notify << ""
+		
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.set_text_entity(text_entity)
+	##
+	##
+	##
+	
+	.items[:text_entity].value_with_notify << text_entity
+ 		      
+
+_endmethod
+$
+################################################################################################################################
+##
+## CONTROLES CORRESPONDENCIAS SW - ATRIBUTOS
+##
+################################################################################################################################
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.renew_list_not_geoms_fields()
+	##
+	## Inicializa la lista de campos no geometricos de la tabla selecciionada
+	## y modifica los controles dependientes
+	##
+
+	# Reiniciar lista
+	.items[:tree_not_geoms_fld].renew()
+	_self.select_tree_not_geoms_fields()
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.select_tree_not_geoms_fields()
+	##
+	## Acciones desencadenadas al cambiar la seleccion 
+	## de la lista de campos no geometricos de un objeto SW
+	##
+
+	_local field_sw,atb_type,unit_sw
+	_local a_field_name << _self.get_selected_not_geom_field()
+	a_field << .list_not_geom_field[a_field_name]
+	selected? << a_field _isnt _unset 
+
+	_if selected? _then
+		field_sw << a_field.name
+		a_fld_type << a_field.type
+		
+		_if a_fld_type.class.is_kind_of?(_true ) _then
+			atb_type << :boolean
+		_elif (a_enum_type << a_fld_type.enumerator) _isnt _unset _then
+			# Es un enumerador
+			_if a_enum_type.type _is :mapped_class _then
+				atb_type << :char16_vector #a_enum_type.domain_class.as_charvec().class_name
+			_else
+				# :mapped
+				atb_type << a_enum_type.sorted_values.an_element().class_name
+			_endif 
+		_else 
+			atb_type << a_fld_type.class.class_name
+		_endif
+		
+		# Unidades almacenadas
+		_if a_field.responds_to?(:has_stored_unit?) _andif
+		    a_field.has_stored_unit?
+		_then
+			unit_sw << a_field.stored_unit.name
+		_endif 
+	_endif
+
+	.items[:text_not_geom_fld].value_with_notify << field_sw
+	.items[:text_sw_type].value_with_notify << atb_type
+	.items[:text_sw_unit].value_with_notify << unit_sw
+	.items[:text_format].value_with_notify << _unset 
+	.items[:text_attribute].value_with_notify << _unset 
+	.items[:text_sh_unit].value_with_notify << _unset 
+	.items[:text_parameters].value_with_notify << _unset
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.list_not_geoms_fields
+	##
+	## Devuelve una lista de campos no geometricos del tipo de
+	## objeto seleccionado que se pueden exportar como atributos
+	##
+
+	_local lista << rope.new()
+	_local a_table << _self.get_selected_table()
+	.list_not_geom_field << equality_hash_table.new()
+	order_objects << sorted_set.new(_unset,_proc (e1,e2)
+						       _return e1[1] _cf e2[1]
+					_endproc )
+
+	_if a_table _is _unset _then _return lista _endif 
+
+	not_geoms_fields << a_table.visible_non_geometry_fields
+	
+	nombre_columna << :not_geometries_fields
+	l_styled_string << styled_string.new(:value,nombre_columna)
+
+	
+	_for a_fld _over not_geoms_fields.fast_elements()
+	_loop
+		_if a_fld.is_join? _orif
+		    a_fld.type.name _is :rwo_id _then _continue _endif
+		
+		a_name << a_fld.name
+		a_ext_name << a_fld.external_name
+		order_objects.add({a_ext_name,a_fld})
+	_endloop
+
+	# tree ordenado
+	_for obj_pair _over order_objects.fast_elements()
+	_loop
+		
+		a_fld << obj_pair[2]
+		a_name << a_fld.name
+		a_ext_name <<obj_pair[1]
+			
+		l_value << property_list.new_with(nombre_columna,a_ext_name)
+		l_display_tree << display_tree.new(a_name,l_value)
+                l_display_tree.styled_string << l_styled_string
+		lista.add(l_display_tree)
+		.list_not_geom_field[a_name] << a_fld
+	_endloop
+	
+	_return lista
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_export_shape_config_framework.get_selected_not_geom_field()
+	##
+	## Devuelve el identificador del campo no geometrico seleccionado
+	##
+
+	_local tm << .items[:tree_not_geoms_fld].tree_manager
+	a_field_name << tm.selection.an_element()
+	_if a_field_name _is _unset _then _return _endif 
+
+	_return a_field_name.key
+_endmethod 
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.select_not_geom_field(sw_field)
+	##
+	## Selecciona el campo no geometrico SW_FIELD de la lista
+	## .tree_not_geoms_fld
+	##
+	
+	_if sw_field _is _unset _orif
+	    _not .list_not_geom_field.includes_key?(sw_field) _then
+		.items[:tree_not_geoms_fld].selection.empty()
+	_else 
+		.items[:tree_not_geoms_fld].tree_manager[sw_field.as_symbol()].selected? << _true
+	_endif
+
+	
+
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.clear_attribute_controls()
+	##
+	## Borra valores de los controles de la correspondencia, 
+	## campor no geometrico - atributo
+
+	_self.select_not_geom_field(_unset )
+
+	#:sw_field,:type,:sw_unit,:shape_field,:sh_unit,:format_method,:format_parameters
+	.items[:text_not_geom_fld].value_with_notify << _unset 
+	.items[:text_sw_type].value_with_notify << _unset 
+	.items[:text_sw_unit].value_with_notify << _unset 
+	.items[:text_format].value_with_notify << _unset 
+	.items[:text_attribute].value_with_notify << _unset 
+	.items[:text_sh_unit].value_with_notify << _unset
+	.items[:text_parameters].value_with_notify << _unset
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.clear_attributes_controls()
+	##
+	## Borra valores de los controles de la correspondencia, 
+	## campor no geometrico - atributo
+
+	tm << .items[:tree_attributes].tree_manager
+	a_sel << tm.selection.an_element()
+
+	_if a_sel _isnt _unset _then 
+		.items[:tree_attributes].selection.empty()
+	_else
+		_self.clear_attribute_controls()
+	_endif 
+_endmethod
+
+$
+################################################################################################################################
+##
+## BOTONES CORRESPONDENCIAS ENTIDADES
+##
+################################################################################################################################
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.remove_selected_entities()
+	##
+	## Elimina las correspondencias SW - Entidad seleccionadas en
+	## la lista
+	##
+
+	_local entities << _self.get_selected_entities()
+	_local num_entities << entities.size
+
+	_if num_entities = 0 _then _return _endif
+	
+	_for a_ent _over entities.fast_elements()
+	_loop
+		#(sw_table,geom_field,entity)
+		(sw_table,geom_field,entity) << _self.get_entity_values(a_ent)
+		_if .current_correspondences.includes_key?(sw_table) _andif
+		    .current_correspondences[sw_table].includes_key?(geom_field)
+		_then 
+			.current_correspondences[sw_table].remove_key(geom_field)
+		_endif 
+	_endloop 
+		
+	# Actualizar la lista
+	_self.renew_list_entities()
+
+	#Actualizar slots con informacion de actualizacion
+	_self.notify_changes()
+	
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.reload_init_values()
+	##
+	## Recarga los valores iniciales
+	##
+
+	# Solicitar confirmacion del usuario
+	_if _not _self.show_question(_self.message(:yes),_self.message(:no),
+				     _self.message(:question_reload))
+	_then _return _endif
+	
+	.current_correspondences << .initial_correspondences.deep_copy()
+	#Actualizar lista	
+	_self.renew_list_entities()
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.add_entity()
+	##
+	## Anyadir nueva correspondencia Sw - Entidad
+	##
+
+	_local table_name << _self.get_selected_table().name
+	_local geom_name << .items[:geoms_fields].value
+	_local entity_name << .items[:text_entity].value
+	_local is_new?
+
+	_if (is_new? << (_not .current_correspondences.includes_key?(table_name))) _then
+		.current_correspondences[table_name] << equality_hash_table.new()
+	_endif
+
+	_if _not .current_correspondences[table_name].includes_key?(geom_name) _then
+		_if _not is_new? _then is_new? << _true _endif 
+		.current_correspondences[table_name][geom_name] << equality_hash_table.new()
+	_endif
+
+	_if _not is_new? _then
+		# Verificar si ya existe
+		_if .current_correspondences[table_name][geom_name].includes_key?(:shape_entity) _then 
+			old_entity << .current_correspondences[table_name][geom_name][:shape_entity]
+			_if old_entity = entity_name _then				
+				_self.show_message(_self.message(:err_add_e_exist))
+				_return 
+			_endif 
+		_endif
+
+		_if _not _self.show_question(_self.message(:yes),_self.message(:no),_self.message(:question_add_continue))
+		_then
+			_return
+		_endif 
+	_endif
+
+	# Incluir nueva correspondencia de entidad
+	.current_correspondences[table_name][geom_name][:shape_entity] << entity_name
+	.current_correspondences[table_name][geom_name][:export_empties] << _self.default_export_empties
+
+	#Actualizar lista	
+	_self.renew_list_entities()
+
+	#Actualizar slots con informacion de actualizacion
+	_self.notify_changes()
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.update_entity()
+	##
+	## Actualizar correspondencia Sw - entidad
+	## Se modifica el nombre de la entidad
+	## 
+
+	_local entities << _self.get_selected_entities()
+	_local num_entities << entities.size
+	selected_only_one? << entities.size = 1
+
+	_if _not selected_only_one? _then
+		# hay mas de 1 entidad seleccionada o no hay ninguna
+		_self.show_message(_self.message(:err_update_e_no_sel))
+		_return 
+	_endif 
+
+	# Seleccionado en la lista de entidades
+#	sel_sw_table << .list_entities[entities.an_element()][_self.column_entity_ids[1]]
+#	sel_geom_field << .list_entities[entities.an_element()][_self.column_entity_ids[2]]
+#	sel_entity << .list_entities[entities.an_element()][_self.column_entity_ids[3]]
+#	sel_ex_emp << .list_entities[entities.an_element()][_self.column_entity_ids[4]]
+
+	(sel_sw_table,sel_geom_field,sel_entity,sel_ex_emp) <<_self.get_entity_values(entities.an_element())
+	# Valores que se quieren actualizar
+	new_table_name << _self.get_selected_table().name
+	new_geom_name << .items[:geoms_fields].value
+	new_entity_name << .items[:text_entity].value
+
+	# Validaciones
+	_if sel_sw_table <> new_table_name _then		
+		_self.show_message(_self.message(:err_update_e_obj))
+		_return
+	_endif
+	
+	_if sel_geom_field <> new_geom_name _then		
+		_self.show_message(_self.message(:err_update_e_geom))
+		_return
+	_endif
+
+	#Actualizar entidad
+	.current_correspondences[new_table_name][new_geom_name][:shape_entity] << new_entity_name	
+	.current_correspondences[new_table_name][new_geom_name][:export_empties] << sel_ex_emp
+	
+	#Actualizar lista	
+	_self.renew_list_entities()
+
+	#Actualizar slots con informacion de actualizacion
+	_self.notify_changes()
+	
+_endmethod
+
+################################################################################################################################
+##
+## BOTONES CORRESPONDENCIAS ATRIBUTOS
+##
+################################################################################################################################
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.remove_selected_attributes()
+	##
+	## Elimina las correspondencias SW Fields - Attributes seleccionadas en
+	## la lista
+	##
+
+	_local attributes << _self.get_selected_attributes()
+	_local num_attributes << attributes.size
+
+	_if num_attributes = 0 _then _return _endif
+
+	(sw_table,geom_field) << _self.get_selected_entity_values()
+	_if sw_table _is _unset _orif geom_field _is _unset _then
+		_self.show_alert(_self.message(:err_remove_attributes))
+		_return
+
+	_endif
+	
+	_for a_atb _over attributes.fast_elements()
+	_loop
+		_if .current_correspondences[sw_table][geom_field.write_string][:fields_correspondences].nth_element(a_atb) _isnt _unset  _then 
+			.current_correspondences[sw_table][geom_field.write_string][:fields_correspondences].remove_nth(a_atb)
+		_else
+			_self.show_alert(_self.message(:err_remove_attributes))
+		_endif 
+	_endloop 
+		
+	# Actualizar la lista de atributos
+	_self.renew_list_attributes()
+
+	#Actualizar slots con informacion de actualizacion
+	_self.notify_changes()
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.add_attribute()
+	##
+	## Anyadir nueva correspondencia campo Sw - atributo
+	##
+
+	_local table_name << _self.get_selected_table().name
+	_local geom_name << .items[:geoms_fields].value
+	
+	_if (field_sw << .items[:text_not_geom_fld].value) _is _unset _then
+		_self.show_alert(_self.message(:not_selected_field))
+		_return 
+	_endif
+
+	field_corresp << .current_correspondences[table_name][geom_name][:fields_correspondences]
+
+	_if field_corresp _is _unset _then
+		field_corresp << rope.new()
+	_endif
+	
+	# Validar valores obligatorios, 
+	# Validar si ya existe ese nombre de atributo
+	field_corresp.add_last(equality_hash_table.new_with(:sw_field,.items[:text_not_geom_fld].value,
+							    :type,.items[:text_sw_type].value,
+							    :sw_unit,.items[:text_sw_unit].value,
+							    :format_method,.items[:text_format].value,
+							    :shape_field,.items[:text_attribute].value,
+							    :sh_unit,.items[:text_sh_unit].value,
+						            :format_parameters,.items[:text_parameters].value))
+
+	# Incluir nueva correspondencia de atributo
+	.current_correspondences[table_name][geom_name][:fields_correspondences] << field_corresp
+	
+	_self.renew_list_attributes()
+
+	#Actualizar slots con informacion de actualizacion
+	_self.notify_changes()
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.update_attribute()
+	##
+	## Actualizar correspondencia campo Sw - atributo
+	##
+
+	_local table_name << _self.get_selected_table().name
+	_local geom_name << .items[:geoms_fields].value
+	_local attributes << _self.get_selected_attributes()
+	selected_only_one? << attributes.size = 1
+
+	_if _not selected_only_one? _then
+		# hay mas de 1 atributo seleccionado o no hay ninguno
+		_self.show_alert(_self.message(:err_update_at_no_sel))
+		_return 
+	_endif
+
+	
+	# Valores que se quieren actualizar
+	new_field << .items[:text_not_geom_fld].value
+	new_type << .items[:text_sw_type].value
+	new_sw_unit << .items[:text_sw_unit].value
+	new_attribute << .items[:text_attribute].value
+	new_sh_unit << .items[:text_sh_unit].value
+	new_format_method << .items[:text_format].value
+	new_format_parameters << .items[:text_parameters].value
+
+	# Validaciones
+
+	# Actualizar atributo
+	field_corresp << .current_correspondences[table_name][geom_name][:fields_correspondences]
+	elem << field_corresp.nth_element(attributes.an_element())
+	elem[:sw_field] << new_field
+	elem[:type]<<new_type
+	elem[:sw_unit]<<new_sw_unit
+	elem[:format_method]<<new_format_method
+	elem[:shape_field]<<new_attribute
+	elem[:sh_unit]<<new_sh_unit
+	elem[:format_parameters] << new_format_parameters
+	.current_correspondences[table_name][geom_name][:fields_correspondences] << field_corresp
+	
+	# Actualizar lista
+	_self.renew_list_attributes()
+
+	#Actualizar slots con informacion de actualizacion
+	_self.notify_changes()
+	
+_endmethod
+$
+
+################################################################################################################################
+##
+## BOTONES
+##
+################################################################################################################################
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.accept()
+	##
+	## Finaliza la configuracion y consulta al usuario
+	## antes de cerrar la ventana
+
+	_if _not .export_config_change? _then
+		_self.close()
+		_return 
+	_endif
+
+	_if .saved_in_file? _then
+		# Los cambios realizados se guardaron en un fichero
+		question_parameters << {{_self.message(:continue),_self.message(:ignore_changes),_self.message(:cancel)},
+					{:continue,:ignore_changes,:cancel},:continue,
+					_self.message(:changes_with_save,
+						      _self.message(:continue).uppercase,_self.message(:ignore_changes).uppercase,
+						      _self.message(:cancel).uppercase)}
+	_else
+		# Los cambios realizados no se guardaron en un fichero
+		question_parameters << {{_self.message(:continue),_self.message(:save_changes),_self.message(:ignore_changes),_self.message(:cancel)},
+					{:continue,:save_changes,:ignore_changes,:cancel},:continue,
+					_self.message(:changes_without_save,
+						      _self.message(:continue).uppercase,_self.message(:save_changes).uppercase,
+						      _self.message(:ignore_changes).uppercase,_self.message(:cancel).uppercase)}
+	_endif
+
+	response << _self.show_query(_scatter question_parameters)
+
+	_if response _is :cancel _then
+		_return
+	_elif response _is :ignore_changes _then
+		_self.cancel()
+	_elif response _is :save_changes _then
+		# Guardar cambios antes de salir
+		.close_after_save? << _true
+		_self.save_changes()
+	_elif response _is :continue _then
+		# Actualizar correspondencias en la ventana principal
+		# con esta nueva configuracion y cerrar el dialogo
+		_self.set_current_dataset_correspondences()
+	_endif
+
+	
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.set_current_dataset_correspondences()
+	##
+	## Asigna las correspondencias configuradas .CURRENT_CORRESPONDENCES
+	## como las correspondancias usadasen la ventana principal y
+	## cierra el dialogo de configuracion
+	##
+	
+	_self.framework.set_dataset_correspondences(.dataset_config.name,.current_correspondences)
+	_self.close()
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.save_changes()
+	##
+	## Abre un explorador para determinar la  ruta dónde almacenar
+	## en un fichero XML los cambios realizados
+	##
+
+	_self.framework.save_correspondences_xml(_self)	
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_method ib_export_shape_config_framework.save_xml_correspondences_file(a_path_file)
+	##
+	## Guardar las correspondencias actuales en el fichero 
+	## A_PATH_FILE
+	##
+
+	.saved_in_file? << _self.framework.save_xml_correspondences_file(a_path_file,.dataset_config.name,.current_correspondences)
+	_if .saved_in_file? _andif .close_after_save? _then		
+		# Actualizar correspondencias en la ventana principal
+		# con esta nueva configuracion y cerrar el dialogo
+		_self.set_current_dataset_correspondences()
+	_else
+		.close_after_save? << _false 
+	_endif 
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.cancel()
+	##
+	## Ignorar los cambios realizados y salir de
+	## la ventana de configuracion
+	##
+
+	_self.close()
+_endmethod
+$
+_pragma(classify_level=advanced, topic={ib_export})
+_method ib_export_shape_config_framework.exit()
+	##
+	## Antes de cerrar la ventana comprueba si hay cambios sin
+	## guardar y se lo notifica al usuario
+	##
+
+	changes_without_save? << .export_config_change? _andif (_not .saved_in_file?)
+	_if changes_without_save? _then
+	   # Se realizaron cambios en la configuracion que no se han guardado
+		_if _not _self.show_question(_self.message(:yes),_self.message(:no),
+			     _self.message(:exit_without_save)) _then 
+		        _return 
+		_endif
+	_endif
+
+	_self.cancel()
+_endmethod
+$

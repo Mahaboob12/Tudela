@@ -1,0 +1,10 @@
+editores 1
+
+description 
+	Módulo de configuración de Editores
+end
+
+requires
+	custom_editors			1
+	editor_documentos_relacionados	1
+end

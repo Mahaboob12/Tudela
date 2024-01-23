@@ -1,0 +1,18 @@
+#% text_encoding = iso8859_1
+_package sw
+$
+smallworld_product.register_application( :administracion,:admin_application,
+					 :resource_module_name, :administracion,
+					 :html_help_file_name, "swAdmin",
+					 :html_help_resource_module_name, :admin_application,
+					 :description, "Aplicación Administración Aguas de Tudela",
+					 :external_name, "Aplicación Administración Aguas de Tudela",
+					 :default_application_coordinate_system_name, :spain_ETRS89_utm30_mm_4MM,
+					 :application_coordinate_system_unit, :mm,
+					 :html_help_file_name, "swafAdmin" )
+$
+smallworld_product.register_application( :case_swaf,
+					 :case_application,
+					 :resource_module_name, :case_swaf_application,
+					 :html_help_file_name, "pswCasetl" )
+$

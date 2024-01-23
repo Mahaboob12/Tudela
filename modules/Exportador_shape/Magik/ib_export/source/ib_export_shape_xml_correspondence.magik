@@ -1,0 +1,591 @@
+#% text_encoding = iso8859_1
+##
+## Lee y Guarda archivos con información de parametros de
+## configuración, y correspondencia entre elementos GIS y Shape
+##
+##
+_package user
+$
+_pragma(classify_level=advanced, topic={ib_export})
+def_slotted_exemplar(:ib_export_shape_xml_correspondence,
+	{
+		{:framework,_unset },
+		{:name,_unset },
+		{:default_file_full_path,_unset },
+		{:current_configuration,_unset },
+		{:default_configuration,_unset },
+		{:current_export_parameters, _unset },
+		{:current_export_correspondences, _unset }
+	})
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## Valor por defecto para la etiqueta export_empties, indica si
+## se exportan las geometrías vacias
+ib_export_shape_xml_correspondence.define_shared_constant(:default_export_empties,_true ,
+    :public )
+
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## Nodos del XML
+ib_export_shape_xml_correspondence.define_shared_constant(
+    :xml_nodes,property_list.new_with(:parent_node,"serial_xml_thing",
+				      :export_parameters,"export_parameters",
+			              :correspondences,"correspondences",
+			              :export_parameter,"export_parameter",
+			              :dataset,"dataset",
+			              :table,"table",
+			              :field,"field"),
+    :private )
+
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_shape_xml_correspondence.new(a_name, a_framework, _gather  properties)
+	##
+	##
+
+	_return _clone.init( a_name, a_framework,properties)
+_endmethod
+
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.init(a_name, a_framework,_optional  properties)
+	##
+	##
+
+	.framework << a_framework
+	.name << a_name
+	
+	# Propiedades
+	_if properties _isnt _unset _then
+		eq_prop << equality_hash_table.new_with(_scatter properties)
+		.default_file_full_path << eq_prop[:default_file_full_path]
+	_endif 
+	
+	_return _self 
+_endmethod
+$
+_pragma(classify_level=advanced,topic={ib_export})
+_method ib_export_shape_xml_correspondence.get_default_export_configuration()
+	##
+	## Devuelve la configuración por defecto
+	##
+
+	_if .default_configuration _is _unset _then
+		# Leer configuración
+		.default_configuration << _self.read_export_configuration(.default_file_full_path)
+	_endif
+
+	_return .default_configuration	
+_endmethod 
+$
+_pragma(classify_level=advanced,topic={ib_export})
+_method ib_export_shape_xml_correspondence.get_current_export_configuration()
+	##
+	## Devuelve la ultima confguración leida, si no hay ninguna
+	## devuelve la configuración por defecto
+	##
+
+	_local export_configuration
+	_if (export_configuration << .current_configuration) _is _unset _then
+		# Devolver la configuración por defecto
+		export_configuration << .default_configuration
+	_endif
+
+	_return export_configuration	
+_endmethod 
+$
+_pragma(classify_level=advanced,topic={ib_export})
+_method ib_export_shape_xml_correspondence.get_export_configuration_from_file(a_path_file)
+	##
+	## Devuelve la configuración leida del fichero A_PATH_FILE
+	## (almacena la configuración obtenida como configuracion
+	## actual en el slot .current_configuration)
+
+	_local export_configuration << _self.read_export_configuration(a_path_file)
+
+	.current_configuration << export_configuration
+	_return export_configuration
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.read_export_configuration(a_path_file)
+	##
+	## Lee la configuración de exportación del fichero A_PATH_FILE, y devuelve una equality_hash_table
+	## con la información extraida
+	##
+	## [:export_parameters] <<
+	##         [:destination_path]       << ruta de salida 
+	##         [:destination_projection] << sistema de coordenadas en los ficheros shape
+	##         [:destination_units]      << unidades en los ficheros shape
+	##         [:bound_limit]            << tipo de limites que determinan el
+	##                                      area que se va a exportar
+	##         [:geometry]               << geometrias
+	##         [:dataset]                << nombre del dataset origen de datos
+	## [:correspondences]
+	##         [<nombre_dataset>]
+	##              [<nombre_tabla_sw]
+	##                      [<sw_geom_field1>]
+	##                             [:export_empties] << _true (indica si se exportan registros con geometria vacia, 
+	##                                                         es opcional , por defecto true)
+	##                             [:shape_entity] << entidad shape
+	##                             [:fields_correspondences] <<
+	##                                    {<sw_field_name1>,<shape_field_name1>,<type>}
+	##                                    {<sw_field_name2>,<shape_field_name2>,<type>}
+	##                                    ....................
+	##
+	##                      [<sw_geom_field2>]
+	##                             [:shape_entity] << entidad shape
+	##                             [:fields_correspondences] <<
+	##                                    {<sw_field_name1>,<shape_field_name1>,<type>}
+	##                                    {<sw_field_name2>,<shape_field_name2>,<type>}
+	##                                    ....................
+	##
+
+	_local export_configuration
+	_local sufix_method << "_from_xml_thing()"
+	_local xml_configuration << simple_xml.read_document_file(a_path_file)
+	
+	xml_aux << simple_xml.read_document_file(a_path_file)
+
+	export_configuration << equality_hash_table.new()
+	
+	_for a_xml_thing _over xml_configuration.xml_elements()
+	_loop
+		_for a_config_elem _over a_xml_thing.xml_elements()
+		_loop
+			_local elem_name << a_config_elem.xml_tag
+			# construir el nombre del metodo en función del tipo de
+			# elemento que se está leyendo
+			_local method_name << (elem_name + sufix_method).as_symbol() 
+			_local eq_config_elem << _self.perform(method_name,a_config_elem)
+			
+			export_configuration[elem_name.as_symbol()] << eq_config_elem
+		_endloop 
+	_endloop
+
+	#Validar si hay definido un dataset de exportacion, si no
+	# utilizar el de la primera correspondencia encontrada
+	_if (config_with_dataset << _self.check_dataset_value(export_configuration)) _isnt _unset  _then
+		export_configuration << config_with_dataset
+	_endif 
+	
+	_return export_configuration
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_shape_xml_correspondence.export_parameters_from_xml_thing(a_xml_thing)
+	##
+	## Devuelve una equality_hash_table con los parametros de
+	## exportación SHAPE, obtenidos del elemento A_XML_THING
+	##
+	_local eq_config << equality_hash_table.new()
+
+	_for a_config_elem _over a_xml_thing.xml_elements()
+	_loop
+		_local clave << a_config_elem.xml_attributes[:name].as_symbol()
+		_local valor << a_config_elem.xml_contents
+		
+		eq_config[clave] << valor	
+	_endloop
+		
+	_return eq_config
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_shape_xml_correspondence.check_dataset_value(a_config_list_values)
+	##
+	## Comprueba si la lista A_CONFIG_LIST_VALUES incluye un nombre de dataset de
+	## exportación por defecto, si no existe se toma como dataset
+	## el primero que pararece en la lista de correspondencias
+	##
+
+	_if ((export_parameters << a_config_list_values[:export_parameters]) _is _unset) _orif	    
+	    ((dataset_name << export_parameters[:dataset]) _isnt _unset ) _orif 
+	    ((corres_parameters << a_config_list_values[:correspondences]) _is _unset ) _orif
+	    ((first_dataset << corres_parameters.a_key()) _is _unset )
+	_then
+		_return
+	_endif 
+
+ 	export_parameters[:dataset] << first_dataset
+	a_config_list_values[:export_parameters] << export_parameters
+	_return a_config_list_values
+	
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_method ib_export_shape_xml_correspondence.correspondences_from_xml_thing(a_xml_thing)
+	##
+	## Devuelve una equality_hash_table con la configuración de correspondencias de
+	## elementos entre SW y SHAPE, obtenidas del elemento A_XML_THING
+	##
+	_local eq_config << equality_hash_table.new()
+	
+	_for a_dataset_elem _over a_xml_thing.xml_elements()
+	_loop
+		_local elem_name << a_dataset_elem.xml_attributes[:name].as_symbol()
+		_local eq_dataset << _self.dataset_corresp_from_xml_thing(elem_name,a_dataset_elem)
+			
+		eq_config[elem_name] << eq_dataset
+	_endloop
+	
+	_return eq_config	
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.dataset_corresp_from_xml_thing(a_dataset_name, a_xml_thing)
+	##
+	## Devuelve una equality_hash_table con la configuración de correspondencias de
+	## elementos entre SW y SHAPE, para el dataset A_DATASET_NAME.
+	## Los datos se obtienen del elemento A_XML_THING que tiene una
+	## estructura similar a la siguiente:
+	##
+	## <dataset name="nombre_dataset">
+	##    <!-- sw_geom,export_empties y sh_entity no son obligatorios
+        ##         *si sw_geom no existe se toma la geometria por defecto
+        ##         *si sh_entity no existe se toma el nombre de la tabla en smallworld -->
+	##         *si export_empties no existe su valor por defecto# es _true
+	##    <table sw_internal_name="nombre_tabla_sw_1" sw_geom="" sh_entity="" export_empties="false">
+	##	<field sw_field="" shape_field="" type=""/>
+	##    </table>
+	##    <table sw_internal_name="nombre_tabla_sw_2">
+	##	<field sw_field="" shape_field="" type=""/>
+	##    </table>
+        ## </dataset>
+
+	_local eq_config << equality_hash_table.new()
+	
+	_for a_table_sw_elem _over a_xml_thing.xml_elements()
+	_loop
+		_local sw_table_name << a_table_sw_elem.xml_attributes[:sw_internal_name].as_symbol()
+		_local sw_geom << a_table_sw_elem.xml_attributes[:sw_geom]
+		_local sh_entity << a_table_sw_elem.xml_attributes[:sh_entity]
+		_local export_empties <<  a_table_sw_elem.xml_attributes[:export_empties]
+		_local eq_table,eq_geom
+
+		# Lista de correspondencias de la tabla de smallworld sw_table_name
+		_if _not eq_config.includes_key?(sw_table_name) _then
+			eq_config[sw_table_name] << equality_hash_table.new()
+		_endif
+		eq_table << eq_config[sw_table_name]
+
+		# Verificar si ya se leyeron correspondencias para el campo sw_geom
+		# en cuyo caso se ignoran las demás
+		_if eq_table.includes_key?(sw_geom) _then _continue _endif 
+
+		eq_geom << equality_hash_table.new()
+
+		# Guardar entidad
+		eq_geom[:shape_entity] << sh_entity
+		# Guardar export_empties
+		eq_geom[:export_empties]<< _self.as_boolean(export_empties,_self.default_export_empties)
+		# Guardar correspondencias de campos
+		eq_geom[:fields_correspondences] << _self.fields_corresp_from_xml_thing(a_table_sw_elem)
+			
+		eq_table[sw_geom] << eq_geom
+		eq_config[sw_table_name] << eq_table
+	_endloop
+	
+	_return eq_config
+_endmethod 
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.fields_corresp_from_xml_thing(a_xml_thing)
+	##
+	## Devuelve una lista de simple_vector
+	##             {<sw_field_name1>,<shape_field_name1>,<type>}
+	##             {<sw_field_name1>,<shape_field_name1>,<type>}
+	##             ..........
+	## con la configuración de correspondencias de
+	## campos entre elementos SW y SHAPE, para una entidad shape especifica.
+	## Los datos se obtienen del elemento A_XML_THING que tiene una
+	## estructura similar a la siguiente:
+	##
+	## <table sw_internal_name="gd_main" sw_geom="" sh_entity="">
+	##	<field sw_field="" shape_field="" type="" format_method=""/>
+	##	<field sw_field="" shape_field="" type="" format_method=""/>
+	##	...
+	## </table>
+
+	_local eq_config << rope.new()
+	
+	_for a_field_elem _over a_xml_thing.xml_elements()
+	_loop
+		_if a_field_elem.xml_attributes.size=0 _then _continue _endif		
+		_local eq_field << equality_hash_table.new()		
+		_for a_key, a_attrib _over a_field_elem.xml_attributes.fast_keys_and_elements()
+		_loop
+			eq_field[a_key] << a_attrib
+		_endloop 
+		eq_config.add_last(eq_field)
+	_endloop
+
+	_return eq_config
+_endmethod
+$
+_pragma(classify_level=advanced,topic={ib_export})
+_method ib_export_shape_xml_correspondence.write_export_configuration(a_path_file, export_parameters)
+	##
+	## Genera un nuevo fichero de configuración XML, en el fichero
+	## A_PATH_FILE con los parametros EXPORT_PARAMETERS y las
+	## correspondencias de la ultima configuración leida (si no hay
+	## ninguna se utiliza la configuración por defecto)
+	##
+
+	a_file << external_text_output_stream.new(a_path_file, :utf8)
+        xml_stream    << xml_output_stream.new(a_file)
+
+	_protect 
+		xml_stream.write_prolog()
+		xml_stream << _self.int!generate_body_xml_configuration(xml_stream, export_parameters)
+	        ok? << _true
+                
+        _protection
+                xml_stream.flush()
+		xml_stream.end_all_open_elements()
+                xml_stream.close()
+                #_self.changed(:done)
+        _endprotect
+	
+	_return ok?.default(_false )
+	
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.int!generate_body_xml_configuration(xml_stream, export_parameters)
+	##
+	## Añade el cuerpo del XML de configuración en el XML_STREAM
+	## construido con los parametros EXPORT_PARAMETERS y las
+	## correspondencias de la ultima configuración leida (si no hay
+	## ninguna se utiliza la configuración por defecto)
+	##
+
+	_protect
+		# Crear nodo inicial
+		atributos << {{:format,"1"}}		
+		xml_stream << _self.int!generate_info_nodo(xml_stream,:parent_node,atributos,_false )
+		# Incluir nodo con los parametros de exportación
+		xml_stream << _self.int!generate_export_parameters_node(xml_stream,export_parameters[:export_parameters])
+		# Incluir nodo con las correspondencias
+		xml_stream << _self.int!generate_correspondences_node(xml_stream,export_parameters[:correspondences])
+		# Cerrar nodo inicial
+		xml_stream.end_element()
+	_protection
+                xml_stream.flush()
+        _endprotect
+        
+        _return  xml_stream
+	
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.int!generate_export_parameters_node(xml_stream,export_parameters)
+	## 
+	## Añade al XML_STREAM el nodo :export_parameters con la
+	## información contenida en la lista EXPORT_PARAMETERS
+	##
+	
+	_protect
+			xml_stream << _self.int!generate_info_nodo(xml_stream,:export_parameters,_unset ,_false )
+			# Añadir parametros de exportación
+			_for a_param_name,a_param_val _over  export_parameters.fast_keys_and_elements()
+			_loop
+				xml_stream.write_element(:export_parameter,_self.format_empty_value(a_param_val),
+							 :name, a_param_name)
+			_endloop 
+			xml_stream.end_element()
+	_protection
+                xml_stream.flush()
+        _endprotect
+        
+        _return  xml_stream
+	
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.int!generate_correspondences_node(xml_stream, correspondences)
+	## 
+	## Añade al XML_STREAM el nodo :correspondences y las
+	## correspondencias CORRESPONDENCES, si no tienen valor se
+	## utilizan las correspondencias de la ultima configuración leida (si no hay
+	## ninguna se utiliza la configuración por defecto)
+	##
+
+	_if correspondences _is _unset _then 
+		export_configuration << _self.get_current_export_configuration()
+		correspondences << export_configuration[:correspondences]
+	_endif
+	
+	_protect
+		xml_stream << _self.int!generate_info_nodo(xml_stream,:correspondences,_unset ,_false )
+
+		_if correspondences _isnt _unset _then 
+			# Crear nodos datasets
+			_for a_dataset_name, dataset_corresp _over correspondences.fast_keys_and_elements()
+			_loop
+				atributos << {{:name,a_dataset_name}}
+				cerrar_nodo? << dataset_corresp _is _unset 
+				xml_stream << _self.int!generate_info_nodo(xml_stream,:dataset,atributos ,cerrar_nodo? )
+
+				_if cerrar_nodo? _then
+					_continue
+				_endif 
+
+				# Añadir nodos tablas
+				_for a_table_name,table_corresp _over dataset_corresp.fast_keys_and_elements()
+				_loop
+					xml_stream << _self.int!generate_table_correspondences_nodes(xml_stream,a_table_name,table_corresp)
+				_endloop
+			
+				# Cerrar nodo dataset 
+				xml_stream.end_element()
+			_endloop
+		_endif 
+		
+		xml_stream.end_element()
+	_protection
+                xml_stream.flush()
+        _endprotect
+        
+        _return  xml_stream
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.int!generate_table_correspondences_nodes(xml_stream,a_table_name,table_correspondences)
+	##
+	## Añade al XML_STREAM el nodo de correspondencias de la tabla A_TABLE_NAME
+	## completado cn los datos de la lista TABLE_CORRESPONDENCES
+	##
+
+	_protect
+		default_ex_empties << _self.default_export_empties
+		_for a_sh_geom_name, geom_corresp _over table_correspondences.fast_keys_and_elements()
+		_loop
+			atributos << {{:sw_internal_name,a_table_name},
+				      {:sw_geom,a_sh_geom_name},
+				      {:sh_entity,geom_corresp[:shape_entity]}}
+
+			# Añadir export_empties si el valor es distinto de _true (ya
+			# que este es el valor por defecto)
+			_if (export_empties? <<  _self.as_boolean(geom_corresp[:export_empties],default_ex_empties)) _isnt
+			    default_ex_empties
+			_then 
+				      atributos << atributos.new_appending({:export_empties,export_empties?})
+			_endif
+			
+			xml_stream << _self.int!generate_info_nodo(xml_stream,:table,atributos ,_false )
+			# Añadir nodos fields
+			_if (fields_corresp << geom_corresp[:fields_correspondences]) _isnt _unset _then
+				_for a_field_corresp _over fields_corresp.fast_elements()
+				_loop
+					field_atrib << rope.new()
+					_for a_key,a_value _over a_field_corresp.fast_keys_and_elements()
+					_loop
+						field_atrib.add_last({a_key,a_value})
+					_endloop
+
+					xml_stream << _self.int!generate_info_nodo(xml_stream,:field,field_atrib)
+				_endloop 
+			_endif 			
+			# Cerrar nodo tabla 
+			xml_stream.end_element()
+		_endloop
+		
+		
+	_protection
+                xml_stream.flush()
+        _endprotect
+        
+        _return  xml_stream
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.int!generate_info_nodo( xml_stream, id_nodo , _optional pares_atributos,close_node?)
+					 #_optional field_list_names, other_value_names,
+					 #          pares_atributos, a_object,
+				         #          cerrar_nodo?)
+	##
+	## Añade el nodo ID_NODO al XML_STREAM
+	##
+	## PARES_ATRIBUTOS - Simple_vector de pares <id_atributo,valor_atributo> con los atributos del nodo
+	## CLOSE_NODE?     - Indica si se cierra el nodo, por defecto _TRUE
+	## 
+
+	close_node? << 	close_node?.default(_true )
+	
+	_protect
+		# Añadir nodo 
+		_if pares_atributos _is _unset _orif
+		    pares_atributos.size = 0 _then		
+						     xml_stream.start_element(_self.xml_nodes[id_nodo])
+		_else
+			# formatear valores de los pares
+			_local num_pares << pares_atributos.size
+			_local pares_formateados << simple_vector.new(num_pares*2)
+			_local indice << 1
+
+			_for par _over pares_atributos.fast_elements()
+			_loop
+				pares_formateados[indice] << par[1]
+				pares_formateados[indice+1] << _self.format_empty_value(par[2])
+
+				indice +<<2
+			_endloop
+		
+			xml_stream.start_element(_self.xml_nodes[id_nodo],_scatter pares_formateados)
+		_endif
+		
+
+		_if close_node? _then
+			xml_stream.end_element()
+		_endif 
+	_protection
+		xml_stream.flush()
+	_endprotect 
+		
+	_return xml_stream
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.format_empty_value(valor_dato)
+	##
+	## Devuelve una cadena de texto con el valor VALOR_DATO si esta
+	## no es _unset, en caso contrario devuelve ""
+	##
+
+	_return valor_dato.default("").write_string 
+_endmethod
+$
+_pragma(classify_level=restricted,topic={ib_export})
+_private _method ib_export_shape_xml_correspondence.as_boolean(a_value,_optional default_value)
+	##
+	## Trasnformar en boolean a_value,si es una cadena de texto TRUE o FALSE
+	## si es _unset, una cadena vacia o un valor no válido asignar default_value, por defecto es _true
+
+	default_value << default_value.default(_true)
+	
+	_if a_value _is _unset _then
+		a_value << default_value
+	_elif a_value.is_kind_of?("") _andif
+	      ((a_value << a_value.trim_spaces().uppercase)<>"")
+	_then
+		# Cadena de texto
+		_if a_value="FALSE" _then
+			a_value << _false
+		_elif a_value="TRUE" _then
+			a_value << _true
+		_else
+			#cualquier valor de texto no valido
+			a_value << default_value
+		_endif
+	_elif (_not a_value.is_kind_of?(_true)) _andif
+	      (_not a_value.is_kind_of?(_false)) _then
+		# No es boolean
+		 a_value << default_value
+	_endif
+
+	_return a_value
+_endmethod
+$

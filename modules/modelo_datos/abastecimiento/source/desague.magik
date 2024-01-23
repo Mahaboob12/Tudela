@@ -1,0 +1,84 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:desague,{},:rwo_record)
+$
+_method desague.profundidad_texto
+	# Metodo de texto del campo texto_profundidad
+	txt << _self.profundidad.default(0).write_string
+	_return txt
+_endmethod
+$
+_method desague.posicion_trigger(nombre,att_det,geom)
+	# Trigger de insercion del campo posicion_valv
+
+	ang << 0
+	
+	_if att_det _is :attach _then
+		
+		coord << _self.flecha.coord
+		txt << _self.profundidad_texto
+		
+		_if _self.texto_profundidad _isnt _unset _then
+			texto << _self.unset_geometry(:texto_profundidad)
+		_endif
+
+		texto << _self.make_geometry(:texto_profundidad,coord,txt)
+		texto.orientation << ang
+		texto.just << 11
+
+	_endif 
+	_return
+_endmethod
+$
+_method desague.profundidad_trigger()
+	# Cambia solo el texto de la profundidad, si es que existe
+	_if _self.texto_profundidad _isnt _unset
+	_then
+		coord << _self.flecha.coord
+		txt   << _self.profundidad_texto
+		ang   << _self.texto_profundidad.orientation
+ 		just  << _self.texto_profundidad.just
+
+		_self.unset_geometry(:texto_profundidad)
+		texto << _self.make_geometry(:texto_profundidad,coord,txt)
+		texto.orientation << ang
+		texto.just << just
+	_endif
+_endmethod
+$
+_method desague.poner_flecha(att_det)
+# Ponemos el punto flecha al final del ramal de acometida
+# Es un simple_point que se dispara por un trigger
+        #(dummy,ang) << _self.ramal.sectors.last_mid_point()
+	coord << _self.ramal.sectors.last_coord
+	ang << 0
+	_if _self.flecha _is _unset _then
+		fl << _self.make_geometry(:flecha,coord)
+	_else
+		fl << _self.flecha
+		
+		fl.coord << coord
+		fl.draw_coord << coord
+	_endif
+	fl.orientation << ang
+
+_endmethod
+$
+_method desague.ramal_trigger(tipo,att_det,geom)
+	# Coloca la flecha al final del desague solo en attach
+	_if att_det _is :attach _then 
+	_self.poner_flecha(att_det)
+	_endif 
+_endmethod
+$
+
+
+
+
+
+
+

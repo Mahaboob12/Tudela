@@ -1,0 +1,63 @@
+#% text_encoding = iso8859_1
+# Copyright (C) Iberlan 2011, all rights reserved.
+_package user
+$
+_pragma(classify_level=basic, topic={utils})
+## Lista el numero de elementos agrupoados por tipo de datos:
+## abastecimiento, saneamiento y varios
+_global inventario_gis<< 
+_proc()
+	_local v << gis_program_manager.cached_dataset(:gis)
+	tudela << hash_table.new()
+	tudela[:abastecimiento] << {:tramo_tuberia,:subtramo,:deposito,:grupo_bombeo,:acometida,:arqueta,
+				    :cambio_diametro,:te_nodo,:valvula,:valvula_combi,:ventosa,:hidrante,:boca_riego,
+				    :tapon_final,:accesorio,:cota_profundidad,:cruce,:empresas_instaladoras,:averia,
+				    :marcas_componentes,:caudalimetro,:callejero,:averia,:red_riego,:desague,:etap}
+
+	tudela[:saneamiento]    << {:tuberia_saneamiento,:pozo_saneamiento,:acometida_saneamiento,:sumidero,
+				    :aliviadero,:final_saneamiento,:arqueta_saneamiento,:tanque_tormentas,:canal,
+				    :grupo_bombeo_saneamiento,:edar}
+	
+	tudela[:varios]         << {:fondo_linea,:fondo_texto,:callejero,
+				    :drawing,
+				    :construction,:drafting_areas,:drafting_texts,:drafting_lines,:drafting_points}
+
+	_for grupo,els _over tudela.keys_and_elements()
+	_loop
+
+		write(grupo.write_string.uppercase)
+		_for tab_name _over els.elements()
+		_loop
+			tab << v.collections[tab_name]
+			_if tab _is _unset _then
+				write("ERROR: ", tab_name, " no existe")
+				_continue
+			_endif 
+			write(tab_char,tab.size, tab_char, tab_name)
+		_endloop
+		
+	_endloop
+_endproc
+$		    
+_pragma(classify_level=basic, topic={utils})
+## Lista el numero de elementos del plano autocad de red dde
+## Angel Miguel, cargado anted con el SOM con nombre "red"
+_global inventario_red<< 
+_proc()
+	_local vred << gis_program_manager.cached_dataset(:red)
+	_for tab _over vred.user_tables()
+	_loop
+		write(tab.size, %tab, tab.name)
+		_if tab.has_field?(:layer)
+		_then
+			_for layer _over tab.field(:layer).type.enumerator.sorted_values.fast_elements()
+			_loop
+				sel << tab.select(predicate.eq(:layer,layer))
+				_if (n_capa << sel.size) > 0
+				_then
+					write(%tab, n_capa, %tab, layer)
+				_endif
+			_endloop
+		_endif 
+	_endloop
+_endproc

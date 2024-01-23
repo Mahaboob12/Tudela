@@ -1,0 +1,57 @@
+
+_package user
+$
+def_slotted_exemplar(:pseudo_chain_export,
+		     {},
+		     {:pseudo_chain,
+		      :pseudo_base_geom_export,:ib_adjust_sector_curve})
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_chain_export.set_rwo(a_rwo)
+	_self.add_source_rwo(a_rwo)	
+	_super.set_rwo_code(a_rwo)
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_chain_export.new(a_chain, _optional adjust_curves_by_lines?)
+	##
+	## Crea una nueva instancia de la clase a partir de la
+	## geometria A_CHAIN. 
+	## ADJUST_CURVES_BY_LINES? Indica si los sectores de curvas
+	## (rational_b_spline, arc, circle)
+	## se sustituyen por una serie de tramos rectos que se ajustan
+	## a la curva(por defecto _true)
+	##
+
+	
+	
+	>> _clone.init(a_chain,adjust_curves_by_lines?) 
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_chain_export.init(a_chain,adjust_curves_by_lines?)
+	##
+	## ADJUST_CURVES_BY_LINES? Indica si los sectores de curvas
+	## (rational_b_spline, arc, circle)
+	## se sustituyen por una serie de tramos rectos que se ajustan
+	## a la curva(por defecto _true)
+	##
+	_super(pseudo_chain).init(a_chain)	
+	_super(pseudo_base_geom_export).init(a_chain)
+
+	# Verificar si se aproximan las curvas con lineas y generar la aproximacion
+	# si es necesaria
+	_self.init_adjust(adjust_curves_by_lines?)
+
+	_return _self 
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_chain_export.set_new_sector(a_new_sector)
+	##
+	## Asigna el valor A_NEW_SECTOR, al slot .sectors
+	##
+
+	.sectors << a_new_sector
+_endmethod
+$

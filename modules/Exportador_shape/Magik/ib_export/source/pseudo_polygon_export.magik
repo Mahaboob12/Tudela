@@ -1,0 +1,99 @@
+
+_package user
+$
+def_slotted_exemplar(:pseudo_polygon_export,
+		     {
+			     {:holes_sectors,_unset },
+			     {:polygon,_unset },
+			     {:sectors_adjust_c,_unset } # Sector_rope con las curvas ajustadas como lineas 
+		     },{:ib_adjust_sector_curve})
+$
+
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method pseudo_polygon_export.sectors
+	##
+
+	_local sectors
+	_if .sectors_adjust_c _is _unset _then
+		sectors << .polygon.sectors
+	_else		
+		sectors << .sectors_adjust_c
+	_endif
+
+	_return sectors
+_endmethod 
+$
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method pseudo_polygon_export.holes_sectors
+
+	_return  .holes_sectors
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_polygon_export.set_new_sector(a_new_sector)
+	##
+	## Asigna el valor A_NEW_SECTOR, al slot .sectors_adjust_c
+	##
+	.sectors_adjust_c << a_new_sector
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method pseudo_polygon_export.transform_in_situ(a_transform)
+	##
+	##
+	
+	# Transform of original polygon into a pseudo_polygon
+	.polygon << .polygon.transformed(a_transform)
+	
+	_if .sectors_adjust_c _isnt _unset _then
+		#Transform the sector_rope adjusted for curves
+		.sectors_adjust_c.transform_in_situ(a_transform)
+	_endif
+
+	_for a_h_sec _over .holes_sectors.fast_elements()
+	_loop 
+		 a_h_sec.transform_in_situ(a_transform)
+	_endloop 
+	 
+_endmethod
+$
+
+_method pseudo_polygon_export.new_from_polygon(a_polygon, _optional adjust_curves_by_lines?)
+	>> _clone.init_from_polygon(a_polygon,adjust_curves_by_lines?)
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={external})
+_private _method pseudo_polygon_export.init_from_polygon(a_polygon,adjust_curves_by_lines?)
+	##
+	## Si los sectores del poligono tienen curvas ajustar por puntos
+	##
+
+	_dynamic !print_float_precision! << 10
+		
+	.polygon << a_polygon
+	
+	# Verificar si se aproximan las curvas con lineas y generar la aproximacion
+	# si es necesaria
+	forze_close? << _true 
+	_self.init_adjust(adjust_curves_by_lines?,forze_close?)
+
+	# Holes
+	_local holes << .polygon.holes
+	_local nholes << holes.size
+	holes_sectors << simple_vector.new(nholes)
+
+	_if nholes>0 _then 
+		_for i _over 1.upto(nholes) 
+		_loop
+			a_hole_ex << pseudo_hole_export.new(holes[i].sectors,adjust_curves_by_lines?)
+			holes_sectors[i] << a_hole_ex.sectors.deep_copy()
+		_endloop
+	_endif 
+
+	.holes_sectors << holes_sectors
+	
+	_return _self 
+_endmethod
+$

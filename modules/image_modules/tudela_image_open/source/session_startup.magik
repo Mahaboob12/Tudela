@@ -1,0 +1,51 @@
+#% text_encoding = iso8859_1
+_package user
+$
+_global _constant add_path_dynamic_patches<<
+_proc@add_path_dynamic_patches()
+
+	_local l_old_add << smallworld_product.additional_patch_directories	
+	_local l_dynamic_path_dir << "dynamic_patches"
+	
+	_protect
+		# Ruta de parches dinamicos	               
+		smallworld_product.additional_patch_directories<< {l_dynamic_path_dir}
+		_block 
+			_handling patch_directory_not_found _with _proc () _endproc 
+			_for patch_dir _over smallworld_product.patch_directories(l_dynamic_path_dir)
+			_loop			
+				 _local (l_dir_name, l_path) << system.pathname_components(patch_dir)
+				_if (l_dir_name.lowercase = l_dynamic_path_dir.lowercase) _andif
+				    system.file_exists?(patch_dir)
+				_then
+					sw!update_image(patch_dir)
+				_endif 
+			_endloop
+		_endblock 
+	_protection
+		smallworld_product.additional_patch_directories << l_old_add
+	_endprotect
+_endproc 
+$
+
+_block
+	spatial_stream.quadbox_list_initial_size << 1024
+	
+	# Definición del datum de transformación de ED50 a ETRS89. Se
+	# puede utilizar para ambos tipos de proyecciones (> y < de
+	# 1:500000) y para la definición de un sistema de coordenadas
+	# geográfico.
+
+	
+	transform.sys!define_nadcon(:europe_spain_ed50_nadcon,:international,"R2009V9.nad")
+
+	# R2009V9.nad ha de estar en la carpeta projection de la
+	# instalacion ...Smallworld430\product\data\projections
+
+	# Ruta de parches dinamicos	               
+	smallworld_product.add_startup_procedure(add_path_dynamic_patches)
+
+		
+_endblock
+
+$

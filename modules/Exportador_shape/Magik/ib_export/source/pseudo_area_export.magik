@@ -1,0 +1,124 @@
+
+_package user
+$
+def_slotted_exemplar(:pseudo_area_export,
+		     {
+			     {:adjusted?,_unset },
+			     {:sectors_adjust_c,_unset},  # Sector_rope con las curvas ajustadas como lineas
+			     {:polygons_adjust_c,_unset } # Poligonos con las curvas ajustadas como líneas
+		     },
+		     {:pseudo_area,:pseudo_base_geom_export})
+$
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method pseudo_area_export.adjusted_polygons
+	##
+	_return .polygons_adjust_c
+_endmethod 
+$
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method pseudo_area_export.sectors
+	##
+
+	_local area_sectors << .polygons_adjust_c[1].sectors
+	_return area_sectors
+_endmethod 
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_area_export.set_rwo(a_rwo)
+	_self.add_source_rwo(a_rwo)	
+	_super.set_rwo_code(a_rwo)
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_area_export.transform_in_situ(a_transform)
+	##
+	## Se sobreescribe el metodo transform_in_situ
+	## para transformar las coordenadas de ajuste de curvas
+	##
+
+	_dynamic !print_float_precision! << 10
+		
+	_for a_pol _over _self.adjusted_polygons.fast_elements()
+	_loop
+		a_pol.transform_in_situ(a_transform)
+	_endloop
+		
+	# Uncache bounds
+	.bounds << _unset
+
+	_return _self 
+_endmethod 
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_area_export.new(a_area, _optional adjust_curves_by_lines?)
+	>> _clone.init(a_area,adjust_curves_by_lines?)
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_area_export.init(a_area,adjust_curves_by_lines?)
+	##
+	##
+	
+	_dynamic !print_float_precision! << 10
+
+#	_if a_area.npolygons>1
+#	_then 
+		_self.init_from_polygons(a_area.polygons,adjust_curves_by_lines?)			
+#	_else	
+#		a_area.sectors.assert_closed()
+#		_self.init_with_sectors(a_area.sectors,adjust_curves_by_lines?)
+#	_endif
+	
+	_super(pseudo_base_geom_export).init(a_area)
+
+
+	_return _self 
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_area_export.init_with_sectors(a_sector_rope,adjust_curves_by_lines?)
+	##
+	##
+
+	a_pseudo_area << _super(pseudo_area).init_with_sectors(a_sector_rope,adjust_curves_by_lines?)
+	_self.init_from_polygons(a_pseudo_area.polygons,adjust_curves_by_lines?)
+								     
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_area_export.init_from_polygons(polygons_list,adjust_curves_by_lines?)
+	##
+	##
+	
+	a_pseudo_area <<_super(pseudo_area).init_from_polygons(polygons_list)
+	adjusted_list << simple_vector.new(a_pseudo_area.npolygons)
+	polygons <<a_pseudo_area.polygons
+		
+	_for i _over 1.upto(polygons.size)
+	_loop
+		a_polig << polygons[i]
+		a_adjusted_polygon << pseudo_polygon_export.new_from_polygon(a_polig,adjust_curves_by_lines?)
+		adjusted_list[i]<<a_adjusted_polygon
+	_endloop
+
+	.polygons_adjust_c << adjusted_list
+	
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_area_export.adjusted?
+
+	_if .adjusted? _is _unset _then
+		_for a_pol _over _self.adjusted_polygons.fast_elements()
+		_loop
+			_if (.adjusted? << a_pol.adjusted?) _then
+				_leave 
+			_endif
+		_endloop
+	_endif
+
+	_return .adjusted?
+_endmethod
+$

@@ -1,0 +1,6 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+_pragma(classify_level=basic)
+def_slotted_exemplar(:dibujo_punto,{},:rwo_record) # dibujo_asociado

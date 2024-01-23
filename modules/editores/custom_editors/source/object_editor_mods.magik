@@ -1,0 +1,37 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma(classify_level=advanced, usage={subclassable})
+_block
+	_local new_producer_data_types
+	new_producer_data_types << rope.new_from(object_editor.databus_producer_data_types)
+	new_producer_data_types.add(:delete_current_object)
+	object_editor.define_shared_constant( :databus_producer_data_types,
+					 new_producer_data_types,
+					 :public )
+_endblock
+$
+
+_pragma(classify_level=restricted)
+_method object_editor.delete()
+	## 
+	## Deletes the current object.
+	##
+
+	an_rwo << _self.current_object
+	( confirm?, reason) << an_rwo.delete_confirmation_required?()
+	_if _not confirm? _orif 
+	    _self.show_alert( _self.message( :confirm_deletion, reason ),
+			      _self.message( :ok ),
+			      _self.message( :cancel ) )
+	_then
+		data << _self.message( :delete_undo_description, _self.collection.external_name )
+		rt << record_transaction.new_delete( an_rwo, data )
+		_self.databus_make_data_available(:delete_current_object,an_rwo)
+		_self.run_transaction( rt )
+	_endif
+
+_endmethod
+$

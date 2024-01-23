@@ -1,0 +1,370 @@
+#% text_encoding = iso8859_1
+##
+## Genera una estructura a partir de una tabla, con la
+## informacion necesaria sobre cada uno de los campos/metodos
+## que se quieren exportar.
+##
+
+_package user
+$
+_pragma(classify_level=advanced, topic={ib_export})
+def_slotted_exemplar(:ib_table_export_structure,
+	{
+		{:sw_table, _unset },                 # tabla cuyos objetos se van a exportar
+		{:sw_geom_field,_unset },             # nombre del campo geometrico que se va a exportar
+		{:export_empties?, _true },           # indica si se exportan registros con el campo geométrico vacío
+		{:list_fields_estructures,_unset },   # listado de estructuras de exportacion para los datos
+		{:export_table_name,_unset },         # nombre de la entidad en el fichero de exportacion
+		{:table_acpt_types, _unset },         # objeto ib_table_acpt_types que proporciona los acpt_types de los campos de la tabla
+		{:can_has_curves?, _unset  },         # Indica si el tipo de geometria a exportar puede tener curvas
+		{:sw_id_field,_unset }                # Indica cual es el campo identificador de exportacion del objeto
+	})
+$
+
+_pragma(classify_level=basic,topic={ib_export})
+ib_table_export_structure.define_slot_access(:export_empties?,:readable)
+$
+_pragma(classify_level=restricted,topic={ib_export})
+##
+## Tipos de geometrias que pueden tener curvas
+ib_table_export_structure.define_shared_constant(:geoms_types_with_curves,{:simple_chain,:chain,
+						                           :simple_area,:area},:private)
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_export_structure.new (_gather properties)
+     ## 
+     ## 
+     ##
+
+	
+     >> _clone.init(_scatter properties) 
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_export_structure.init(_gather properties) 
+   ## 
+   ## 
+   ##
+	_local info_export,geom_field_name,shape_entity_name,fields_correspondences
+
+	_if properties _is _unset _orif
+	   (tam << properties.size) = 0 _orif
+	    (_not tam.even?) _then
+		condition.raise(:no_valid_properties_str_table)
+	_endif
+
+	_for i _over range(1,tam,2)
+	_loop
+		clave << properties[i]
+		valor << properties[i+1]
+
+		_if clave _is :table _then
+			.sw_table << valor
+		_elif clave _is :info_export _then
+			info_export << valor
+		_elif clave _is :geom_field_name _then
+			geom_field_name << valor
+		_endif 
+	_endloop 
+
+	
+	# Validar si se recuperaron todos los datos necesarios
+	_if .sw_table _is _unset _then condition.raise(:no_table) _endif
+
+	.table_acpt_types << ib_table_acpt_types.new(.sw_table)
+	
+	# Validar el nombre del campo geometrico a exportar
+	_self.set_geom_field_name(geom_field_name)
+
+	
+	_if info_export _isnt _unset _then
+		shape_entity_name << info_export[:shape_entity]
+		fields_correspondences << info_export[:fields_correspondences]
+
+		_if (export_empties? << info_export[:export_empties]) _isnt _unset _then
+			.export_empties? << export_empties?
+		_endif 
+	_endif
+
+	# Asigna nombre de la entidad
+	_self.generate_export_entity_info(shape_entity_name)
+	
+	# Construir estructura de exportacion de los campos
+	_self.create_export_fields_structures(fields_correspondences,shape_entity_name)
+
+	# No pueden existir valores de atributos repetidos
+	_self.check_shape_attributes_names()
+
+	# Verificar si hay un atributo identificador del objeto
+	_self.look_for_sw_id()
+	
+   _return  _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_export_structure.look_for_sw_id()
+	##
+	## Busca si hay definido un campo identificador de exportacion
+	## y lo almacena en el slot .SW_ID_FIELD
+	##
+
+	_for a_fld_struct _over .list_fields_estructures.fast_elements()
+	_loop
+		_if _not a_fld_struct.is_id_attribute? _then _continue _endif 
+		.sw_id_field << a_fld_struct
+		_leave 
+	_endloop
+
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_export_structure.set_geom_field_name(geom_field_name)
+	##
+	## Valida el nombre del campo geometrico a exportar y lo asigna
+	## al slot .SW_GEOM_FIELD
+	##
+	## Si no se proporciona ningun nombre de geom de SW se toma la primera
+	## geometria visible del objeto
+	##
+
+	_if geom_field_name _is _unset _orif
+	    (geom_field_name.is_class_of?("") _andif 
+	     (geom_field_name << geom_field_name.trim_spaces()) = "") _then
+
+		geom_field_name << _self.get_geom_field_name_by_default()
+	        _if geom_field_name _isnt _unset _then
+			.sw_geom_field << geom_field_name.as_symbol()
+		_endif
+	_elif (geom_field << .sw_table.field(geom_field_name.as_symbol())) _is _unset _then
+			# Error, nombre de campo no valido
+			Condition.raise(:no_valid_geom_field_name,
+				  :geom_field_name,geom_field_name,
+				  :table_name,.sw_table.name)
+	_else
+		.sw_geom_field << geom_field.name		
+	_endif
+
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_export_structure.generate_export_entity_info(shape_entity_name)
+	##
+	## Asigna el nombre de la entidad SHAPE_ENTITY_NAME  al slot .EXPORT_TABLE_NAME
+	##
+	## *Si no se proporciona un nombre de entidad se crea a partir
+	##  del nombre de la tabla y la geometria
+	##
+
+	_if shape_entity_name _is _unset _orif
+	    (shape_entity_name << shape_entity_name.trim_spaces()) = ""
+	_then
+		shape_entity_name << .sw_table.name.write_string + "_" + .sw_geom_field.write_string
+	_endif
+
+	.export_table_name << shape_entity_name	
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_export_structure.create_export_fields_structures(fields_correspondences,
+									   _optional shape_entity_name)
+	##
+	## Crea un listado con la informacion de exportacion de cada
+	## campo (geometria y atributos)
+	## La informacion de los atributos se extrae del parametro FIELDS_CORRESPONDENCES
+	## y el nombre de la entidad de SHAPE_ENTITY_NAME  (es opcional)
+	## La estructura de exportacion generada para esta tabla se
+	## almacena en el slot .LIST_FIELDS_ESTRUCTURES
+	
+	_local hay_atributos? << fields_correspondences _isnt _unset
+
+	# Crear field_structure para el campo geometrico
+	.list_fields_estructures << rope.new()
+	geom_field_info << property_list.new_with(
+				   :shape_field,shape_entity_name,
+				   :sw_field,.sw_geom_field)
+
+	fd_structure << ib_field_export_structure.new (geom_field_info,_self)
+	.list_fields_estructures.add_last(fd_structure)
+
+	# Crear field_structure de los atributos
+	_if hay_atributos? _then
+		
+		_for attrib_infos _over fields_correspondences.fast_elements()
+		_loop
+			 fd_structure << ib_field_export_structure.new (attrib_infos,_self)
+			 .list_fields_estructures.add_last(fd_structure)			
+		_endloop	    
+	_endif 
+
+		
+_endmethod
+$
+_pragma(classify_level=restrcited, topic={ib_export})
+_private _method ib_table_export_structure.get_geom_field_name_by_default()
+	##
+	## Geometria a exportar por defecto (primera
+	## geometria visible del objeto)
+	##
+
+	_if (geom_field << .sw_table.visible_geometry_fields.an_element()) _isnt _unset _then 
+		_return geom_field.name
+	_else
+		condition.raise(:no_valid_geom_field_name,
+				:geom_field_name,_unset,
+				:table_name,.sw_table.name)
+	_endif 
+	
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_private _method ib_table_export_structure.check_shape_attributes_names()
+	##
+	## Validar que no existan nombres de atributos repetidos
+	## si se detecta alguno, modificar el nombre sustituyendo el ultimo
+	## caracter por un entero
+	##
+	
+	_local total_pos
+			
+	_if .list_fields_estructures _is _unset _orif
+	    ((total_pos << .list_fields_estructures.size) <= 1)
+	_then _return _endif
+
+	_local used_names << rope.new()
+	_local pos_repetidas << equality_hash_table.new()
+	
+	_for current_pos _over 1.upto(total_pos)
+	_loop
+		current_attb << .list_fields_estructures[current_pos].attribute_name()
+                ini_compare_pos << current_pos + 1
+                _for compare_pos _over ini_compare_pos.upto(total_pos)
+		_loop
+			fld_compare << .list_fields_estructures[compare_pos]
+			compare_attb << fld_compare.attribute_name()
+			
+			_if current_attb <> compare_attb _then _continue _endif
+
+			attb_key << compare_attb.as_symbol()
+			_if _not pos_repetidas.includes_key?(attb_key) _then
+				pos_repetidas[attb_key] << 0			
+			_endif
+
+			inc << 0
+			max_inc << 2
+			_loop @new_attb				
+				pos_repetidas[attb_key] +<<1 			    
+				fld_compare.modify_sufix_attribute_name(pos_repetidas[attb_key])
+				
+				#verificar si el nuevo nombre coincide con el existente,
+				#o con otro asignado anteriormente
+				used? << ((nw_attb << fld_compare.attribute_name()) = current_attb) _orif
+					  (used_names.includes_by_equality?(nw_attb))
+
+				_if used? _andif (inc < max_inc) _then
+					attb_key << nw_attb.as_symbol()
+					_if _not pos_repetidas.includes_key?(attb_key) _then
+						pos_repetidas[attb_key] << 0			
+					_endif
+				_else
+					_leave @new_attb
+				_endif
+				inc +<< 1
+		        _endloop
+		_endloop
+
+		used_names.add_last(current_attb)
+	_endloop 
+	
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_export_structure.table
+	##
+	## Tabla cuyos datos se van a exportar
+	##
+
+	_return .sw_table
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_export_structure.table_acpt_types
+	##
+	## Lista de los ACPT_TYPES de los campos de la tabla
+	##
+	_return .table_acpt_types
+_endmethod 
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_export_structure.is_valid_rwo_type?(a_rwo)
+	##
+	## Verifica si A_RWO es el tipo de rwo valido para esta
+	## estructura de tabla
+	##
+
+	valid? << (a_rwo _isnt _unset) _andif
+		  (a_rwo.source.name _is .sw_table.name)
+
+	_return valid?
+	
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_export_structure.geom_field
+	##
+	## Campo geometrico a exportar
+	##
+	_local a_field << .sw_table.field(.sw_geom_field)
+	_return a_field
+_endmethod
+$
+_pragma(classify_level=basic, topic={ib_export})
+_method ib_table_export_structure.list_fields_structures
+	##
+	## Lista con las informaciones de exportacion de los campos a exportar
+	##
+	_return .list_fields_estructures
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_table_export_structure.shape_entity_name
+	##
+	## Devuelve el nombre de la entidad
+	##
+
+	_return .export_table_name
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_table_export_structure.can_has_curves?
+	##
+	##Indica si el campo geometrico a exportar
+	##es de un tipo que podria tener curvas
+	##(lineas y areas)
+
+	_if .can_has_curves? _is _unset _then
+
+		_if (a_geom_fld << _self.geom_field) _is _unset _then
+			# No hay uun cmapo geometrico
+			.can_has_curves? << _false
+		_else 
+			.can_has_curves? << _self.geoms_types_with_curves.includes_by_equality?(a_geom_fld.geom_type)
+		_endif 
+	_endif
+
+	_return .can_has_curves?
+_endmethod
+$
+_pragma(classify_level=restricted, topic={ib_export})
+_method ib_table_export_structure.get_sw_id_field_struct()
+	##
+	## Devuelve el campo id de exportacion 
+	##
+	
+	_return .sw_id_field
+_endmethod
+$

@@ -1,0 +1,624 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+##
+## Exportacion\Importacion de ficheros SHAPE
+##
+## Exportacion-->  transfiere datos de SW a un fichero SHAPE generando
+##                 los ficheros shp, shx, dbf, inx, prj
+##
+## Importacion-->  
+##
+$
+def_slotted_exemplar(:ib_shape_file_acp,
+                      {
+			      {:owner,_unset},                    # objeto padre 
+			      {:destination_path,_unset },        # carpeta destino de los ficheros generados en la exportación
+			      {:destination_projection,_unset },  # Sistema de coordenadas del fichero de exportación
+			      {:destination_units,_unset },       # Unidades de exportación
+			      {:export_structure,_unset },        # Estructura con informacion para extraer los datos a exportar
+			      {:projection_transform, _unset },   # Transformacion de coordenadas que se aplica al campo geometrico (opcional)
+			      {:units_transform, _unset },        # Transformacion de unidades que se aplica al campo geometrico (opcional)
+			      {:file_name,_unset },               # nombre del fichero de exportacion
+			      {:transform_geometries?, _unset },  # Indica si se va a realizar una transformacion de coordenadas
+			      {:geom_can_has_curves?, _false },   # El tipo de geometria a exportar puede o no tener curvas
+			      {:pseudo_geom_is_necessary?, _false }
+		      },
+                      {:user_acp} ) 
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+##
+## Indica si los sectores de curvas (rational_b_spline, arc, circle)
+## se sustituyen por una serie de tramos rectos que se ajustan
+## a la curva
+ib_shape_file_acp.define_shared_constant(:adjust_curves_by_lines?,_true, _false)
+$
+
+_pragma(classify_level=restricted,topic={acp,ib_export})
+##
+## Prefijo de los nombres de sistemas de coordenadas validos
+ib_shape_file_acp.define_shared_constant(:prefix_valid_coords_sys,"EPSG:" , _false)
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+##
+## Constante utilizada para la fase de test, limitando el
+## numero  de registros exportados
+## En produccion su valor ha de ser _UNSET 
+ib_shape_file_acp.define_shared_constant(:limite,_unset  , _false)
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+##
+## Constante utilizada para mostrar por pantalla informacion
+## del proceso de exportacion.
+## Indica cada cuantos registros procesados se
+## notifica la evolucion
+ib_shape_file_acp.define_shared_constant(:hito,1000 , _false)
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+##
+## Tipo de Accion
+ib_shape_file_acp.define_shared_constant(:action, property_list.new_with(
+	:write, 1,
+	:read, 2 ), _false)
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+##
+## Codigo inicial para las geometrias
+ib_shape_file_acp.define_shared_constant(:codigo_inicial_geoms, 550, _false)
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+##
+## Codigos que identifican los distintos tipos de campos
+## geometricos manejados
+##
+ib_shape_file_acp.define_shared_constant(:codes,
+	## para identificar el tipo en la libreria
+	## {null, PointType,SimplePointType,LinkType, ChainType,
+	##  AreaType, SimpleLinearType, TextType};
+	## hay 32 ??
+	property_list.new_with(
+		:point, 3,
+		:simple_point, 19,
+		:chain, 7,
+		:area, 18,
+		:simple_chain, 17,
+		:simple_area, 21,
+		:text, 20,
+		:pseudo_point,22,
+		:pseudo_chain,23,
+		:pseudo_area,24,
+		:pseudo_text,25,
+		:pseudo_polygon,26), _false)
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+##
+## Extension del fichero SHAPE 
+ib_shape_file_acp.define_shared_constant(:extension_shp,"shp" , _false)
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+ib_shape_file_acp.define_shared_constant(:input_class, acpt_input_stream, _false)
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+ib_shape_file_acp.define_shared_constant(:output_class, acpt_output_stream, _false)
+$
+_pragma(classify_level=basic,topic={acp,ib_export})
+## Manejador de mensajes
+ib_shape_file_acp.define_shared_constant( :message_accessor,
+                                    message_handler.new(:ib_shape_file_acp),:public)
+$
+
+_pragma(classify_level=basic,topic={acp,ib_export})
+## Nombre del ejecutable jar
+ib_shape_file_acp.define_shared_constant( :jar_name,"SwFileLib.jar",:public)
+$
+_pragma(classify_level=basic, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.select_protocol(number)
+	## do nothing - always 0 anyway
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.new (owner,_gather properties)
+     ## 
+     ## Constructor
+     ##
+     _return  _clone.init(owner,_scatter properties) 
+_endmethod 
+$
+_pragma(classify_level=basic, topic={acp,ib_export})
+_private _method ib_shape_file_acp.init(owner,_gather properties) 
+   ## 
+   ## Inicializar ACP
+   ##
+
+   .owner << owner
+
+   # Inicializar parametros de exportacion
+   _self.set_export_options(properties)
+   _self.set_bool_slots()
+   
+   # Init the system command, program identifier, min and max protocols. 
+   _self.init_copy() 
+
+    classpath << sw_module_manager.module(ib_shape_file_acp.module_name).get_resource_file(_self.jar_name,:java).substitute_string(%\,%/)
+    
+   .command <<  {"java",
+		 "-classpath", classpath,
+		 "com.iberlan.file.shape.WriterShapeFile"}
+   
+   .program_ident << "Translator" 
+   .minimum_protocol << 1 
+   .maximum_protocol << 1 
+
+   >> _self 
+_endmethod 
+$
+_pragma(classify_level=restricted, topic={acp,ib_export}, usage={external})
+_private _method ib_shape_file_acp.set_export_options(export_options)
+	##
+	## Asigna las opciones iniciales de exportación
+	##
+	## :OUTPUT_PATH               - carpeta de salida
+	## :DESTINATION_PROJECTION    - sistema de coordenadas destino
+	## :DESTINATION_UNITS         - unidades destino
+	## :EXPORT_STRUCTURE          - estructura con la informacion
+	##                              de exportacion
+	## :TRANSFORM                 - transformacion de coordenadas
+	##                              que se aplica
+	
+	_if export_options _is _unset _then _return _endif
+	
+	tam << export_options.size
+
+	_for i _over range(1,tam,2)
+	_loop
+		clave << export_options[i]
+		valor << export_options[i+1]
+
+		_if clave _is :destination_path _then
+			.destination_path << valor
+		_elif clave _is :destination_projection _then
+			.destination_projection << valor
+		_elif clave _is :destination_units _then 
+			.destination_units << valor
+		_elif clave _is :export_structure _then
+			.export_structure << valor
+		_elif clave _is :projection_transform _then
+			.projection_transform << valor
+		_elif clave _is :units_transform _then
+			.units_transform << valor
+		_endif
+	_endloop
+
+	
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_private _method ib_shape_file_acp.set_bool_slots()
+	##
+	## Inicializa los slots con valores booleanos
+	## -Asigna valor al slot .TRANSFORM_GEOMETRIES? indicando si es
+	##  necesario realizar transformacion de coordenadas y/o unidades
+	## -Asigna valor al slot .GEOM_CAN_HAS_CURVES?
+	##  indicando si la geometria que se va a exportar puede
+	##  tener curvas
+	## -Asigna valor al slot .PSEUDO_GEOM_IS_NECESSARY? indicando
+	##  si sera necesario generar pseudo_geomettrias
+
+	#Transformacion
+	.transform_geometries? <<  (.projection_transform _isnt _unset) _orif
+				   (.units_transform _isnt _unset )
+	#Curvas
+	_if .export_structure _isnt _unset _then 
+		.geom_can_has_curves? << .export_structure.can_has_curves?
+	_endif
+
+	#Pseudogeoms
+	.pseudo_geom_is_necessary? << .transform_geometries? _orif .geom_can_has_curves?
+_endmethod
+$
+_pragma(classify_level=restricted, topic={acp,ib_export})
+_private _method ib_shape_file_acp.get_file_name()
+	##
+	## Devuelve el nombre del fichero .SHP, extraido del fichero de configuracion.
+	## Si no tiene valor se construye a partir del nombre de la tabla y
+	## el campo geometrico
+	##
+	_if .file_name _is _unset _then
+		# Verificar si en la configuracion se proporciono un nombre de entidad
+		_if (a_file_wout_ext << .export_structure.shape_entity_name) _is _unset _orif
+		    (a_file_wout_ext << a_file_wout_ext.trim_spaces()) = "" _then
+			a_file_wout_ext << .export_structure.table.name.write_string + "_" +
+					   .export_structure.geom_field.name.write_string
+		_endif 
+		    
+		.file_name << a_file_wout_ext +"." + _self.extension_shp
+	_endif
+
+	_return .file_name
+_endmethod
+$
+_pragma(classify_level=restricted, topic={acp,ib_export}, usage={external})
+_private _method ib_shape_file_acp.get_coordinate_system()
+	##
+	## Devuelve el Sistema de coordenadas destino
+	##
+
+	coord_sys_name << .destination_projection.name
+	prefix << _self.prefix_valid_coords_sys
+	
+	_if (ind << coord_sys_name.index_of_seq(prefix)) _is _unset _then
+		#condition.raise()
+	_endif
+
+	prefix_tam << prefix.size
+	coord_sys << coord_sys_name.subseq(1+prefix_tam,
+					   coord_sys_name.size-prefix_tam)
+
+	_return coord_sys
+_endmethod
+$
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.write_shape_file(rwo_list)
+	##
+	## Exporta la lista RWO_LIST a un fichero SHAPE
+	##
+	## (no se valida que el tipo de rwo sea el adecuado para la
+	## informacion de exportacion con la que se instancio esta clase)
+
+	_local action << :write
+	
+	_protect 
+		_self.start_acp()
+		_self.write_head(action)
+		_self.write_model()
+		_self.write_records(rwo_list)
+	_protection
+		_self.close()
+	_endprotect
+_endmethod
+$
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.write_head(action)
+	##
+	## Envia nombre del fichero a exportar, ruta de salida y
+	## sistema de coordenadas destino.
+	##
+	_self.put_unsigned_byte(_self.action[action])
+	_self.put_chars16(_self.get_file_name())
+	_self.put_chars16(.destination_path)
+	_self.put_chars16(_self.get_coordinate_system())
+	_self.flush()
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.write_model()
+	##
+	## Envia informacion del modelo (estructura de exportacion de
+	## los datos)
+	##
+
+	_local fields_structs << .export_structure.list_fields_structures
+
+	# Numero de datos a exportar para cada objeto
+	_self.put_unsigned_byte(fields_structs.size)
+
+	_for a_field_struct _over fields_structs.fast_elements()
+	_loop
+		is_geom? << a_field_struct.is_geometry?
+		a_acpt_type << _self.get_acpt_type(a_field_struct)
+
+		_if is_geom? _then
+			# Se pasa una pseudo geometria construida a partir de la geometria
+			# exitente
+			geom_type << a_acpt_type.name
+			key << _self.codes[geom_type]
+			code << _self.codigo_inicial_geoms+key			
+		_else
+			code << a_acpt_type.typeno
+		_endif
+
+		#Enviar codigo del tipo de dato a exportar, nombre del atributo,
+		#boolean indicando si puede ser un valor nulo
+		_self.put_unsigned_short(code)
+		_self.put_chars16(a_field_struct.attribute_name().write_string)
+		_self.put_boolean(a_field_struct.can_be_null?)
+	_endloop
+
+	 
+	_self.write_end()
+	_self.flush()
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.write_records(rwo_list)
+	##
+	## Envia los datos a exportar de la lista de objetos RWO_LIST
+	##
+
+	_dynamic !print_float_precision! << 10
+	
+	_local fields_structs << .export_structure.list_fields_structures
+	_local total << rwo_list.size
+	_local contador << 0
+	
+	# numero de registros
+	_local limite? << _self.limite _isnt _unset
+	_local ignore_empties? << _not .export_structure.export_empties?
+
+	_if _not .export_structure.export_empties? _then
+		# eliminar de la lista los objetos sin geometria
+		_local new_rwo_list << rope.new()
+		_for a_rwo _over rwo_list.fast_elements()
+		_loop 	_if a_rwo.perform(.export_structure.geom_field.name) _isnt _unset _then
+				new_rwo_list.add_last(a_rwo)								  
+			_endif 
+		_endloop
+		rwo_list << new_rwo_list
+	_endif
+	
+	_local num_reg << rwo_list.size
+
+        _if limite? _andif (num_reg > _self.limite) _then
+		num_reg << _self.limite
+	_endif
+	
+	_self.put_unsigned_int(num_reg)
+
+	field_export_id << .export_structure.get_sw_id_field_struct()
+	has_export_id? << field_export_id _isnt _unset 
+	
+	_for a_rwo _over rwo_list.fast_elements()
+	_loop
+		_local rwo_info
+		_local err_msj << _unset 
+		_local valid_rwo_datas?
+		_local a_rwo_id << _unset
+		contador +<<1
+
+		# Obtener id de exportacion
+		_try _with cond
+			_if has_export_id? _then
+				a_rwo_id << field_export_id.get_attribute_value(a_rwo)
+			_else
+				a_rwo_id << a_rwo.ibtr_export_id
+			_endif
+		_when error
+			# No se pudo recuperar un iid de exportacion
+			a_rwo_id << ""
+		_endtry
+
+		
+		#Recorrer estructura de exportacion de los campos para generar los
+		#datos
+		_try _with cond
+
+			
+			
+			rwo_info << _self.get_rwo_export_datas(a_rwo,fields_structs)
+			valid_rwo_datas? << _true 
+		_when error
+		        valid_rwo_datas? << _false
+			err_msj <<tab_char + _self.message(:err_rwo_id)+" "+ a_rwo_id.default("") + newline_char +
+			          tab_char*2 + cond.report_contents_string+ newline_char
+		_endtry
+
+		# Notificar si los datos son validos
+		_self.put_boolean(valid_rwo_datas?)
+		
+		_if valid_rwo_datas? _then
+			# enviar datos
+			_for a_field_rwo_info _over rwo_info.fast_elements()
+			_loop
+				valor << a_field_rwo_info[1]
+				a_acpt_type << a_field_rwo_info[2]
+				is_geom? << a_field_rwo_info[3]
+
+				_if is_geom? _then
+					code << a_field_rwo_info[4]
+					_self.write_geom_value(valor,a_acpt_type,code)
+				_else
+					a_unit << a_field_rwo_info[4]
+					_self.write_value(valor,a_acpt_type,a_unit)
+				_endif 
+			_endloop 
+		_else
+			# enviar error
+			_self.put_chars16(err_msj.write_string)
+		_endif 
+		
+		_self.flush()
+
+		_if (contador _mod _self.hito) = 0 _orif
+		    contador >= total _then
+			write(tab_char,_self.message(:notify_progress,contador,total,date_time.now()))
+		_endif
+
+		_if (limite? _andif (contador >= _self.limite)) _then 
+		             write(tab_char,_self.message(:notify_progress,contador,total,date_time.now()))
+			     write(tab_char,_self.message(:force_interruption))
+			     _leave 
+		_endif 
+		
+	_endloop
+	
+	_self.write_end()
+	_self.flush()
+_endmethod
+$
+_pragma(classify_level=restricted, topic={acp,ib_export}, usage={external})
+_private _method ib_shape_file_acp.get_rwo_export_datas(a_rwo,fields_structs)
+	##
+	## Devuelve una lista con la informacion del A_RWO que se va a exportar
+	## para la estructura de campos FIELDS_STRUCTS
+
+	_local rwo_info << rope.new()
+	
+	_for a_field_struct _over fields_structs.fast_elements()
+	_loop
+		_local info_field 
+		valor << a_field_struct.get_attribute_value(a_rwo)			
+		a_acpt_type << _self.get_acpt_type(a_field_struct)
+			
+		_if (is_geom? << a_field_struct.is_geometry?) _then
+			geom_type_name << a_acpt_type.name
+			key << _self.codes[geom_type_name]
+			code << _self.codigo_inicial_geoms+key
+
+			# Tranformar y/o aproximar curvas si procede
+			valor << _self.apply_transform_and_adjust_curves(valor)
+			info_field << {valor,a_acpt_type,is_geom?,code}
+		_else
+			_if a_acpt_type.name.write_string.index_of_seq("string") _isnt _unset _then 
+			    valor << valor.default("").write_string
+			_endif
+
+			_if valor _isnt _unset _then 
+				# Verificar si es una fecha
+				_if a_acpt_type _is acpt_type.date _then
+					# el tipo de dato del campo fecha es :ds_date, pero el tipo de
+					# dato que hay que pasar es :date
+					valor << date.new_from(valor)
+				_elif a_acpt_type _is acpt_type.date_time _then					
+					valor << date_time.new_from(valor)
+				_endif
+			_endif 
+			info_field << {valor,a_acpt_type,is_geom?,a_field_struct.unit}
+		_endif
+
+		rwo_info.add_last(info_field)
+	_endloop
+
+	_return rwo_info
+_endmethod
+$
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.write_value(value, type, _optional base_unit)
+	##
+	## Enviar valor VALUE del tipo TYPE, y unidades BASE_UNIT (si procede)
+	##
+	_if value _is _unset
+	_then
+		_self.put_object(value, acpt_type.unset)
+	_elif value.responds_to?(:unit)
+	_then
+		_self.put_object(value.value_in(base_unit.default(value.unit.base_unit)), type)
+	_else
+		_self.put_object(value, type)
+	_endif
+_endmethod
+$
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.write_geom_value(geom_value, a_acpt_type, code)
+	##
+	## Enviar geometria GEOM_VALUE de tipo A_ACPT_TYPE y codigo CODE
+	##
+
+	_self.put_unsigned_short(code)
+	_if geom_value _is _unset 
+	_then
+		_self.put_object(geom_value, acpt_type.unset)
+	_else
+		_self.put_object(geom_value, a_acpt_type)
+	_endif
+	
+_endmethod 
+$
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.apply_transform_and_adjust_curves(geom_value)
+	##
+	## Aplica la transformacion de coordenadas y unidades, .projection_TRANSFORM (si tiene valor)
+	## sobre la geometria GEOM_VALUE y/o aproximar las curvas
+	## mediante lineas
+	##
+
+	_if geom_value _is _unset _orif
+	    (_not .pseudo_geom_is_necessary?)
+	_then _return geom_value _endif
+
+	# generar pseudo_geometrias para realizar la transformacion
+	# sobre ellas y/o aproximar las curvas con lineas
+	_if (gtype << geom_value.geom_type) _is :chain _orif
+	    gtype _is :simple_chain _then
+		geom_value << pseudo_chain_export.new(geom_value,_self.adjust_curves_by_lines?)
+	_elif gtype _is :point _orif
+	      gtype _is :simple_point _then 
+		geom_value << pseudo_point_export.new(geom_value)
+	_elif gtype _is :area _orif
+	      gtype _is :simple_area _then
+		geom_value << pseudo_area_export.new(geom_value,_self.adjust_curves_by_lines?)
+	_elif gtype _is :text _then
+		geom_value << pseudo_text_export.new(geom_value)
+	_endif
+
+	# Transformar coordenadas
+	_if .projection_transform _isnt _unset _then
+		geom_value << geom_value.transform_in_situ(.projection_transform)
+	_endif
+	
+	# Transformar unidades
+	_if .units_transform _isnt _unset _then	
+		geom_value << geom_value.transform_in_situ(.units_transform)
+	_endif
+	
+	_return geom_value
+	
+_endmethod
+$
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.write_end()
+	##
+	## Enviar caracter de finalizacion
+	##
+	_self.put_unsigned_byte(255)
+	_self.flush()
+_endmethod
+$
+_pragma(classify_level=advanced, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.get_acpt_type(a_field_struct)
+	##
+	## Devuelve el tipo de acpt_type de la estructura
+	## de campo A_FIELD_STRUCT, si es una geometria y se va a
+	## aplicar una transformacion la geometria ha de tranformarse
+	## en una pseudo_geometry, por lo que se devuelve el acpt_type
+	## de pseudo geometria correspondiente
+	##
+
+	_local a_acpt_type
+	
+	_if a_field_struct.is_geometry? _andif
+	    .pseudo_geom_is_necessary?  _then
+		a_acpt_type <<a_field_struct.get_pseudo_geom_acpt_type()						
+	_else
+		a_acpt_type <<a_field_struct.get_acpt_type()
+	_endif	
+
+	_return a_acpt_type
+	
+_endmethod
+$
+_pragma(classify_level=restircted, topic={acp,ib_export}, usage={external})
+_private _method ib_shape_file_acp.has_curves?(a_geom)
+	 _return (a_geom.responds_to?(:straight?) _andif
+		 (_not a_geom.straight?))
+_endmethod
+$
+
+########################################################################################################################
+##
+## GESTION DE MENSAJES
+##
+########################################################################################################################
+_pragma(classify_level=basic, topic={acp,ib_export}, usage={external})
+_method ib_shape_file_acp.message( message_id, _gather  args )
+	##
+	## Devuelve el texto del mensaje message_id
+	##
+        _return  _self.message_accessor.human_string(
+                           message_id, _unset, _scatter args )
+_endmethod
+$

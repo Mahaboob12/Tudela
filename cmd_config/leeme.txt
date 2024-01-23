@@ -1,0 +1,18 @@
+Ficheros de configuración que han de sustituir a los ficheros del producto ubicados en:
+
+...\Smallworld430\product\config
+
+Modificar las variables definidas en environment.bat , para que apunten a las rutas de la instalación
+
+LAYERED_PRODUCTS añadir
+localisation:
+	path   =        %SMALLWORLD_GIS%\..\product_lp\
+aguas_tudela:
+	path	=	%SMALLWORLD_GIS%\..\..\aguas_tudela43\
+----------------------------------------------------------------------------------------------------
+
+La carpeta config_google_addon, contiene los ficheros del producto de Google que contienen 
+las modificaciones para la instalación de TUDELA
+
+<SMALLWORLD_INSTALL>\sw_addon_google_maps111\web\require.config.js --> Licencia, Idioma y 
+                                                                       coordenadas iniciales de StreetView

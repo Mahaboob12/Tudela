@@ -1,0 +1,10 @@
+captura 1
+
+description
+	Aplicación de Captura
+end
+
+requires
+
+	swaf_professional_application	
+end

@@ -1,0 +1,14 @@
+tuberia_saneamiento
+pozo_saneamiento
+aliviadero
+final_saneamiento
+tanque_tormentas
+canal
+acometida_saneamiento
+edar
+arqueta_saneamiento
+sumidero
+grupo_bombeo_saneamiento
+boquilla
+sifon
+valvula_vortex

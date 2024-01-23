@@ -1,0 +1,152 @@
+#% text_encoding = iso8859_1
+_package user
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:valvula,{},:rwo_record)
+$
+#
+_pragma (classify_level=basic,topic=modelo_datos)
+_method valvula.profundidad_texto
+	##
+	## Pone el string en la anotacion texto_profundidad
+	
+	txt << _self.profundidad.default(0).write_string
+	_return txt
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method valvula.posicion_trigger(nombre,att_det,geom)
+	
+	##
+	## Cuando ell punto posicion se attacha se crea la anotacion
+
+	_if att_det _is :attach
+	_then
+		
+		# Coloca el texto de cota de profundidad
+		coord << _self.posicion.coord
+		txt << _self.profundidad_texto
+		_if _self.texto_profundidad _isnt _unset _then
+			_self.unset_geometry(:texto_profundidad)
+		_endif
+		texto << _self.make_geometry(:texto_profundidad,coord,txt)
+		texto.just << 11
+ 
+
+	_endif 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method valvula.profundidad_trigger()
+	##
+	## Cuando cambia el valor de profundidad se recrea la anotacion
+	_if _self.texto_profundidad _isnt _unset
+	_then
+		coord << _self.posicion.coord
+		txt << _self.profundidad_texto
+		_self.unset_geometry(:texto_profundidad)
+		texto << _self.make_geometry(:texto_profundidad,coord,txt)
+		texto.just << 11
+	_endif
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method valvula.cota
+	##
+	## Calcula la cota en m a partir de la cota de la tapa de la
+	## arqueta menos la profundidad de la valvula.
+	## Si no tiene arqueta relacionada o no tiene cota de tapa, se
+	## mira la Z del trampillon
+	cota_tapa << 0.0
+	_if _self.arqueta _isnt _unset _andif
+	    _self.arqueta.cota_tapa _isnt _unset
+	_then
+		# cota_tapa esta en metros 
+		cota_tapa << _self.arqueta.cota_tapa
+	_elif _self.trampillon _isnt _unset _andif
+	      _self.trampillon.as_coord().has_z?
+	_then
+		# componente Z de la coordenada esta en unidades de mundo. En
+		# este caso en mm, por eso se divide por 1000
+		cota_tapa << _self.trampillon.as_coord().z/1000
+	_endif
+	_return cota_tapa - _self.profundidad.default(0.0) 
+			     
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method valvula.dibuja_estado(window, geom, rwo_est, draw?)
+	##
+	## Dibuja 2 lineas vericales sobre la valvula cuando esta
+	## cerrada
+	#show("valvula.dibuja_estado(", window, geom, rwo_est, draw?)
+        #
+	# Dibujamos la valvula con el estilo que le corresponde
+	#
+	_if draw?
+	_then
+		geom.draw_on(window, rwo_est.actual_gis_style)
+	_else
+		geom.undraw_on(window, rwo_est.actual_gis_style)
+	_endif
+	
+	#
+	# Dibujamos las lineas verticales si el estado es Cerrado 
+	#
+	_if _self.dsint!estado <> 2 _then _return _true _endif
+	# El tamaño del simbolo esta en micrometros
+	bb << rwo_est.actual_gis_style.symbol_bounds
+	# Calculamos la dimension en X y en Y, en mm y lo multiplicamos
+	# por la escala del simbolo en el style actual
+
+	dim_x << length_value((bb.xmax - bb.xmin),:um).value_in(unit_value.new(0, geom.world_units).unit) * rwo_est.actual_gis_style.scale
+	dim_y << length_value((bb.ymax - bb.ymin),:um).value_in(unit_value.new(0, geom.world_units).unit) * rwo_est.actual_gis_style.scale
+		
+	# El tamaño de las lineas la calculamos en funcion del simbolo y
+	# el mundo (mm): 1.5 veces el alto del simbolo en total.
+	# r es la mitad  de la longiud del tic (para polares)
+	r << dim_y * 1.5 / 2
+	# La distancia entre lineas la calculamos como la cuarta
+	# parte del ancho del simbolo.
+	# d es la mitad de la separacion (para polares)
+	d << dim_x / 4 / 2
+	
+	centro << geom.coord
+	ang << (geom.orientation - float.half_pi).
+	       normalise(- float.half_pi, float.half_pi)
+	
+	# Hacemos la linea en el centro 
+	coords << rope.new()
+	c_ini << centro + coordinate.new_with_polar(r,ang)
+	coords.add(c_ini)
+	c_fin << centro + coordinate.new_with_polar(-r,ang)
+	coords.add(c_fin)
+	sr0 << sector_rope.new_with(sector.new_from(coords))
+	line0 << pseudo_chain.new_for_world(sr0, geom.world)
+	
+	# Movemos la linea hacia un lado 
+	delta1 << coordinate.new_with_polar(d,geom.orientation)
+	tr1 << transform.translate(delta1.x, delta1.y)
+	line1 << line0.transformed(tr1)
+	# Movemos la linea hacia el otro lado
+	delta2 << coordinate.new_with_polar(-d,geom.orientation)
+	tr2 << transform.translate(delta2.x, delta2.y)
+	line2 << line0.transformed(tr2)
+
+	# El estilo de la linea (3 pixels)
+	line_sty << line_style.new_with_properties(
+			    :foreground_colour, colour.called(:red),
+			    :width, 3)
+	_if draw?
+	_then
+		line1.draw_on(window, line_sty)
+		line2.draw_on(window, line_sty)
+                
+	_else
+		line1.undraw_on(window, line_sty)
+		line2.undraw_on(window, line_sty)
+	_endif
+	_return _true 
+_endmethod
+$

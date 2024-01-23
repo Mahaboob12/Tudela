@@ -1,0 +1,5 @@
+#% text_encoding = iso8859_1
+_package user
+$
+message_handler.new(:administracion).set_uses_list({:admin_application,:ds_transfer_dialog})
+$

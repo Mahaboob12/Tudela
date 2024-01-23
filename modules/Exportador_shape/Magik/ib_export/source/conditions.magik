@@ -1,0 +1,52 @@
+$
+condition.define_condition( :invalid_trail_bounds_for_export,
+			    :user_error,
+			    {},
+			    "Límites de trazo no válidos para exportación" )
+$
+condition.define_condition( :no_trail,
+			    :user_error,
+			    {},
+			    "Error: No hay ningún trazo definido." )
+$
+condition.define_condition( :no_table,
+			    :user_error,
+			    {},
+			    "Error: No se ha indicado un nombre de tabla de SW." )
+$
+condition.define_condition( :no_valid_field_or_method,
+			    :user_error,
+			    {:field_or_method,:table_name},
+			    "Error: Secuencia #1 no valida para la tabla #2 ." )
+$
+condition.define_condition( :no_valid_sw_type,
+			    :user_error,
+			    {:sw_type,:field_or_method,:table_name},
+			    "Error: La entrada #1 es un tipo de datos nulo o no valido .Tabla #2" )
+$
+condition.define_condition( :no_valid_field_info,
+			    :user_error,
+			    {:table_name},
+			    "Error: Informacion de campos no valida para la tabla #1" )
+$
+condition.define_condition( :no_valid_properties_str_table,
+			    :user_error,
+			    {},
+			    "Error: propiedades para crear la estructura de la tabla no validas." )
+$
+condition.define_condition( :no_valid_geom_field_name,
+			    :user_error,
+			    {:geom_field_name,:table_name},
+			    "Nombre de campo geometrico #1, no valido para la tabla #2." )
+$
+
+condition.define_condition( :no_valid_export_config,
+			    :user_error,
+			    {},
+			    "Configuracion de exportacion NO valida." )
+$
+condition.define_condition( :no_dataset_config,
+			    :user_error,
+			    {},
+			    "No se ha indicado ningun dataset para el que configurar el mapeo." )
+$

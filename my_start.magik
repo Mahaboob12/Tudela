@@ -1,0 +1,8 @@
+_package user
+_block
+	
+smallworld_product.reload_product(system.getenv("TUDELA"))
+sw_module_manager.load_module(:ib_export)
+
+_endblock
+$

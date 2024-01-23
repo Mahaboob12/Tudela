@@ -1,0 +1,40 @@
+
+RUN_GIS_TARGETS:
+	title		= Build all the gis_aliases targets given on gis command line
+	script		= %SMALLWORLD_GIS%/bin/share/RUN_GIS_TARGETS
+	product		= gis
+#
+swaf:
+	title		= Run Smallworld Application Framework
+	program         = sw_magik
+	image		= swaf.msf
+	args		= -Mextdir %TEMP%
+	product		= gis
+
+build_tudela_closed:
+	title		= Build Tudela 430 closed image
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= swaf
+	product		= aguas_tudela
+	SW_MAGIK_IMAGE_NAME = tudela_closed
+
+tudela_closed:
+	title		= Tudela Closed 430
+	program         = sw_magik_win32
+	image		= tudela_closed.msf
+	args		= -Mextdir %TEMP% -login root
+	product		= aguas_tudela
+
+build_tudela_open:
+	title		= Build Tudela 430 open image
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= tudela_closed
+	product		= aguas_tudela
+	SW_MAGIK_IMAGE_NAME = tudela_open
+
+tudela_open:
+	title		= Tudela 430
+	program         = sw_magik_win32
+	image		= tudela_open.msf
+	args		= -Mextdir %TEMP% -login root
+	product		= aguas_tudela

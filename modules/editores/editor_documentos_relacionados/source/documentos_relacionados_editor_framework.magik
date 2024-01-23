@@ -1,0 +1,759 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma(classify_level=restricted)
+def_slotted_exemplar(:documentos_relacionados_editor_framework,
+	{
+		{:current_object,            _unset},
+		{:new_object,                _unset},
+		{:related_objects_provider,  _unset},
+		{:tree_item,                 _unset},
+		{:selected_item,             _unset},
+		{:display_related_objects,   _unset},
+		{:parent_to_categorised_children_map,  _unset},
+		{:thread,                    _unset},
+		{:categorised_related_objects,_unset},
+		{:source_view,               _unset},
+		{:popups,                    _unset},
+		{:refresh_on_activation?,    _false},
+		{:wait_for_lwt_state?,       _unset},
+		{:thread_pipe,               _unset}
+	},
+	{:gui_framework,:documentos_relacionados_actions_mixin})
+$
+
+_pragma(classify_level=restricted)
+documentos_relacionados_editor_framework.define_slot_externally_readable(:popups,:private)
+$
+
+_pragma(classify_level=restricted)
+documentos_relacionados_editor_framework.define_slot_externally_readable(:tree_item,:private)
+$
+
+_pragma(classify_level=restricted)
+documentos_relacionados_editor_framework.define_slot_externally_readable(:display_related_objects,:public)
+$
+
+_pragma(classify_level=restricted)
+documentos_relacionados_editor_framework.define_shared_constant(:group_tree_styled_string_no_children,
+	## special styled string for groups without children
+	styled_string.new(
+		:image, { "generic_object.ico", :ui_resources },
+		:normal,
+		:value, :disp_string ),
+	:private )
+$
+
+_pragma(classify_level=restricted)
+documentos_relacionados_editor_framework.define_shared_constant(
+	:databus_producer_data_types,
+	##
+	## The data types this plugin puts on the databus.
+	##
+	{
+		# Current selection in the related items list
+		:current_related_item
+	},
+	:public )
+$
+
+_pragma(classify_level=restricted)
+## procedure comparing display strings of display_trees by
+## numeric_string_cf_proc which treats numbers embedded in the
+## strings as numbers as opposed to characters and therefore
+## sorts those strings more intuitively.
+documentos_relacionados_editor_framework.define_shared_constant(
+	:rel_item_display_tree_sort_proc,
+	_proc @rel_item_display_tree_sort_proc ( a_dt1, a_dt2 )
+
+		str1 << a_dt1.value[ :disp_string ]
+		str2 << a_dt2.value[ :disp_string ]
+
+		_global numeric_string_cf_proc
+
+		res?? << numeric_string_cf_proc( str1, str2 )
+
+		_return res??
+	_endproc,
+	:private )
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.init( name, an_owning_framework, _optional properties )
+	##  Initialises slots.
+
+	.display_related_objects << {}
+	.parent_to_categorised_children_map << equality_hash_table.new()
+	.related_objects_provider << related_objects_provider.new()
+	.popups << property_list.new()
+	.thread_pipe << atomic_queue.new(1)
+	.wait_for_lwt_state? << set.new()
+
+        # fork off the refresh proc, and remember the thread
+        .thread << _self.refresh_related_objects_background_proc.fork_at(
+			   _thisthread.interactive_priority - 2,
+			   _self)
+
+	>> _super.init( name ,an_owning_framework, properties )
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.terminate()
+	## 
+	## This will terminate the refresh thread to save resources
+	## and remove database view observations/dependencies before it dies.
+	##
+
+	.thread.kill()
+
+	_super.terminate()
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.selected_item
+	## 
+	## Will return a selected item or _unset if it is an invalid record.
+
+	_return .selected_item
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.current_object
+	## 
+	## Will return a current record or _unset if it is an invalid record.
+
+	_return .current_object
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.current_object << new_object
+	## 
+	## Will return a new_object or _unset if it is an invalid
+	## record and store it in .current_object slot.
+
+	_return .current_object << new_object
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+documentos_relacionados_editor_framework.define_shared_constant(
+	:refresh_related_objects_background_proc,
+	## Procedure used for updating the list.
+
+	_proc @refresh_related_objects_background_proc ( me )
+		me.do_refresh_loop()
+	_endproc,
+	:private)
+$
+
+_pragma(classify_level=restricted)
+## Defines a vector of database notifications we are interested
+## in
+documentos_relacionados_editor_framework.define_shared_constant( :observer_interest,
+							   {:insert, :post_delete, :update},
+							   :private )
+$
+
+_pragma(classify_level=restricted)
+# we create styled string for group tree
+documentos_relacionados_editor_framework.define_shared_constant(
+	:group_tree_styled_string,
+	styled_string.new( :image, {"generic_object.ico",:ui_resources}, :bold, :value, :disp_string ),
+	:private )
+$
+
+_pragma(classify_level=restricted)
+# related items tree may also show related items directly we
+# create the styled string for showing these related items directly
+documentos_relacionados_editor_framework.define_shared_constant(
+	:record_styled_string,
+	styled_string.new( :value, :disp_string ),
+	:private )
+$
+
+_pragma(classify_level=restricted)
+	## hash table mapping type of document
+	## to the corresponding styled string (here as a simple
+	## vector), this will be responsible to display a relevant icon
+	## in the display tree
+documentos_relacionados_editor_framework.define_shared_constant(
+	:style_for_doc_type,
+	property_list.new(10),
+	:private)
+$
+
+
+_pragma(classify_level=restricted)
+_private _method documentos_relacionados_editor_framework.style_for_doc_type( doc_type )
+	## 
+	## Will return cached string for document type DOC_TYPE and
+	## create one if it didn't exist.
+
+	_if _self.style_for_doc_type[ doc_type ] _is _unset
+	_then
+		image << _self.image_for_doc_type[ doc_type ][2]
+		ss << styled_string.new( :image, image,
+					 :value, :disp_string )
+		_self.style_for_doc_type[ doc_type ] << ss
+	_endif
+	>> _self.style_for_doc_type[ doc_type ]
+_endmethod
+$
+
+########++++++++--------    Databus    --------++++++++########
+
+_pragma(classify_level=advanced)
+documentos_relacionados_editor_framework.define_shared_constant( :databus_consumer_data_types,
+							   {
+								   :current_object,
+								   :delete_current_object
+							   },
+							   :public )
+$
+
+_pragma(classify_level=advanced)
+_method documentos_relacionados_editor_framework.sw_databus_data_available( data_type_name, data )
+	##
+	## Handles notification from the databus that data is available
+	## and refreshes display
+	##  If _self isn't locked to a record the current record is
+	## set to DATA and the related items tree is refreshed.
+	## If _self isn't active it just remembers the DATA and delays
+	## actual refresh until it is re-activated.
+
+	_if data_type_name _is :current_object
+	_then
+		.new_object << data
+
+		_if _self.active?
+		_then
+			_self.refrescar_lista()
+		_else
+			.refresh_on_activation? << _true
+		_endif
+	_elif data_type_name _is :delete_current_object
+	_then
+		_self.eliminar_documentos_relacionados_con(data)
+	_endif
+
+_endmethod
+$
+
+########++++++++--------    GUI    --------++++++++########
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.build_framework_gui( container, _optional xml_element )
+	##
+	## Description:
+	##  Creates a tree_item to display related_items, and creates a
+	##  popup menu
+	##
+	## Parameters:
+	##   CONTAINER - a container in which to build gui
+	##   XML_ELEMENT - an xml_thing which can be used to modify how
+	## GUI is built. By default does nothing
+	##
+	## Return values:
+	##   The panel holding the tree_item
+	##
+
+	.tree_item <<
+		t << tree_item.new(container,
+				   :resize_y?,              _true,
+				   :resize_x?,              _true,
+				   :width,                  500,
+				   :height,                 200,
+				   :model,                  _self,
+				   :aspect,                 :display_related_objects,  #Method called on note change
+				   :select_notifier,        :|selection()|,            #Method called on selection
+				   :double_click_notifier,  :|edit()|,                 #Method called on double click
+				   :mode,                   :one,                      #Number of selections allowed
+				   :grid_lines?,            _true,                     #Draws grid lines around cells
+				   :identifier, :_documentos_relacionados_editor_framework_build_framework_gui_1 )
+
+	t.tab_label << _self.message(:tab_label)
+
+	_self.add_event_handler( :gui_visibility?, _self, :|handle_visibility()| )
+
+	_self.set_context_sensitive_popup()
+
+	>> t
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.handle_visibility( visible? )
+	## 
+	## A callback method called when _self becomes visible.
+
+	_if visible? _andif .refresh_on_activation?
+	_then
+		.refresh_on_activation? << _false
+		_self.refrescar_lista()
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.selection( selected )
+	##
+	## Description:
+	##  extracts rwo from selected assigns to slot selected_item,
+	##  updates the enabled status of actions also manages the
+	##  popup menu (by making available only those popup menus
+	##  which are relevant to the selection)
+	##
+	## Prerequisites:
+	##  Need select_notifier set to this method for
+	##  tree_item
+	##
+
+	_self.busy? << _true
+	_protect
+		selected_tree << selected.an_element()
+
+		_if selected_tree _isnt _unset
+		_then
+			.selected_item << selected_tree.key
+		_else
+			.selected_item << _unset
+		_endif
+
+		_if (selected_item << _self.selected_item) _is _unset
+		_then
+			_self.application.databus.make_data_available(:recordset_data,_unset,_self)
+
+		_elif _not selected_item.is_kind_of?( ds_record )
+		_then
+			a_collection << selected_item
+
+			_if .categorised_related_objects _is _unset _orif
+			    (an_rwo_set << .categorised_related_objects[ a_collection ]) _is _unset
+			_then
+				parent << selected_tree.parent.key
+				an_rwo_set << .parent_to_categorised_children_map[ parent ][ a_collection ]
+			_endif
+
+			_self.application.databus.make_data_available( :recordset_data,
+								       {_self.current_object,an_rwo_set},
+								       _self )
+
+		_else
+			_self.application.databus.make_data_available( :recordset_data,
+								       {_self.current_object,
+									rwo_set.new_with( selected_item )},
+								       _self )
+			_if selected_item.source_view = .source_view
+			_then
+				_self.application.databus.make_data_available( :detailer_selection, selected_item, _self )
+			_endif
+		_endif
+
+		_self.manage_actions()
+
+		_self.set_context_sensitive_popup()
+	_protection
+		_self.busy? << _false
+	_endprotect
+_endmethod
+$
+
+########++++++++--------    Display    --------++++++++########
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.refrescar_lista()
+	##
+	## Description:
+	##   Refeshes the related items tree with whatever is in
+	## .new_object slot asynchronously - in a dedicated thread.
+	## This call will just inform the dedicated
+	## thread to start refresh so it won't take too long in _thisthread.
+	##
+
+	# try to remove pending object just in case it wasn't picked up
+	# by the refresh thread yet (unlikely). But don't wait here in
+	# case .thread_pipe is empty.
+	.thread_pipe.get( _true )
+
+	# now pass .new_object to the refresh thread through the
+	# .thread_pipe. It should awake the waiting thread. It will do
+	# the refresh asynchronously (i.e. we won't wait here until it
+	# completes). It shouldn't wait here because we emptied the
+	# pipe in the previous step.
+	.thread_pipe.put( .new_object )
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.do_refresh_loop()
+	## 
+	## Description:
+	##   Refeshes the related items tree asynchronously - in a
+	## dedicated thread which is _thisthread. The thread is in a
+	## wait state if it has nothing to do.
+	## 
+
+	_loop @refresh_related_objects_loop
+		# this is a blocking call - if there is nothing in the
+		# thread_pipe it goes to sleep until something is fed there.
+		new_object << .thread_pipe.get()
+		_self.busy? << _true
+		_protect
+
+			# perform it safely. We don't want _thisthread to die in case
+			# of an error.
+			_self.perform_safely( :|setup_display_related_objects()|, new_object )
+
+		_protection
+			_self.busy? << _false
+		_endprotect
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.setup_display_related_objects( new_object )
+	##
+	## Sets the related_items list and returns a list of
+	## display_tree's formatted using styled strings
+	##
+	## Return values:
+	##   A list of related items in the form of display_tree's
+	##
+
+	same_object? << _self.bombproof_equals?( .current_object, new_object )
+
+	_self.current_object << new_object
+
+	# remember old selected item
+	old_selected_item << .selected_item
+
+	_self.cache_categorised_related_objects()
+
+	sorted_list << sorted_collection.new( _unset, _self.rel_item_display_tree_sort_proc )
+
+	# Related items are devided into groups and subgroups,
+	# groups(if available ) appear as soon as the user clicks on
+	# the related items tab, subgroups(if groups have subgroups)
+	# appear when the user expands the group trees
+
+	_if (current_object << _self.current_object) _isnt _unset _andif
+	    .categorised_related_objects _isnt _unset
+	_then
+		_for a_collection, objects_group  _over .categorised_related_objects.keys_and_elements()
+		_loop
+			group_display_tree << _self.get_category_display_tree( a_collection )
+
+			_if _not objects_group.empty?
+			_then
+				group_display_tree.set_children_method( _self,
+									:|get_object_trees_for_collection()|,
+									a_collection,
+									group_display_tree,
+									objects_group)
+				group_display_tree.styled_string << _self.group_tree_styled_string
+			_else
+				group_display_tree.styled_string << _self.group_tree_styled_string_no_children
+			_endif
+
+			sorted_list.add( group_display_tree )
+		_endloop
+	_endif
+
+	old_tree << .display_related_objects << rope.new_from( sorted_list )
+
+	_if same_object?
+	_then
+		selected_tree << _self.restore_expansion( old_tree, .display_related_objects,
+							  :|elements()|, old_selected_item )
+	_endif
+
+	_self.changed( :display_related_objects, :renew )
+
+	# this must follow after renewing the tree
+	# because that cleared any selection.
+	_if selected_tree _isnt _unset
+	_then
+		.tree_item.selection.add( selected_tree )
+
+	_elif _not same_object?
+	_then
+		_self.manage_actions()
+		_self.set_context_sensitive_popup()
+	_endif
+
+	>> .display_related_objects
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_private _method documentos_relacionados_editor_framework.restore_expansion( old_tree, new_tree, iterator_name, old_selected_item )
+	## 
+	## This method will try to restore the state of expansion from
+	## the OLD_TREE to the new one stored at .display_related_objects
+	## It will also try to find a subtree of new tree that
+	## represents OLD_SELECTED_ITEM and return it.
+
+	selected_tree << _unset
+
+	_for an_old_sub_tree _over old_tree.perform_iter( iterator_name )
+	_loop
+		old_sub_tree_expanded? << an_old_sub_tree.expanded?
+		old_sub_tree_key << an_old_sub_tree.key
+
+		_for a_new_sub_tree _over new_tree.perform_iter( iterator_name )
+		_loop
+			new_sub_tree_key << a_new_sub_tree.key
+
+			_if _self.bombproof_equals?( old_selected_item, new_sub_tree_key)
+			_then
+				selected_tree << a_new_sub_tree
+				old_selected_item << _unset # prevent further searching
+			_endif
+
+			a_new_sub_tree.expanded? << _true
+		_endloop
+	_endloop
+
+	>> selected_tree
+_endmethod
+$
+
+_private _method documentos_relacionados_editor_framework.bombproof_equals?( obj1, obj2 )
+	## 
+	## This is a bombproof equals?() method.
+	## Furthermore if any of the two compared objects OBJ1 and OBJ2
+	## is _unset or stale record, we return _false, because that is
+	## what is expected by the application logic using this method.
+	##
+
+	_if obj1 _is _unset _orif
+	    obj1.responds_to?(:is_valid?) _andif _not obj1.is_valid? _orif
+	    obj2 _is _unset _orif
+	    obj2.responds_to?(:is_valid?) _andif _not obj2.is_valid?
+	_then
+		_return _false
+	_endif
+	_return obj1 = obj2
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.get_object_trees_for_collection( collection, parent_tree, objects,
+					   _optional expandable_objects )
+	## 
+	## Description:
+	##  This method will construct tree children representing
+	## OBJECTS and attach them to PARENT_TREE. It is called on
+	## expansion of PARENT_TREE which represents category of OBJECTS.
+	##
+	## COLLECTION is a collection of OBJECTS.
+	## If EXPANDABLE_OBJECTS is supplied then only those OBJECTS
+	## included in EXPANDABLE_OBJECTS collection will be made
+	## expandable in the tree.
+	## 
+
+	tree_rope << rope.new_for( objects.size )
+
+	_for an_object _over objects.fast_elements()
+	_loop
+		_if collection.name _is :documento_relacionado
+		_then
+			dt << display_tree.new( an_object,
+						property_list.new_with( :disp_string, an_object.nombre_completo ) )
+			document_type << an_object.tipo_documento.as_symbol()
+			dt.styled_string << _self.style_for_doc_type( document_type )
+			dt.children? << _false
+		_endif
+
+		tree_rope.add( dt )
+	_endloop
+
+	>> tree_rope
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.group_objects( objects )
+	##
+	## Description:
+	## Groups OBJECTS into a hash table where a key is a
+	## collection name and corresponding value is an rwo set
+	## contatining records belonging to that collection
+	##
+	## OBJECTS All the objects that have to be grouped
+
+	grouped_objects << property_list.new()
+
+	_for an_object _over objects.fast_elements()
+	_loop
+		a_group << an_object.source_collection
+
+		_if _not grouped_objects.includes_key?( a_group )
+		_then
+			grouped_objects[ a_group ] << rwo_set.new()
+		_endif
+
+		grouped_objects[ a_group ].add( an_object )
+	_endloop
+
+	>> grouped_objects
+
+_endmethod
+$
+
+########++++++++-------- Contents    --------++++++++########
+
+_pragma(classify_level=restricted)
+_private _method documentos_relacionados_editor_framework.cache_categorised_related_objects()
+        ##
+	## Description:
+	##  Gets the related items of the current record and sets the
+	## related_items list
+	##
+	## Further side-effects:
+	##   Creates the dependencies to the appropriate views and
+	## collections so we get notified of records changing
+	##
+	## Raised conditions:
+	##   :rel_items_not_created
+	##
+
+	# Since we are re-caching .categorised_related_objects
+	# purge .parent_to_categorised_children_map as well.
+	.parent_to_categorised_children_map.empty()
+
+	_if (current_object << _self.current_object) _is _unset
+	_then
+		.categorised_related_objects << _unset
+		.source_view << _unset
+		new_tables << _unset
+	_else
+		new_source_view << current_object.source_view
+
+		new_objects << property_list.new()
+
+		_if .related_objects_provider.related_docs_map[ current_object.source_collection.name ] _isnt _unset
+		_then
+			# only add :mit_related_document group if it has been
+			# configured in related_objects_provider.related_docs_map
+			rel_docs << _self.get_related_documents( current_object )
+			new_objects[ new_source_view.collection( :documento_relacionado ) ] << rwo_set.new_from( rel_docs )
+		_endif
+
+		.categorised_related_objects << new_objects
+		.source_view << new_source_view
+		new_tables << new_objects.keys
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.get_related_documents( an_object )
+	##
+	## Description:
+	## Get all the related documents for AN_OBJECT
+	##
+	## AN_OBJECT The object for which all the related documents have to be found.
+	##
+
+	tipo_objeto << an_object.source_collection.name
+	rel_docs << .related_objects_provider.get_related_documents_for( an_object, tipo_objeto )
+
+	>> rel_docs
+_endmethod
+$
+
+########++++++++--------    Actions    --------++++++++########
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.init_actions()
+	##
+	## Description:
+	## sets action to lock framework to a record and also sets
+	## actions to edit, goto and highlight current selection and to
+	## refresh the related items display
+	##
+
+	_self.iniciar_acciones_documentos_relacionados()
+
+	_self.manage_actions()
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_private _method documentos_relacionados_editor_framework.manage_actions()
+	##
+	## Description:
+	##  Enables actions depending on the state of selection
+	##
+	## Parameters:
+	##  None
+	##
+
+	_self.action(:añadir_documento).enabled? << .source_view _isnt _unset _andif
+						_self.selected_item _is .source_view.collection( :documento_relacionado )
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_private _method documentos_relacionados_editor_framework.get_category_display_tree( a_collection )
+	## 
+	## Creates a group diplay_tree for a_collection initialised
+	## to appropriate descriptive text.
+	##
+
+	col_ext_name << a_collection.external_name
+	>> display_tree.new( a_collection,
+			     property_list.new_with( :disp_string, col_ext_name ) )
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.sw_databus_data_requested(P_DATA_TYPE_NAME)
+	## 
+	## Returns the requested data. P_DATA_TYPE_NAME indicates the
+	## request's data_type_name
+	##
+
+	_if p_data_type_name _is :current_related_item
+	_then
+		_if (l_selection << _self.selected_item) _isnt _unset _andif
+		    l_selection.is_a_datastore_object?
+		_then
+			_return l_selection
+		_endif 
+	_endif
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documentos_relacionados_editor_framework.eliminar_documentos_relacionados_con(objeto)
+	##
+	## Elimina los elementos relacionados con un objeto cuando se
+	## recibe la notificacion del borrado de ese elemento
+
+	vista << objeto.source_view
+	nombre_tabla << objeto.source_collection.external_name
+	id_objeto << objeto.id
+
+	pred_1 << predicate.eq(:nombre_tabla,nombre_tabla)
+	pred_2 << predicate.eq(:id_objeto,id_objeto)
+	doc_sel << vista.collections[:documento_relacionado].select(pred_1 _and pred_2)
+
+	_for un_doc _over doc_sel.fast_elements()
+	_loop
+		un_doc.delete()
+	_endloop
+_endmethod
+$

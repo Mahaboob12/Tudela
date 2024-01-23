@@ -1,0 +1,380 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma(classify_level=restricted)
+def_slotted_exemplar(:documento_relacionado_editor_plugin,
+	{
+		{:parent,_unset},
+		{:related_document_owner,_unset}
+	},
+	:editor_plugin)
+$
+
+_pragma(classify_level=restricted, topic=editor_plugin)
+documento_relacionado_editor_plugin.define_shared_constant(:databus_consumer_data_types,
+	{:current_object,
+	 :related_document_owner},
+	:public )
+$
+
+_pragma(classify_level=restricted, topic=editor_plugin)
+_method documento_relacionado_editor_plugin.init_actions()
+	##
+	##
+
+	_self.add_action( sw_action.new( :insert,
+					 :engine, _self,
+					 :action_message, :insert|()|,
+					 :image, {:insert_record, :ui_resources},
+					 :caption, _self.message(:insert)))
+
+	_self.add_action( sw_action.new( :update,
+					 :engine, _self,
+					 :action_message, :update|()|,
+					 :image, {:update_record, :ui_resources},
+					 :caption, _self.message(:update)))
+
+	_self.add_action( sw_action.new( :delete,
+					 :engine, _self,
+					 :action_message, :delete|()|,
+					 :image, {:delete, :ui_resources},
+					 :caption, _self.message(:delete)))
+
+	_self.add_action( sw_action.new( :editar_objeto_relacionado,
+					 :engine, _self,
+					 :action_message, :editar_objeto_relacionado|()|,
+					 :caption, _self.message(:editar_objeto_relacionado)))
+
+	_self.database.add_dependent( _self, :mode, :view )	
+	_self.manage_actions()
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado_editor_plugin.insert()
+	##
+	## Inserta un registro de documento relacionado con un objeto
+	## de la base de datos
+
+	proposed_values << _self.framework.get_proposed_field_values(:insert)
+	_self.subclass_set_fields(proposed_values,:insert)
+
+	my_collection << _self.framework.collection
+
+	data << _self.message( :insert_undo_description, my_collection.external_name )
+
+	nombre_completo << proposed_values[:nombre_completo]
+	_self.check_path(nombre_completo)
+
+	a_transaction << record_transaction.new_insert( my_collection, proposed_values, data )
+	obj << a_transaction.run()
+
+	_if .parent _isnt _unset
+	_then 
+		.parent.refrescar_lista()
+	_endif
+
+	.framework.current_object << obj
+	
+	_return obj
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado_editor_plugin.update()
+	##
+	## Actualiza un registro de documento relacionado con un objeto
+	## de la base de datos
+	
+	proposed_values << _self.framework.get_proposed_field_values(:update)
+	_self.subclass_set_fields(proposed_values,:update)
+
+	my_collection << _self.framework.collection
+
+	data << _self.message( :update_undo_description, my_collection.external_name )
+
+	_if proposed_values[:nombre_completo] _isnt _unset
+	_then
+		nombre_completo << proposed_values[:nombre_completo]
+	_else
+		nombre_completo << _self.framework.current_object.nombre_completo
+	_endif
+
+	_self.check_path(nombre_completo)
+	
+	a_transaction << record_transaction.new_update(_self.framework.current_object, proposed_values, data )
+	obj << a_transaction.run()
+
+	_if .parent _isnt _unset
+	_then 
+		.parent.refrescar_lista()
+	_endif
+
+	.framework.current_object << obj
+
+	_return obj
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado_editor_plugin.delete()
+	##
+	## Elimina  un registro de documento relacionado con un objeto
+	## de la base de datos
+
+	an_rwo << _self.framework.current_object
+	my_collection << _self.framework.collection
+
+	data << _self.message( :delete_undo_description, my_collection.external_name )
+	a_transaction << record_transaction.new_delete( an_rwo, data )
+	obj << a_transaction.run()
+
+	_if .parent _isnt _unset
+	_then 
+		.parent.refrescar_lista()
+	_endif
+
+	_return obj
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_private _method documento_relacionado_editor_plugin.unc_path?( nombre_completo )
+        ##
+        ## Check for hardcoded drive letter
+        ##
+        ## Parameter: nombre_completo
+        ##
+        ## Return: true - if no hard coded drive letter and path > 2 chars
+        ##         false - otherwise
+        ##
+
+        _local rtnval
+
+        # check for missing or too short path name - no msg
+        _if nombre_completo _is _unset _orif nombre_completo.size <= 2
+        _then
+                rtnval << _false
+
+        # check for hard coded drive letter
+        _elif nombre_completo[2] _is %:
+        _then
+                rtnval << _false
+        _else
+                rtnval << _true
+        _endif
+
+        _return rtnval
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_private _method documento_relacionado_editor_plugin.url_path?( nombre_completo )
+        ##
+        ## Check for URL. At this relase, a url MUST start with "www"
+        ## or "http"
+        ##
+        ## Parameter: nombre_completo
+        ##
+        ## Return: true - if appears to be URL
+        ##         false - otherwise
+        ##
+
+        _local rtnval
+
+        # check for missing or too short path name - no msg
+        _if nombre_completo _is _unset _orif nombre_completo.size <= 2
+        _then
+                rtnval << _false
+
+        # check for hard coded drive letter
+        _elif nombre_completo.index_of_seq( "www" ) _is 1 _orif
+              nombre_completo.index_of_seq( "http" ) _is 1
+        _then
+                rtnval << _true
+        _else
+                rtnval << _false
+        _endif
+
+        _return rtnval
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_private _method documento_relacionado_editor_plugin.check_path( nombre_completo )
+        ##
+        ## Chequea si existe la ruta es correcta y si el fichero existe
+	##
+        ## Parametros:
+        ##    nombre completo - ruta y fichero
+        ##
+	## Descripcion:
+	##  Chequea si NOMBRE_COMPLETO tiene una ruta UNC/URL valida y
+	##  muestra un error si no lo es
+	##
+	## Avisos de error:
+	##  :nombre_fichero_no_valido - si NOMBRE_COMPLETO es
+	##     desconocido o demasiado corto
+	##
+	##  :no_ruta_unc - si NOMBRE_COMPLETO no es una ruta URL o UNC.
+	##
+	##  :fichero_no_encontrado - si NOMBRE_COMPLETO es una ruta UNC
+	##     pero el fichero no existe
+	##
+
+        _if nombre_completo _is _unset _orif nombre_completo.size <= 2
+        _then
+		condition.raise( :nombre_fichero_no_valido )
+
+        _elif _self.url_path?( nombre_completo )
+        _then
+		# full_path_name is OK
+
+        _elif _not _self.unc_path?( nombre_completo )
+        _then
+		unidad << nombre_completo[ 1 ] + nombre_completo[ 2 ]
+		condition.raise( :no_ruta_unc, :nombre_unidad, unidad )
+
+        _elif _not system.file_exists?( nombre_completo )
+        _then   # unc_path but doesn't exist
+		condition.raise( :fichero_no_encontrado, :nombre_fichero, nombre_completo )
+        _endif
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado_editor_plugin.check_trail()
+	##
+	## This subclassed method does nothing which prevents raising
+	## a "not trail set" condition which is not appropriate for
+	## non-mandatory primary geometry marker_location.
+	##
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado_editor_plugin.subclass_set_fields( proposed_values, insert_or_update )
+        ##
+        ## Subclassed to set some fields from the owner.
+
+        _if insert_or_update _is :insert
+	_then
+		_if .related_document_owner _is _unset _orif
+		    _not .related_document_owner.is_valid?
+		_then
+			condition.raise( :no_propietario_doc_rel )
+		_else
+			id_objeto << related_objects_provider.get_related_documents_id_for( .related_document_owner )
+			proposed_values[ :id_objeto ] << id_objeto
+			nombre_tabla << related_objects_provider.obtener_nombre_tabla( .related_document_owner )
+			proposed_values[ :nombre_tabla ] << nombre_tabla
+		_endif
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado_editor_plugin.sw_databus_data_available( data_type_name, data )
+	##
+	## Description:
+	##  Called whenever there is information on the databus that
+	## we are interested in. This plugin is interested to
+	## :related_document_owner. Other data types are handled by the
+	## super implementation.
+	##
+	## Parameters:
+	##  Data_type_name - the name of the incoming data type.
+	##  Data - the data for that data type.
+	##
+
+	_if data_type_name _is :current_object
+	_then
+		_self.manage_actions()
+	_elif data_type_name _is :related_document_owner
+	_then
+		.related_document_owner << data[1]
+		.parent << data[2]
+	_else
+		_self.manage_actions()
+		_super.sw_databus_data_available( data_type_name, data[1] )
+	_endif
+
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado_editor_plugin.manage_actions()
+	## 
+	## Activa/desactiva los botones para insertar, actualizar o
+	## eliminar registros
+
+	vista << gis_program_manager.cached_dataset(:gis)
+	current_collection << vista.collections[:documento_relacionado]
+
+	insertable? << current_collection _isnt _unset _andif
+		       current_collection.writable_in_run_transaction? _andif 
+		       current_collection.write_authorised?
+
+	current_object << _self.framework.current_object
+	
+	updatable? << current_object _isnt _unset _andif
+		      current_collection.writable_in_run_transaction? _andif 
+		      current_collection.write_authorised?
+	
+	_self.action( :insert ).enabled? << insertable?
+	_self.action( :update ).enabled? << updatable?
+	_self.action( :delete ).enabled? << updatable?
+	_self.action( :editar_objeto_relacionado).enabled? << current_object _isnt _unset
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method documento_relacionado_editor_plugin.note_change( who, aspect, _gather data )
+	##
+	## Notificaciones de cambio
+	##
+	## Recibe notificaciones del cambio de la vista o del modo de
+	## lectura/escritura 
+
+	_if who _is _self.framework.dataset
+	_then 
+		# observer notifications 
+		_if aspect _is :mode _orif
+		    aspect _is :view
+		_then
+			_self.manage_actions()
+		_endif
+	_endif
+
+	_super.note_change( who, aspect, _scatter data )
+_endmethod
+$	
+
+_pragma(classify_level=restricted)
+_method documento_relacionado_editor_plugin.editar_objeto_relacionado()
+	##
+	## Visualiza en el editor fijo de la aplicacion, el objeto
+	## relacionado con el documento actual
+
+	vista << _self.framework.dataset
+	app << _self.framework.application
+	current_object << _self.framework.current_object
+
+	_if (nom_tab << current_object.nombre_tabla) _isnt _unset _andif
+	    (id << current_object.id_objeto) _isnt _unset 
+	_then
+		tabla << vista.collections[nom_tab.as_symbol()]
+		obj_relacionado << tabla.at(id)
+
+		editor << app.plugin(:editor_manager).display_embedded_editor_for_collection(tabla)
+		editor.current_object << obj_relacionado
+		editor.reset()
+	_endif
+_endmethod
+$

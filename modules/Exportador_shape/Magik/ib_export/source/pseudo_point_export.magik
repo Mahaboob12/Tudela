@@ -1,0 +1,32 @@
+
+_package user
+$
+def_slotted_exemplar(:pseudo_point_export,
+		     {},
+		     {:pseudo_point,
+		      :pseudo_base_geom_export})
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_point_export.set_rwo(a_rwo)
+	_self.add_source_rwo(a_rwo)	
+	_super.set_rwo_code(a_rwo)
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method pseudo_point_export.new(a_point)
+	>> _clone.init(a_point) 
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method pseudo_point_export.init(a_point)
+
+	_super(pseudo_point).init(a_point.coord,
+			          a_point.orientation,
+			          a_point.scale,
+			          a_point.mirror,
+			          a_point.draw_coord)	
+	_super(pseudo_base_geom_export).init(a_point)
+
+	_return _self 
+_endmethod
+$

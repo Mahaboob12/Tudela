@@ -1,0 +1,332 @@
+#% text_encoding = iso8859_1
+# ************************************************************ 
+#							       
+# (c) 2005-2007 General Electric Company. All Rights Reserved. 
+#							       
+# ************************************************************ 
+_package sw
+$
+
+_pragma(classify_level=basic, topic={if_related_objects})
+## The related_objects_provider supplies related documents for
+## a given object.
+##
+## Description of related_documents:
+## The related_objects_provider obtains a db-record and the
+## creates the list of related_documents. A client has to be
+## explicitly registered to get a list of
+## related_documents. The most of the work is the done by the
+## mit_related_document... classes. This class only arranges
+## the access to the related_documents. 
+def_slotted_exemplar(:related_objects_provider,
+{
+	{:manager, _unset},
+	{:client,  _unset},
+	{:subject, _unset}
+})
+$
+
+_pragma(classify_level=restricted, topic={mit_related_items})
+_method related_objects_provider.manager
+
+	## Returns self allways. Just necessary to implement the response
+	## to the registry keys and shortcuts.
+
+	_if .manager _is _unset 
+	_then
+		.manager << _self
+	_endif
+
+	_return .manager
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={mit_related_items})
+_method related_objects_provider.manager << a_manager
+
+	## Sets the manager slot.
+
+	.manager << a_manager
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={mit_related_items})
+_method related_objects_provider.client
+
+	## Returns the client slot.
+	##
+	## The client slot is the initial record passed to self to
+	## determine the related objects.
+
+	_return .client
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={mit_related_items})
+_method related_objects_provider.client << a_db_record
+
+	## Sets the client slot with a new database record.
+
+	.client << a_db_record
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={mit_related_items})
+_method related_objects_provider.subject
+
+	## Returns the subject slot.
+	##
+	## A subject is the actual record to determine its related
+	## items. If e.g. a client record collects the related items of
+	## a join record first and then adds his own related items, the
+	## subject is the joined record.
+
+	_return .subject
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={mit_related_items})
+_method related_objects_provider.subject << a_db_record
+
+	## Sets the subject slot with a new database record.
+
+	.subject << a_db_record
+_endmethod
+$
+
+_pragma(classify_level=basic, topic=if_related_objects)
+_method related_objects_provider.new()
+
+	## Returns a new related_objects_provider.
+	##
+	## Since the related_objects_provider stores records for a
+	## certain period of time and releases them after determing the
+	## related objects, we might need a new instance to be able to
+	## run in different threads.
+
+	_return _clone
+_endmethod
+$
+
+_pragma(classify_level=basic, topic=if_related_objects)
+_method related_objects_provider.print_on(a_stream)
+
+	## Short description of self and its slots.
+
+	a_stream.write("a ", _self.class_name, newline_char,
+		       ".manager: ", .manager, newline_char,
+		       ".subject: ", .subject, newline_char,
+		       ".client:  ", .client)
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={if_related_documents})
+related_objects_provider.define_shared_constant(
+	:related_docs_registry,
+
+	## Stores the behaviour how to return the related_documents for
+	## a certain record.
+	
+	hash_table.new(),
+	
+	:public)
+$
+
+_pragma(classify_level=basic, topic={if_related_documents})
+related_objects_provider.define_shared_constant(
+	:related_documents?,
+
+	## Check method, that returns if one wants to provide
+	## related_documents or not. Can be overwritten by certain
+	## record exemplars. 
+
+	_true,
+	
+	:public)
+$
+
+_pragma(classify_level=restricted, topic={mit_related_documents})
+related_objects_provider.define_shared_constant(
+	:related_docs_table_name,
+	## The name of the related documents storing table.
+	:documento_relacionado,
+	:private)
+$
+
+_block
+	_local ht << related_objects_provider.related_docs_registry
+	
+	# the default just calls methods on self and is captured and
+	# adapted from mit_related_documents_mixin. Apart from a check
+	# if we want to return related_documents, nothing happens here,
+	# but can be easily enhanced (see related_items_registry
+	# above).
+	ht[:default] <<
+		property_list.new_with(
+			:allow, {:related_documents?, :manager})
+_endblock
+$
+
+_pragma(classify_level=basic, topic={if_mit_related_documents})
+related_objects_provider.define_shared_constant(
+	:related_docs_map,
+
+	## Stores a mapping for object keys to a rule how to create the
+	## related_documents. Used because many objects use the same
+	## rule. In opposite to related_items we only allow to return
+	## related_documents listed here, no default rule is used for 
+	## other objects, thus only objects listed here can be
+	## associated with related documents.
+	##
+	## This is also the configuration hook.
+	
+	hash_table.new_with(
+		:acometida, :default,
+		:aliviadero, :default,
+		:arqueta, :default,
+		:boca_riego, :default,
+		:deposito, :default,
+		:desague, :default,
+		:fuente, :default,
+		:grupo_bombeo, :default,
+		:hidrante, :default,
+		:riego, :default,
+		:sumidero, :default,
+		:valvula, :default,
+		:ventosa, :default,
+		:valvula_combi, :default,
+		:acometida_saneamiento, :default,
+		:arqueta_saneamiento, :default,
+		:pozo_saneamiento, :default,
+		:final_saneamiento, :default),
+	:public)
+$
+
+_pragma(classify_level=basic, topic={if_related_documents})
+_method related_objects_provider.get_related_documents_for(
+		a_rec,
+		tipo_objeto,
+		_optional flavour)
+
+	## Devuelve la lista de documentos relacionados a A_REC. Si no
+	## se encuentra ningun documento relacionado se devuelve una
+	## lista vacia
+	##
+	## A_REC: Registro que esta asociado a los documentos relacionados
+	##
+	## TIPO_OBJETO: Nombre de la tabla a la que pertenece A_REC
+	##
+	## FLAVOUR: A lookup_key to use instead of the generated key
+	## for A_REC.
+	
+        _local obj_id << _self.get_related_documents_id_for(a_rec)
+	
+	_if obj_id _isnt _unset
+        _then
+                _local sel_pred <<
+			predicate.eq(:nombre_tabla, tipo_objeto) _and
+			predicate.eq(:id_objeto, obj_id)
+		
+		_return _self.get_related_documents_table_for(
+				a_rec).
+			select(sel_pred)
+        _endif
+	
+	_return {}
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={if_related_documents})
+_method related_objects_provider.delete_related_documents_for(a_rec, table_code)
+
+	## Deletes all related_document table entries for A_REC.
+
+	_for rd _over _self.get_related_documents_for(a_rec, table_code).
+		fast_elements()
+	_loop
+		rd.delete()
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={mit_related_documents})
+_private _method related_objects_provider.get_related_documents_registry_for(
+			 lookup_key)
+	
+	## Looks for registry entries for key LOOKUP_KEY. Returns an
+	## empty registry entry, if there is no reg entry (does not
+	## return a default entry!)
+	
+	_if (reg << _self.related_docs_registry[lookup_key]) _isnt _unset 
+	_then
+		_return reg
+	_endif
+
+	_return property_list.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={mit_related_documents})
+_private _method related_objects_provider.record_is_related_docs_provider?(
+			 a_rec, reg_entry)
+	
+	## Checks if A_REC is a related_documents provider or
+	## not. Apart from a necessary registry entry the receiver of
+	## the check rule must answer with TRUE.
+
+	_if reg_entry[:allow] _is _unset 
+	_then
+		_return _false 
+	_endif
+	
+	_return _self.get_result_for_rule(
+			a_rec,
+			reg_entry[:allow])
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={if_related_documents})
+_method related_objects_provider.get_related_documents_id_for(a_rec)
+
+	 ## Returns the value of the id field for A_REC. Due to the
+	 ## nature of the related_documents table, we expect only one
+	 ## key field.
+	 ##
+	 ## A_REC: The record that has to provide its key field value. 
+
+	_local kf << a_rec.key_fields
+
+	_if kf.size = 1
+	_then
+		_local kfn << kf.an_element().name
+		
+		_return a_rec.perform(kfn)
+	_endif
+
+	_return _unset 
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={if_related_documents})
+_method related_objects_provider.get_related_documents_table_for(a_rec)
+
+	## Returns the related_documents table. A_REC is just used to
+	## determine the source view.
+	##
+	## A_REC: The record to which related_documents are
+	## associated. 
+
+	_return a_rec.source_view.
+		collections[_self.related_docs_table_name]
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={mit_related_items})
+_method related_objects_provider.obtener_nombre_tabla(a_rec)
+	##
+	## Devuelve el nombre de la tabla del objeto relacionado con el
+	## documento
+
+	_return a_rec.source_collection.name
+_endmethod
+$

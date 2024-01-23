@@ -1,0 +1,9 @@
+editor_documentos_relacionados 1
+
+description 
+	Modulo para relacionar objetos con documentos Excel, Word...
+end
+
+requires
+	documentos_relacionados	1
+end

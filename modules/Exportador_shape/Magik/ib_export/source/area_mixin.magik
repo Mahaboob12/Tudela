@@ -1,0 +1,7 @@
+$
+_pragma(classify_level=basic, topic={geometry}, usage={external})
+_method area_mixin.straight?
+	current_sectors <<_self.sectors
+	_return current_sectors.straight?
+_endmethod
+$

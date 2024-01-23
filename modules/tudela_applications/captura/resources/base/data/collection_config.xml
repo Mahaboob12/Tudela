@@ -1,0 +1,159 @@
+<editors>  
+    <collection collection_name="documento_relacionado"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.documento_relacionado_editor_config.xml"
+		gui_file_name="custom_editors.documento_relacionado_editor_gui.xml"/>
+    <collection collection_name="acometida"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="aliviadero"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="arqueta"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="boca_riego"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="deposito"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="desague"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="fuente"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="grupo_bombeo"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="hidrante"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="riego"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="sumidero"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="valvula"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="ventosa"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="valvula_combi"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="acometida_saneamiento"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="arqueta_saneamiento"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="pozo_saneamiento"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+    <collection collection_name="final_saneamiento"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+   <collection collection_name="tanque_tormentas"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+   <collection collection_name="canal"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+   <collection collection_name="grupo_bombeo_saneamiento"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+   <collection collection_name="valvula_vortex"
+		editor_exemplar_name="object_editor"
+		config_file_name="custom_editors.custom_editor_config.xml"
+		gui_file_name="custom_editors.custom_editor_gui.xml"/>
+
+    <!-- Define the xml files for specific collections -->
+    <collection collection_name = "dxf_load_history"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf_lines"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf_attribs"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf_texts"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf_areas"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf_points"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf_inserts"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf_dimensions"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!layers"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!line_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!block_attr_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!text_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!blocks"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!point_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!insert_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!dimension_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!chain_out_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!area_out_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!text_out_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!point_out_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+    <collection collection_name = "dxf!dimension_out_translations"
+                gui_file_name = "swaf_dxf_application.dxf_editor_gui" >
+    </collection>
+</editors>

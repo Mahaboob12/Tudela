@@ -1,0 +1,88 @@
+#% text_encoding = iso8859_1
+_package user
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:hidrante,{},:rwo_record)
+$
+#
+_pragma (classify_level=basic,topic=modelo_datos)
+_method hidrante.ramal_trigger(tipo,att_det,geom)
+
+	## Crea posicion al final del ramal
+	
+	_if _self.posicion _isnt _unset
+	_then
+		_self.unset_geometry(:posicion)
+	_endif
+	_if att_det _is :attach
+	_then
+		(dummy,ang) << _self.ramal.sectors.last_mid_point()
+		coord << _self.ramal.sectors.last_coord
+		
+		pos << _self.make_geometry(:posicion,coord)
+		pos.orientation << ang
+	_endif
+	
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method hidrante.texto_text
+
+	## Devuelve el numero de hidrante y la presion si existe
+
+	str << _self.numero.default("").write_string
+	_if _self.presion _isnt _unset
+	_then
+		# Cambiamos el numero de decimales a 1 en la unidades Bar
+		# No reponemos el original porque no es necesario
+		_self.presion.unit.default_format.float_decimal_places << 1
+
+		str << write_string(str,%(,_self.presion,%))
+	_endif 
+	_return str 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method hidrante.posicion_trigger(nombre,att_det,geom)
+	
+	## Colocar la anotacion del numero y presion
+
+	_if att_det _is :attach
+	_then
+		# Coloca el texto de numero de hidrante y la presion
+		coord << _self.posicion.coord
+		txt << _self.texto_text
+		_if _self.texto _isnt _unset
+		_then
+			_self.unset_geometry(:texto)
+		_endif
+		texto << _self.make_geometry(:texto,coord,txt)
+		texto.just << 11
+	_endif 
+_endmethod
+$
+_pragma (classify_level=basic,topic=modelo_datos)
+_method hidrante.texto_trigger()
+	## Cambia el texto del numero y la presion, si es que existe
+	_if _self.texto _isnt _unset
+	_then
+		_self.unset_geometry(:texto)
+	_endif
+
+	_if (pos << _self.posicion) _is _unset
+	_then
+		_return
+	_endif
+	
+	coord << _self.posicion.coord
+	txt << _self.texto_text
+	#_self.texto.string << txt # No redibuja el texto
+	_if txt <> ""
+	_then
+		texto << _self.make_geometry(:texto,coord,txt)
+		texto.just << 11
+	_endif
+_endmethod
+$
+

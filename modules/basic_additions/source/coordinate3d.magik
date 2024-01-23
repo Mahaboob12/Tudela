@@ -1,0 +1,32 @@
+#% text_encoding = iso8859_1
+_package user
+$
+_pragma(classify_level=restricted)
+_method coordinate3d.as_string(_optional ndec,parenthesis?)
+
+	## Return a string containing a human-readable representation
+	## of SELF. NDEC is the number of decimal places to which
+	## values are formatted. If PARENTHESIS? is _true, the string
+	## is enclosed in parenthesis.
+
+	parenthesis? << parenthesis?.default(_false)
+	
+	str << ""
+	sep << ""
+
+	# Build ordinates as comma separated list
+	_for n _over {_self.x,_self.y,_self.z}.elements()
+	_loop
+		str_n << n.as_float.as_fixed_string(1,ndec).trim_spaces()
+		str << write_string(str,sep,str_n)
+		sep << ","
+	_endloop
+
+	# Add parenthesis if required
+	_if parenthesis? _then
+		str << write_string("(",str,")")
+	_endif
+	
+	>> str
+_endmethod
+$

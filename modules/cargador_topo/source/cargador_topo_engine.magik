@@ -1,0 +1,280 @@
+_package user
+$
+
+def_slotted_exemplar(:cargador_topo_engine,
+		    {
+			    {:puntos, _unset },
+			    {:archivo_topo, _unset },
+			    {:transform, _unset },
+			    {:framework, _unset },
+			    {:view, _unset }
+			    
+		    }, :engine_model)
+
+$
+
+cargador_topo_engine.define_slot_access(:puntos, :read, :public)
+$
+cargador_topo_engine.define_slot_access(:transform, :write, :public)
+$
+cargador_topo_engine.define_slot_access(:view, :read, :public)
+$
+_pragma(classify_level=restricted, usage={redefinable})
+_method cargador_topo_engine.new(owner)
+	## 
+	## iniciamos
+	>> _clone.init(owner)
+_endmethod
+$
+_pragma(classify_level=restricted, usage={redefinable})
+_method cargador_topo_engine.init(owner)
+	## 
+	## iniciamos 
+
+	_global topo_engine
+	topo_engine << _self 
+	
+	.puntos << property_list.new()
+	.framework << owner
+	.view << .framework.plugin.application.database.dataset(:gis)
+	>> _self 
+	
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_method cargador_topo_engine.leer_puntos(n_fichero)
+	##
+	## Lee datos de fichero
+	
+	ex_stream << external_text_input_stream.new(n_fichero)
+	
+	_loop
+		_if (val << ex_stream.get_line()) _is _unset
+		_then
+			_leave
+		_endif
+
+		info_rec << val.split_by(" ")
+		_if info_rec.empty?
+		_then
+			write("Linea en blanco en ", n_fichero)
+			_continue
+		_endif
+		_if info_rec.size <> 5
+		_then
+			write("Linea erronea en ", n_fichero)
+			_continue
+		_endif
+		
+		id << write_string(.framework.file_name, %_,info_rec[1])
+		
+		x << info_rec[2].as_number()
+		y << info_rec[3].as_number()
+		z << info_rec[4].as_number()
+		c << coordinate3d.new(x,y,z)
+		# Se transforma al Cargar y al "Ir a", para poder definit el
+		# sistema de coordenadas en el dialogo
+		#c_gis << c.transformed(_self.transform)
+		
+		tipo << info_rec[5].lowercase.as_symbol()
+
+		write(tipo, tab_char, c,tab_char,id)
+		_if .puntos[tipo] _is _unset
+		_then
+			.puntos[tipo] << rope.new()
+		_endif
+		.puntos[tipo].add({id, c})
+	_endloop
+	>>.puntos 
+_endmethod
+$
+_pragma(classify_level=restricted, usage={redefinable})
+_method cargador_topo_engine.empty()
+	## 
+	## 
+	.puntos << property_list.new()
+	#Por si acaso hemos cambiado de alternativa
+	.view << .framework.plugin.application.database.dataset(:gis)
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={redefinable})
+_method cargador_topo_engine.cargar_puntos()
+	## 
+	## Crea la geometria a partir de los puntos leidos,
+	## Verifica que no exista otro punto igual en la misma coordenada
+
+	objetos << property_list.new()
+	
+	_for clave_topo, name_coords _over .puntos.fast_keys_and_elements()
+	_loop
+		_if (num << clave_topo.as_number()) _isnt _unset
+		_then
+			# es un clavo de GPS
+			id << write_string("GPS", num-1000)
+			(n_obj, fn_geo, fn_tipo, valor ) << (_scatter _self.topo_definicion[:|1000|])
+			# Solo existe un clavo con numero "1024", Si existieran
+			# repetidos solo se carga el primero
+			name_coord << name_coords.an_element()
+			name << name_coord[1]
+			coord << name_coord[2].transformed(.transform)
+			# El nombre del punto lo sacamos de la clave para los clavos.
+			obj << _self.crea_geometria(n_obj, fn_geo, fn_tipo, valor, id, coord)
+			_if obj _isnt _unset
+			_then
+				_if objetos[n_obj] _is _unset
+				_then objetos[n_obj] << rope.new() _endif 
+				objetos[n_obj].add(obj)
+			_endif 			
+			_continue
+		_endif
+		
+		_if (v_def << _self.topo_definicion[clave_topo]) _is _unset
+		_then
+			write(clave_topo.write_string.uppercase, " no esta definido en 'topo_definicion'")
+			_continue
+		_endif
+		(n_obj, fn_geo, fn_tipo, valor, campo_cota) << (_scatter v_def)
+		_for name_coord _over name_coords.fast_elements()
+		_loop
+			name << name_coord[1]
+			coord << name_coord[2].transformed(.transform)
+			coord[3] << coord.z*1000
+			z << name_coord[2].z
+
+			obj << _self.crea_geometria(n_obj, fn_geo, fn_tipo, valor, name, coord,campo_cota,z)
+			_if obj _isnt _unset
+			_then
+				_if objetos[n_obj] _is _unset
+				_then objetos[n_obj] << rope.new() _endif 
+				objetos[n_obj].add(obj)
+			_endif 
+		_endloop
+	_endloop
+		
+	>> objetos	
+_endmethod
+$
+_pragma(classify_level=restricted, usage={redefinable})
+_private _method cargador_topo_engine.crea_geometria(obj, fn_geo, fn_tipo, valor, name, coord, _optional campo_cota,z)
+	## 
+	## Crea la geometria
+	
+	_dynamic !current_world!
+	_dynamic !current_dsview!
+	#DEBUG show("cargador_topo_engine.crea_geometria(",obj, fn_geo,fn_tipo, valor, name, coord,campo_cota, z)
+	!current_dsview! << .view
+	!current_world! << .view.world
+
+	rec << _unset
+	
+	_for punto _over _self.puntos_en(coord).fast_elements()
+	_loop
+		_if obj = punto.rwo_type _andif
+		    fn_geo = punto.app_type
+		_then
+			_if fn_tipo _is _unset
+			_then 
+				write("Punto duplicado ", obj )
+				_return 
+			_elif valor = punto.rwo.perform(fn_tipo)
+			_then
+				write("Punto duplicado ", obj , %tab, valor)
+				_return
+			_endif
+		_endif
+	_endloop
+	
+	tab << .view.collection(obj)
+	ntemp << tab.new_template_record()
+	_try _with cond
+		_if fn_tipo _isnt _unset
+		_then
+			ntemp.perform(fn_tipo.with_chevron, valor)
+		_endif
+		_if tab.record_exemplar.is_rwo? _andif
+		    (nombre_name << tab.record_exemplar.nombre_field) _isnt _unset
+		_then
+			long << ntemp.field(nombre_name).type.size
+			name << name.ib_last_to_end(long)
+			ntemp.perform(nombre_name.with_chevron, name)
+		_endif
+		#Workaround para material que es un catalogo
+		_if ntemp.field(:material) _isnt _unset
+		_then
+			ntemp.material << "Desconocido"
+		_endif
+		#Workaround para objeto fuente
+		_if obj _is :fuente
+		_then
+			ntemp.modelo << "Desconocido"
+		_endif
+		
+		rec << tab.insert(ntemp)
+		
+		# En el caso del canal pondremos el texto de la cota del extremo
+		# final
+		_if obj _is :canal
+		_then
+			rec.make_geometry(fn_geo, coord, z.write_string)
+			
+			# Añadimos un punto para identificar mas facilmente el extremo
+			# final del canal
+			drafting_tab << .view.collection(:drafting_points)
+			geoms << property_list.new()
+
+			_for a_field _over drafting_tab.geometry_field_names()
+			_loop
+				geoms[a_field] << _unset
+			_endloop
+
+			punto << simple_point.new_at(drafting_tab.field(:point_8),coord)
+			punto.scale << 50
+			geoms[:point_8] << punto
+			rt << record_transaction.new_insert(drafting_tab,geoms)
+			smallworld_product.application(:captura).database.run_transaction(rt)
+		_else 
+			rec.make_geometry(fn_geo, coord)
+		_endif
+		
+		_if obj _is :valvula
+		_then
+			rec.make_geometry(:posicion, coord)
+		_endif 
+		_if campo_cota _isnt _unset
+		_then
+			rec.perform(campo_cota.with_chevron, z)
+		_endif
+	_when error
+		write("ERROR record ",ntemp, " Causa: ",cond.report_contents_string)
+		_if rec _isnt _unset
+		_then
+			rec.delete()
+		_endif 
+	_endtry
+	_return rec 
+_endmethod
+$
+_pragma(classify_level=restricted, usage={redefinable})
+_private _method cargador_topo_engine.puntos_en(coord)
+	## 
+	## Devuelve los puntos existentes en COORD
+	bb << bounding_box.new_centred(coord.x, coord.y, 100)
+	>> .view.world.geometry_set(bb).
+		  select(:geom_type, {:point, :simple_point})
+_endmethod
+$
+
+_pragma(classify_level=restricted, usage={redefinable})
+_method cargador_topo_engine.save_data()
+	## 
+	## Commit si hay cambios en gis
+	
+	_if .view.is_updated?()
+	_then 
+		.view.commit()
+	_endif 
+_endmethod
+$
+

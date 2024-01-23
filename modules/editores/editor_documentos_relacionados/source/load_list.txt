@@ -1,0 +1,4 @@
+file_name_field_editor
+documentos_relacionados_actions_mixin
+documentos_relacionados_editor_framework
+documentos_relacionados_editor_plugin

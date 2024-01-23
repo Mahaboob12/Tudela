@@ -1,0 +1,31 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma (classify_level=basic,topic=modelo_datos)
+def_slotted_exemplar(:tramo_tuberia,{},:user_ds_record)                 # No geometry
+$
+_method tramo_tuberia.longitud
+
+        # Longitud del tramo --> Campo longitud 
+	long << 0
+	_for subtramo _over _self.subtramos.fast_elements()
+	_loop
+		long +<< subtramo.longitud
+	_endloop
+	_return long
+_endmethod
+$
+_method tramo_tuberia.update_trigger()
+
+	# Trigger de actualizacion del objeto tramo para cuando se produce
+	# un cambio en el campo diametro del tramo de tuberia. Deberia
+	# se un trigger de campo y no de objeto
+	
+	_for a_subtramo _over _self.subtramos.fast_elements()
+	_loop
+		a_subtramo.calcula_grosor
+	_endloop
+_endmethod
+$

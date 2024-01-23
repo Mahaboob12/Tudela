@@ -1,0 +1,21 @@
+#% text_encoding = iso8859_1
+$
+
+_pragma(classify_level=restricted, topic={units})
+_method chain.line_length_unit_value()
+##
+##  Return line length as a unit value.
+##
+
+	_if  _self.world _isnt _unset
+	_then
+		lv << length_value.new(_self.line_length, _self.world_units)
+	_elif _self.rwo _isnt _unset _then
+		dset_world << _self.rwo.source_view.world
+		lv << length_value.new(_self.line_length, dset_world.unit)
+	_endif
+
+	>> lv
+
+_endmethod
+$

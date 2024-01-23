@@ -1,0 +1,7 @@
+<shift_paramaters>  
+     <datasets>
+	 <dataset name="cartografia"> 
+		<table name="municipio" geom="texto_municipio" scale="10000"/>
+	 </dataset>
+    </datasets>   
+</shift_paramaters>

@@ -1,0 +1,219 @@
+$
+text.define_shared_variable(:default_shift_scale,:auto ,:public)
+$
+text.define_shared_variable(:text_style_to_export,equality_hash_table.new(),:private)
+$
+text.define_shared_variable(:default_shift_scales,_unset ,:private)
+$
+_method text.shift_text_from_position_v( _optional display_scale_name,a_anchor)
+	##
+	## Desplazamiento horizontal respecto al anclaje A_ANCHOR (si no
+	## se proporciona ningun valor se toma como punto de anclaje la
+	## coordenada de SELF)
+	##
+
+	_local shift << _self.shift_text_from_position(:horizontal,
+				a_anchor, display_scale_name)	
+	_return shift
+_endmethod
+$
+
+_method text.shift_text_from_position_h( _optional display_scale_name,a_anchor)
+	##
+	## Desplazamiento vertical respecto al anclaje A_ANCHOR (si no
+	## se proporciona ningun valor se toma como punto de anclaje la
+	## coordenada de SELF)
+	##
+
+	_local shift << _self.shift_text_from_position(:vertical,
+				a_anchor, display_scale_name)	
+	_return shift	
+_endmethod
+$
+_private _method text.shift_text_from_position(vertical_or_horizontal,
+				      _optional a_anchor, display_scale_name)
+	##
+	## Desplazamiento vertical u horizontal (segun el valor VERTICAL_OR_HORIZONTAL)
+	## respecto al anclaje A_ANCHOR (si no
+	## se proporciona ningun valor se toma como punto de anclaje la
+	## coordenada de SELF)
+	## 
+
+	_local x_anchor
+	
+	_if vertical_or_horizontal _is :vertical _then
+		x_or_y << :y
+	_else
+		x_or_y << :x
+	_endif
+
+	a_anchor << a_anchor.default(_self )
+	x_or_y_anchor << a_anchor.perform(x_or_y)
+
+	# Obtener lista de coordenadas que delimitan el bounding_box que
+	# contiene el texto
+	a_text_box << _self.ibtr_text_box(display_scale_name)
+
+	_if a_text_box _is _unset _orif  
+	    (first_coord << a_text_box.an_element()) _is _unset _then
+		# no se pudo obtener un desplazamiento
+		_return 0
+	_endif 
+
+	a_shift << first_coord.perform(x_or_y) - x_or_y_anchor
+
+	_return a_shift	
+_endmethod
+$
+_method text.ibtr_text_box( _optional display_scale_name)
+	##
+	## Lista de coordenadas que delimitan el bounding_box que
+	## contiene el texto, segun la escala DISPLAY_SCALE_NAME
+	## (si no se proporciona una escala se utiliza la escala de la
+	##  vista actual de la aplicacion de usuario)
+	##
+	## ** SOLO devuelve informacion si la aplicacion de usuario esta abierta
+	##
+
+	_if (map_plugin << _self.map_plugin) _is _unset  _then _return _endif 
+	
+	a_win << map_plugin.current_map_view.window
+	display_scale_name << display_scale_name.default(_self.ibtr_shift_scale())
+	
+	a_rwo << _self.rwo
+	a_fd_name << _self.geometry_descriptor.name
+	style_type << :normal
+
+	# Verificar si se recupero un estilo valido
+	_if (rwo_sty << _self.get_text_style_to_export(a_rwo.source_collection.name,display_scale_name,
+						       a_fd_name,style_type)) _is _unset _then _return _endif 
+	a_text_box << a_rwo.perform(a_fd_name.as_symbol()).text_box_using(rwo_sty,a_win)
+	
+	_return a_text_box
+_endmethod
+$
+_method text.get_text_style_to_export(rwo_name,scale_name,app_name,style_type)
+	##
+	## Devuelve un estilo de texto utilizado para calcular el desplazamiento
+	## en la exportacion
+	##
+
+	_local pred_sty
+	_local t_estilos << gis_program_manager.style_view.collections[:sw_gis!rwo_style]
+	_local eq_export <<  _self.text_style_to_export
+	_local values << {rwo_name,scale_name,app_name,style_type}
+	_local names << {:rwo_name,:scale,:app_name,:style_type}
+	_local eq << eq_export
+	_local query? << _false
+	
+	_for i _over 1.upto(names.size)
+	_loop
+		a_value << values[i]
+		a_name << names[i]
+		eq_export << _self.text_style_to_export
+		eq_n << eq_export
+		
+		_for j _over 1.upto(i)
+		_loop			
+			eq_n << eq_n.lookup_key(values[j])
+			_if eq_n _isnt _unset _then
+				eq_export << eq_n
+			_endif 				
+		_endloop 
+		# el predicado se construye siempre por si al final es necesario
+		_if a_name _is :scale _then
+			part_scale << "%" + a_value.write_string.split_by(":").last
+			a_pred << predicate.like(a_name,part_scale.write_string)
+		_else 
+			a_pred << predicate.eq(a_name,a_value.write_string)
+		_endif
+		
+		_if pred_sty _is _unset _then 
+			pred_sty << a_pred
+		_else			
+			pred_sty << pred_sty _and a_pred
+		_endif
+		
+		_if eq_n _is _unset _then
+			_if i < names.size _then
+				nv_list << equality_hash_table.new()			
+				eq_export.add_all(equality_hash_table.new_with(a_value,equality_hash_table.new() ))				
+				query? << _true
+			_elif _not eq_export.includes_key?(a_value) _then 
+				# comprueba si es _unset porque aun no se ha buscado
+				# y no porque el estilo no exista
+				query? << _true
+			_endif
+		_endif
+	
+	_endloop 
+
+	_if query? _then
+		t_estilos << gis_program_manager.style_view.collections[:sw_gis!rwo_style]
+		sel << t_estilos.select(pred_sty)
+		a_style << sel.an_element()		
+		_self.text_style_to_export[rwo_name][scale_name][app_name][style_type] << a_style
+	_endif
+
+	_return _self.text_style_to_export[rwo_name][scale_name][app_name][style_type]
+_endmethod
+$
+_private _method text.ibtr_shift_scale()
+	##
+	## Devuelve la escala para la que se va a recuperar el desplazamiento
+	## esta informacion se lee de un fichero de configuracion del modulo
+	## si no se encuentra en el fichero se toma la escala de la
+	## vista actual del mapa o en su defecto :Auto
+	##
+
+	_local source << _self.rwo.source_collection
+	_local dataset_name << source.dataset_name.as_symbol()
+	_local shift_scale
+	
+	_if _self.default_shift_scales _is _unset _then
+		# Leer el XML con la informacion de las escalas
+		file_directory << sw_module_manager.module(:ib_export).resource_list_for(:data).an_element()
+		read_xml_shift << user:ib_export_xml_text_shift_scales.new(file_directory)
+		_self.default_shift_scales << read_xml_shift.get_shift_scales().default(equality_hash_table.new())
+	_endif
+
+	# Buscar escala para esta geometria en la informacion leida del fichero
+	_if _self.default_shift_scales.includes_key?(dataset_name) _then		
+		eq_dataset <<_self.default_shift_scales[dataset_name]
+		source_name <<source.name.as_symbol()
+		_if eq_dataset.includes_key?(source_name) _then
+			eq_source << eq_dataset[source_name]
+			fld_name << _self.geometry_descriptor.name.as_symbol()
+			shift_scale << eq_source[fld_name]
+		_endif
+	_endif
+
+	_if (shift_scale _is _unset) _andif
+	    ((map_plugin << _self.map_plugin) _isnt _unset)
+	_then
+		# obtener la escala de la vista actual
+		shift_scale << map_plugin.current_map_view.current_display_style_name
+	_endif
+	
+	_return shift_scale.default(_self.default_shift_scale)
+	
+_endmethod
+$
+_method text.map_plugin
+	##
+	## Devuelve map_plugin de la aplicacion actual
+	##
+	
+
+	_if (paf << smallworld_product.applications.an_element()) _is _unset  _then _return _endif 
+
+	_if (map_plugin << paf.plugin(:maps)) _is _unset
+	_then
+		# compatibilidad con PNI
+		map_plugin << paf.plugin(:map_plugin)
+	_endif
+
+	_return map_plugin
+_endmethod
+
+	

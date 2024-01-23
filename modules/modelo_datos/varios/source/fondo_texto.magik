@@ -1,0 +1,55 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+_pragma(classify_level=basic)
+def_slotted_exemplar(:fondo_texto,{},:dataless_rwo_record)
+$
+_method fondo_texto.texto_centroide_manzana
+	
+	txt << ""
+	_return txt
+_endmethod
+$
+_method fondo_texto.texto_centroide_parcela
+	
+	txt << ""
+	_return txt
+_endmethod
+$
+_method fondo_texto.texto_altura_edificacion
+	
+	txt << ""
+	_return txt
+_endmethod
+$
+_method fondo_texto.texto_portal
+	
+	txt << ""
+	_return txt
+_endmethod
+$
+_method fondo_texto.texto_calle
+	
+	txt << ""
+	_return txt
+_endmethod
+$
+_method fondo_texto.texto_toponimia_urbana
+	
+	txt << ""
+	_return txt
+_endmethod
+$
+_method fondo_texto.texto_punto_altimetria
+	
+	txt << ""
+	_return txt
+_endmethod
+$
+_method fondo_texto.texto_varios
+	
+	txt << ""
+	_return txt
+_endmethod
+$

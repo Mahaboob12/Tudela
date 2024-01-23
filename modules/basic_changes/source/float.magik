@@ -1,0 +1,45 @@
+#% text_encoding = iso8859_1
+_package user
+#
+_pragma (classify_level=basic,topic=core_mods)
+## Define el numero de decimales por defecto para imprimir
+## cualquier flotante
+_global !ib_print_decimal! << 2
+$
+_pragma (classify_level=basic,topic=core_mods)
+_method float.print_string
+	##
+	## Sobreescribe el metodo original para usar siempre formato
+	## fijo en lugar de flotante si esta definida la variable
+	## !ib_format_decimal! 
+	_dynamic !ib_print_decimal!
+	_dynamic !print_float_precision!
+	_local str
+	_if !ib_print_decimal! _isnt _unset
+	_then
+		str << _self.print_helper(_false, !ib_print_decimal!)
+	_else
+		str << _self.print_helper(_maybe, !print_float_precision!)
+	_endif
+	_return  str
+_endmethod
+$
+_pragma (classify_level=basic,topic=core_mods)
+_method float.write_on(a_stream, _optional floating??,precision) 
+	##
+	## Sobreescribe el metodo original para usar siempre formato
+	## fijo en lugar de flotante si esta definida la variable
+	## !ib_format_decimal! 
+	_dynamic !ib_print_decimal!
+	_dynamic !print_float_precision!
+	_local str
+	_if !ib_print_decimal! _isnt _unset
+	_then
+		str << _self.print_helper(_false, !ib_print_decimal!)
+	_else
+		str << _self.print_helper(floating??.default(_maybe),
+					  precision.default(!print_float_precision!))
+	_endif
+	a_stream.write(str)
+_endmethod
+$ 

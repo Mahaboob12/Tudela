@@ -1,0 +1,128 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_pragma(classify_level=restricted)
+##
+def_slotted_exemplar(:tudela_catalogue_field_editor,
+	{},
+	:in_place_text_field_editor)
+$
+
+_pragma(classify_level=restricted)
+_method tudela_catalogue_field_editor.activate_sub_dialog()
+	##
+	##
+
+	_if .sub_dialog _is _unset
+	_then
+		.sub_dialog << tudela_catalogue_field_value_editor.new_dialog(_self, _self, :editable?, _false)
+	_endif
+
+	# The dialog needs to be activated first before we can set the contents
+	l_text_item << _self.edit_manager.current_controls.an_element()
+	.sub_dialog.activate_relative_to(_self.action(:value).tooltip, l_text_item, 0, l_text_item.height)
+
+	# We want the STRING_value
+	.sub_dialog.contents << _self.action(:value).ui_value
+
+	# Need to know when the sub-dialog has been closed so we can
+	# sort out focus
+	.sub_dialog.add_dependent(_self, :closed)
+	
+	>> .sub_dialog
+_endmethod
+$
+
+_pragma(classify_level=restricted)
+_method tudela_catalogue_field_editor.
+	##
+	##
+
+_endmethod
+$
+#_pragma(classify_level=restricted)
+#_method tudela_catalogue_field_editor.join_selector()
+#	## 
+#	## Activate a single_join_editor_selector displaying the join
+#	## field results table.
+#	##
+#
+#	# Try to get the value in order to verify that it is valid.
+#	# If the field contains an invalid value at this point, an
+#	# alert will be raised and the user must clear the field before
+#	# the sub-dialog can be opened.
+#	_self.action(:value).value
+#
+#	owner << _self.owner
+#
+#	_if .sub_dialog _is _unset 
+#	_then
+#		.sub_dialog << tudela_catalogue_field_value_editor.new_dialog( owner.top_frame, _self,
+#									       :ace, owner.format_controller,
+#									       :ace_tag, _self.ace_tag )
+#	_endif
+#
+#	(result_table_name, result_field_name, other_fields_and_values) << _self.catalogue_information
+#
+#	work_record << _self.editor_work_record()
+#	min_width   << _self.sub_dialog_min_width
+#	min_height  << _self.sub_dialog_min_height
+#	a_control   << _self.offset_control()
+#	(offset_x, offset_y) << _self.offsets( a_control )
+#	
+#	.sub_dialog.activate_on( a_control, offset_x, offset_y,
+#				 work_record, .field_item,
+#				 work_record.source_view.collection( result_table_name ),
+#				 other_fields_and_values,
+#				 :min_width, min_width,
+#				 :min_height, min_height )
+#	
+# 	# Need to know when the sub-dialog has been closed so we can
+#	# sort out focus
+#	.sub_dialog.add_dependent( _self, :closed )	
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted)
+#_method tudela_catalogue_field_editor.records_selected( records )
+#	##
+#	## Sets the proposed value for this item.
+#	##
+#
+#	_if records _isnt _unset 
+#	_then
+#		# Get catalogue information
+#		(result_table_name, result_field_name, other_fields) << _self.catalogue_information
+#
+#		# Set the proposed values for any related fields (fields
+#		# belonging to the same catalogue mapping)
+#		_for other_field_key, other_field_info _over other_fields.fast_keys_and_elements()
+#		_loop
+#			other_field_item << other_field_info[3]
+#			proposed_value << ""
+#			current_value << other_field_item.value
+#
+#			_for a_record _over records.fast_elements()
+#			_loop
+#				_if proposed_value = ""
+#				_then
+#					proposed_value << a_record.perform(other_field_info[1])
+#				_else
+#					proposed_value << proposed_value + "; " + a_record.perform(other_field_info[1])
+#				_endif 
+#			_endloop 
+#
+#			_if proposed_value ~= current_value
+#			_then
+#				# Only explicitly set a proposed value when it is different
+#				# from the current value of the field_item
+#				other_field_item.set_proposed_value( proposed_value )
+#			_endif 
+#		_endloop
+#	_endif
+#	
+#	.agent.stop_edit()
+#_endmethod
+#$

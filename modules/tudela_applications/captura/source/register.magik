@@ -1,0 +1,13 @@
+#% text_encoding = iso8859_1
+_package sw
+
+smallworld_product.register_application( :captura,:application,
+					 :ace_name, :default, 
+					 :resource_module_name, :captura,								 
+					 :description, "Aplicación Usuario Aguas de Tudela para ETRS89 de Gis",
+					 :external_name, "Aplicación Usuario Aguas de Tudela",
+					 :default_application_coordinate_system_name, :spain_ETRS89_utm30_mm_4MM,
+					 :application_coordinate_system_unit, :mm,
+					 :html_help_file_name, "swafPro",
+					 :html_help_resource_module_name, :swaf_professional_application)
+$

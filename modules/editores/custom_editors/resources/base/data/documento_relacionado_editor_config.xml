@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<config base="editor_plugin.config.xml">
+	<plugins>
+		<plugin name="transactions" class_name="documento_relacionado_editor_plugin"/>
+		<plugin name="editor_doc_rel" class_name="documento_relacionado_editor_plugin"/>
+	</plugins>
+</config>

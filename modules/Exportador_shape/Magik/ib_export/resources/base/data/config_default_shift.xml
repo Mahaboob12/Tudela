@@ -1,0 +1,7 @@
+<shift_paramaters>  
+     <datasets>
+	 <dataset name="gis"> 
+		<table name="subtramo" geom="trazado" scale="500"/>
+	 </dataset>
+    </datasets>   
+</shift_paramaters>

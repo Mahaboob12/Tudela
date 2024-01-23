@@ -1,0 +1,331 @@
+##
+## No instanciar clase, la clase que hereda ha  de tener un
+## slot .sectors
+##
+_package user
+$
+def_slotted_exemplar(:ib_adjust_sector_curve,
+		     {
+			     {:adjusted?, _unset }
+		     })
+$
+_pragma(classify_level=restricted,topic={acp,ib_export})
+##
+## Constante utilizada para generar sectores rectos que
+## sustituyen a los curvos por aproximacion
+## Se realiza dividiendo las curvas en otras mas pequenyas, la
+## constante determina el numero de veces que se repite el proceso
+## (el incremento de sectores sera exponencial)
+ib_adjust_sector_curve.define_shared_constant(:max_divisions_repeat,6, _false)
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method ib_adjust_sector_curve.adjust(forze_close?)
+	##
+	##
+	##
+
+	current_sectors << _self.sectors
+	# Verificar si contiene curvas
+        _if current_sectors.straight? _then _return _endif
+	
+	new_sectors << _self.adjust_curves_sectors_by_lines(current_sectors)
+	
+	_if new_sectors _isnt _unset _andif
+	    forze_close? _andif
+	    _not new_sectors.closed? _then
+	    # la geometría es un area hay que cerrarla
+	    new_sectors.close()
+	_endif
+	
+	_self.set_new_sector(new_sectors)
+	.adjusted? << _true
+	
+_endmethod 
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method ib_adjust_sector_curve.set_new_sector(a_new_sector)
+	##
+	## Asigna el valor A_NEW_SECTOR, al slot .sectors
+	## (Sobreescribir)
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method ib_adjust_sector_curve.adjust_curves_sectors_by_lines(a_sector_rope)
+	##
+	## A partir del A_SECTOR_ROPE genera sectores rectos
+	## que sustituyen a los curvos (rational_b_spline, arc, circle) por aproximacion
+	## Para ello se divididen las curvas en otras mas pequenyas, y
+	## se toman 3 puntos de ellas para representar cada una.
+	##
+
+	_local pos << 0
+	_local new_sector_rope << a_sector_rope
+	
+	_for a_sector _over a_sector_rope.fast_elements()
+	_loop
+		_local curve_coords << _unset
+		pos +<<1
+		
+		_if a_sector.is_kind_of?(rational_b_spline) _orif
+		    a_sector.is_kind_of?(arc)
+		_then
+			curve_coords << _self.get_coords_from_rational_b_spline(a_sector)
+		_elif a_sector.is_kind_of?(circle) _then
+			curve_coords << _self.get_circle_coords(a_sector)
+		_endif
+
+		_if curve_coords _is _unset _then _continue _endif 
+
+		new_sector_rope[pos] << curve_coords
+		
+	_endloop
+
+ 
+	_return new_sector_rope
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method ib_adjust_sector_curve.get_circle_coords(a_circle)
+	##
+	##
+	##
+
+	sector_coords_cricle << sector.new_with(a_circle.edge_point.a_coord())
+	arc_length << a_circle.line_length/2
+	ploc << a_circle.location_for_length(arc_length)
+	start_coord << ploc.a_coord()
+	curves << rope.new()
+		
+	_for a_geom_sect _over a_circle.sections_split_by({ploc}).fast_elements()
+	_loop
+		a_sector_rope << a_geom_sect.as_sector_rope()
+
+		
+		_for a_sect _over a_sector_rope.fast_elements()
+		_loop
+			_local dividir? << _true
+			
+			# Para evitar curvas degeneradas
+			_try _with cond
+				dividir? << (a_sect.line_length >= 1)
+			_when primitive_failed
+				# Numerical integration failed to converge
+				# No es posible dividir mas veces la curva
+				dividir? << _false
+			_when error
+				_continue
+			_endtry
+
+			_if dividir? _then 
+				sect_curves << _self.div_rational_b_spline(a_sect,_self.max_divisions_repeat)
+			_else
+				sect_curves << {a_sect}
+			_endif
+			
+			_if sect_curves _isnt _unset _then
+				curves.add_all_last(sect_curves)
+			_endif 
+		_endloop 
+	_endloop
+
+	sector_coords_cricle << _self.get_order_curves_coords(curves,start_coord)
+
+#	_if sector_coords_cricle.first<>sector_coords_cricle.last _then
+#		#Es un circulo,  cerrarlo
+#		sector_coords_cricle.add_last(sector_coords_cricle.first)
+#	_endif
+
+	
+	
+	_return sector_coords_cricle
+_endmethod 
+$
+$
+_pragma(classify_level=basic, topic={geometry})
+_method ib_adjust_sector_curve.div_rational_b_spline(a_rational_b_spline
+			       _optional max_repeticiones,
+			       num_rep,bsplines_curves_div)
+	##
+	## Divide la curva A_RATIONAL_B_SPLINE en varias
+	## rational_b_spline,devuelve una lista con ellas y la coordenada inicial
+	## START_COORD de la curva
+	##
+	## Para obtener las posiciones se va dividiendo cada segmento
+	## de curva en otros 2, esta operacion se repite
+	## MAX_REPETICIONES veces(por defecto 1 division). La lista de rational_b_splines que
+	## componen la curva se almacena en BSPLINES_CURVES_DIV
+	## NUM_REP  es el numero de repeticiones que se han ejecutado hasta el momento
+
+	_dynamic !print_float_precision! << 10
+	
+	bsplines_curves_div << bsplines_curves_div.default(rope.new())
+	max_repeticiones << max_repeticiones.default(1)
+	num_rep << num_rep.default(0)
+	i_seg << 0
+	num_rep +<<1
+
+	_for a_segment _over a_rational_b_spline.segments()
+	_loop
+		# Recorrer segmentos de la curva
+		i_seg +<<1
+		_local segment_length
+		_local dividir? << _true 
+
+		_try _with cond
+			segment_length << a_segment.line_length
+		_when primitive_failed
+			# Numerical integration failed to converge
+			# No es posible dividir mas veces la curva
+			dividir? << _false 
+		_endtry 
+
+		# Verificar si se ha de dividir de nuevo la curva
+                dividir? << dividir? _andif (num_rep <= max_repeticiones)
+				
+		_if dividir? _then
+
+                        # Unset is returned if SEG_NR is greater than 1 - the number 
+	                # of segments of _self.
+			control_point << a_segment.control_point(i_seg)
+                        _if control_point _isnt _unset _then 
+				nearest_loc << a_segment.segpoint_location_near(control_point)
+                                new_curves << a_segment.split_at_locations({nearest_loc})
+                        _endif 
+
+			# Intentar dividir de nuevo, si la division anterior degenerada
+			# o no fue posible hacerla
+			_if (control_point _is _unset ) _orif (new_curves.size = 1) _then
+				new_curves << a_segment.split_at_distances({segment_length /2})
+			_endif
+			
+			_for a_new_curve _over new_curves.fast_elements()
+			_loop
+				bsplines_curves_div << _self.div_rational_b_spline(a_new_curve,
+									max_repeticiones,num_rep,bsplines_curves_div)
+			_endloop 
+		_else
+			# Anyadir curva a la lista
+			bsplines_curves_div.add_last(a_segment)
+		_endif 
+	_endloop
+	
+	start_coord << a_rational_b_spline.start_location().a_coord()
+	
+	_return bsplines_curves_div,start_coord
+	
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method ib_adjust_sector_curve.get_coords_from_rational_b_spline(a_rational_b_spline)
+	##
+	## Devuelve un sector de coordenadas, por las que pasa
+	## la curva A_RATIONAL_B_SPLINE
+	##
+
+	# Obtener curvas
+	(curves,start_coord) << _self.div_rational_b_spline(a_rational_b_spline,_self.max_divisions_repeat)
+
+	# Extraer coordenadas ordenadas de las curvas
+	sector_curve << _self.get_order_curves_coords(curves,start_coord)
+	
+	_return sector_curve	
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={geometry})
+_method ib_adjust_sector_curve.get_order_curves_coords(curves_list,start_coord)
+	##
+	## Devuelve un sector de coordenadas por las que pasan las
+	## curvas de la lista CURVES_LIST, se toma como coordenada
+	## inicial START_COORD
+	##
+
+	_local sector_coords_curves,sin_order,next_curve
+	_local order_curves << rope.new()
+	
+	# Ordenar curvas
+	_loop @ordenacion
+		sin_order << curves_list.size
+
+		min_distance << _unset
+		nearest_curve << _unset
+		next_curve << _unset 
+		
+		#Localizar siguiente curva
+		_for a_curve _over curves_list.fast_elements()
+		_loop @nextc
+			start_curve_coord << a_curve.start_location().a_coord()
+			_if start_curve_coord = start_coord _then
+				next_curve << a_curve
+				_leave @nextc
+			_else
+				#Localizar por aproximación
+				distance << start_curve_coord.distance_to(start_coord)
+				_if min_distance _is _unset _orif
+				    distance < min_distance _then
+				    min_distance << distance
+				    nearest_curve << a_curve			    
+				_endif 				    
+			_endif 
+		_endloop
+
+		next_curve << next_curve.default(nearest_curve)
+		_if next_curve _is _unset _then
+			# Error
+			_return
+		_endif
+
+		# anyadir curva a la lista ordenada
+		order_curves.add_last(next_curve)
+		start_coord << next_curve.end_location().a_coord()
+		curves_list.remove(next_curve)
+
+		_if curves_list.size= 0 _orif
+		    sin_order = curves_list.size
+		_then
+			_leave  @ordenacion
+		_endif
+
+		_if sin_order = curves_list.size _then
+			# ERROR
+			_return
+		_endif 
+	_endloop
+
+	# Recuperar coordenadas
+	_for a_ord_curve _over order_curves.fast_elements()
+	_loop
+		_if sector_coords_curves _is _unset _then
+			# primera curva
+			sector_coords_curves << sector.new()
+			sector_coords_curves.add_last(a_ord_curve.start_location().a_coord())
+		_endif
+		
+		control_point << a_ord_curve.control_point(1)
+		_if control_point _isnt _unset _then 
+			a_geom_l << a_ord_curve.segpoint_location_near(control_point)
+			sector_coords_curves.add_last(a_geom_l.a_coord())
+		_endif
+				
+		sector_coords_curves.add_last(a_ord_curve.end_location().a_coord())		
+	_endloop
+	
+	_return sector_coords_curves
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_private _method ib_adjust_sector_curve.init_adjust(adjust?,_optional forze_close?)
+	# Verificar si se aproximan las curvas con lineas y generar la aproximacion
+	# si es necesaria
+	adjust? << adjust?.default(_true)
+	_if adjust? _then
+		forze_close? << forze_close?.default(_false)
+		_self.adjust(forze_close?)
+	_endif
+_endmethod
+$
+_pragma(classify_level=basic, topic={geometry})
+_method ib_adjust_sector_curve.adjusted?
+	_return .adjusted?.default(_false )
+_endmethod
+$ 

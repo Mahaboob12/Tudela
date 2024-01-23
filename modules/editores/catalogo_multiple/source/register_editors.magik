@@ -1,0 +1,9 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_block
+	editor_manager.register_field_editor( :tudela_catalogue_field_editor, _unset, { :all_fields } )
+_endblock
+$

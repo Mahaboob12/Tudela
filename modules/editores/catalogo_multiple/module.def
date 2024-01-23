@@ -1,0 +1,8 @@
+catalogo_multiple 1
+
+description 
+	Editor para seleccionar varios elementos de un catalogo
+end
+
+requires
+end

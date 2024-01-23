@@ -1,0 +1,35 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+_pragma(classify_level=basic)
+def_slotted_exemplar(:tapa,{},:rwo_record)
+$
+_method tapa.style_data_for_app_type(app_type, _optional style_name )
+
+   _if style_name _is _unset _then style_name << "NORMAL" _endif
+   	
+   
+      _return hash_table.new_with(
+            :draw_method,   _unset,
+            :style_method,  :style_punto|()|,
+            :strings,       vec("default",
+				"electricidad",
+				"alumbrado",
+				"gas",
+				"telefónica ",
+				"retena",
+				"desconocida"
+	    ),
+            :numbers,       vec(0,1,2,3,4,5,6)
+                     )
+   
+_endmethod
+$
+_method tapa.style_punto()
+	## 
+	##
+
+	_return _self.dsint!tipo
+	
+_endmethod

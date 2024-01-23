@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  gui.xml para la Administracion de  Aguas de Tudela -->
+<gui base="admin_application.gui">
+</gui>

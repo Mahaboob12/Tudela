@@ -1,0 +1,19 @@
+#% text_encoding = iso8859_1
+# ************************************************************ 
+#							       
+# (c) 2005-2012 General Electric Company. All Rights Reserved. 
+#						
+# ************************************************************ 
+
+_package sw
+$
+
+_proc@register_databases()
+	_if (dl << get_global_value(:database_location)) _isnt _unset _andif
+	    (db_dir << system.getenv("TUDELA_DB_DIR")) _isnt _unset
+	_then
+		dl.register_new("SW_4.3_Tudela",system.pathname_down(db_dir,"ds_admin"))	
+		 
+	_endif
+_endproc()
+$
